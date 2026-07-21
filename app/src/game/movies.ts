@@ -6,6 +6,8 @@ export interface Movie {
   cast: string[]
   /** Has its own Wikipedia article — popularity proxy. */
   linked: boolean
+  /** Wikipedia article title (for poster lookups); null when unlinked. */
+  w?: string | null
 }
 
 export type LinkRole = 'hero' | 'heroine' | 'director'

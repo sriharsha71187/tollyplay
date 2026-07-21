@@ -1,8 +1,15 @@
 import type { Movie } from './movies'
 import { dialogues } from '../content/dialogues'
 import { trivia, triviaHard } from '../content/trivia'
+import { mediaEnabled } from '../lib/media'
 
-export type ChallengeKind = 'describe' | 'sing' | 'act' | 'trivia' | 'dialogue'
+export type ChallengeKind =
+  | 'describe'
+  | 'sing'
+  | 'act'
+  | 'trivia'
+  | 'dialogue'
+  | 'duo'
 
 export interface Card {
   kind: ChallengeKind
@@ -13,6 +20,8 @@ export interface Card {
   banned: string[]
   /** Read-aloud text: trivia question or famous dialogue. */
   clue?: string
+  /** duo cards: [hero, heroine] whose photos are shown to everyone. */
+  people?: [string, string]
 }
 
 export type Era = 'all' | '70s' | '80s' | '90s' | '2000s' | 'modern'
@@ -47,6 +56,7 @@ export function cardPool(movies: Movie[], era: Era, diff: Difficulty): Movie[] {
 const movieKinds: ChallengeKind[] = [
   'describe', 'describe', 'describe', 'sing', 'sing', 'act', 'act', 'trivia',
 ]
+const movieKindsWithMedia: ChallengeKind[] = [...movieKinds, 'duo', 'duo']
 
 function bannedWords(m: Movie): string[] {
   const words = new Set<string>()
@@ -60,8 +70,10 @@ function bannedWords(m: Movie): string[] {
   return [...words].slice(0, 6)
 }
 
-function movieCard(m: Movie, rand: () => number): Card {
-  const kind = movieKinds[Math.floor(rand() * movieKinds.length)]
+function movieCard(m: Movie, rand: () => number, media: boolean): Card {
+  const kinds =
+    media && m.cast.length >= 2 ? movieKindsWithMedia : movieKinds
+  const kind = kinds[Math.floor(rand() * kinds.length)]
   return {
     kind,
     title: m.title,
@@ -74,6 +86,7 @@ function movieCard(m: Movie, rand: () => number): Card {
             .filter(Boolean)
             .join(' · ')
         : undefined,
+    people: kind === 'duo' ? [m.cast[0], m.cast[1]] : undefined,
   }
 }
 
@@ -102,7 +115,7 @@ export function buildDeck(
 ): Card[] {
   const movieCards = shuffle(pool, rand)
     .slice(0, count)
-    .map((m) => movieCard(m, rand))
+    .map((m) => movieCard(m, rand, mediaEnabled))
     .filter((c) => !used?.has(cardKey(c)))
   const triviaSet = diff === 'easy' ? trivia : [...trivia, ...triviaHard]
   const curated: Card[] = shuffle(
@@ -155,5 +168,10 @@ export const kindMeta: Record<
     label: 'DIALOGUE',
     icon: '💬',
     help: 'Deliver the dialogue with full feeling — team names the movie!',
+  },
+  duo: {
+    label: 'CO-STARS',
+    icon: '🎞️',
+    help: 'Show the phone to everyone — name a movie starring BOTH.',
   },
 }

@@ -158,6 +158,15 @@ def parse_year(year, html):
             cast = cell_names(row[ca])[:6]
             link = tcell.find("a")
             linked = bool(link and not (link.get("class") and "new" in link.get("class")))
+            wiki = None
+            if linked:
+                href = link.get("href") or ""
+                if "/wiki/" in href:
+                    wiki = clean(
+                        urllib.parse.unquote(href.split("/wiki/")[-1])
+                        .replace("_", " ")
+                        .split("#")[0]
+                    )
             if not director and not cast:
                 continue
             movies.append({
@@ -166,6 +175,7 @@ def parse_year(year, html):
                 "director": director,
                 "cast": cast,
                 "linked": linked,
+                "w": wiki,
             })
     return movies
 
@@ -243,6 +253,16 @@ def main():
 
     def fix(name):
         return display_name(resolved.get(name, name))
+
+    # display name -> canonical article title (for lead-image lookups)
+    people_map = {}
+    for raw in people:
+        canon = resolved.get(raw, raw)
+        disp = display_name(canon)
+        if disp:
+            people_map.setdefault(disp, canon)
+    (ROOT / "data" / "people.json").write_text(
+        json.dumps(people_map, ensure_ascii=False, indent=0))
 
     for m in all_movies:
         m["cast"] = list(dict.fromkeys(fix(c) for c in m["cast"] if fix(c)))

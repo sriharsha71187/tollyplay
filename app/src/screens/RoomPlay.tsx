@@ -19,6 +19,7 @@ import {
 } from '../game/movies'
 import { supabase } from '../lib/supabase'
 import Icon from '../components/Icon'
+import Thumb from '../components/Thumb'
 
 const roleLabels: Record<LinkRole, string> = {
   hero: 'Hero',
@@ -115,6 +116,7 @@ export default function RoomPlay() {
         secretTitle: secret.title,
         secretYear: secret.year,
         secretId: secret.id,
+        secretW: secret.w,
         story: null,
         tries: {},
         correct: [],
@@ -266,7 +268,7 @@ export default function RoomPlay() {
       chainMovies.current.push(movie)
       const ns: RoomState = {
         ...s,
-        chain: [...s.chain, { title: movie.title, year: movie.year, via, playerId: a.playerId, points }],
+        chain: [...s.chain, { title: movie.title, year: movie.year, via, playerId: a.playerId, points, w: movie.w }],
         scores: { ...s.scores, [a.playerId]: (s.scores[a.playerId] ?? 0) + points },
         hint: null,
       }
@@ -866,6 +868,14 @@ export default function RoomPlay() {
               <p className="text-xs font-bold tracking-[0.15em] text-on-variant">
                 IT WAS
               </p>
+              {st.secretW && (
+                <Thumb
+                  article={st.secretW}
+                  label={st.secretTitle}
+                  fallback={false}
+                  className="mx-auto mt-3 h-40 w-28 rounded-xl border border-gold/30"
+                />
+              )}
               <p className="mt-2 font-display text-4xl text-gold-bright">
                 {st.secretTitle.toUpperCase()}
               </p>
@@ -918,7 +928,7 @@ export default function RoomPlay() {
 
   return (
     <Screen code={code}>
-      <div className="-mx-5 flex gap-2 overflow-x-auto px-5 pb-2">
+      <div className="-mx-5 flex items-center gap-2 overflow-x-auto px-5 pb-2">
         {s.chain.length === 0 && (
           <p className="text-sm text-on-variant">Open the chain with any movie.</p>
         )}
@@ -929,9 +939,17 @@ export default function RoomPlay() {
                 {l.via}
               </span>
             )}
-            <span className="rounded-2xl bg-surface-container px-3 py-2 text-sm font-bold">
+            <span className="flex items-center gap-2 rounded-2xl bg-surface-container py-1.5 pl-1.5 pr-3 text-sm font-bold">
+              {l.w && (
+                <Thumb
+                  article={l.w}
+                  label={l.title}
+                  fallback={false}
+                  className="h-10 w-7 rounded-md"
+                />
+              )}
               {l.title}
-              <span className="ml-1 font-normal text-on-variant">{l.year}</span>
+              <span className="font-normal text-on-variant">{l.year}</span>
             </span>
           </div>
         ))}

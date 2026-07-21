@@ -10,6 +10,7 @@ import {
   type Era,
 } from '../game/livingroom'
 import { loadMovies, type Movie } from '../game/movies'
+import Thumb from '../components/Thumb'
 
 interface Team {
   name: string
@@ -45,6 +46,7 @@ export default function LivingRoom() {
   const [cardIdx, setCardIdx] = useState(0)
   const [roundScore, setRoundScore] = useState(0)
   const [passes, setPasses] = useState(0)
+  const [revealed, setRevealed] = useState(false)
   const usedMovies = useRef(new Set<string>())
   const usedCards = useRef(new Set<string>())
 
@@ -89,6 +91,7 @@ export default function LivingRoom() {
     }
     if (scored) setRoundScore((s) => s + 1)
     else setPasses((p) => p + 1)
+    setRevealed(false)
     if (cardIdx + 1 >= deck.length) {
       endRound(scored ? 1 : 0)
       return
@@ -277,7 +280,38 @@ export default function LivingRoom() {
             {meta.icon} {meta.label}
           </span>
           <div className="flex flex-1 flex-col items-center justify-center gap-4 text-center">
-            {card.kind === 'trivia' || card.kind === 'dialogue' ? (
+            {card.kind === 'duo' ? (
+              <>
+                <div className="flex items-center gap-4">
+                  {card.people!.map((p) => (
+                    <div key={p} className="flex flex-col items-center gap-2">
+                      <Thumb
+                        person={p}
+                        label={p}
+                        className="h-32 w-32 rounded-2xl border border-gold/30 md:h-40 md:w-40"
+                      />
+                    </div>
+                  ))}
+                </div>
+                {revealed ? (
+                  <>
+                    <p className="font-display text-2xl text-gold-bright">
+                      {card.title.toUpperCase()}
+                    </p>
+                    <p className="text-sm text-on-variant">
+                      {card.people!.join(' & ')} · {card.year}
+                    </p>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => setRevealed(true)}
+                    className="rounded-full bg-surface-highest px-5 py-2.5 text-sm font-bold text-on-variant active:scale-95"
+                  >
+                    👁 REVEAL ANSWER
+                  </button>
+                )}
+              </>
+            ) : card.kind === 'trivia' || card.kind === 'dialogue' ? (
               <>
                 <p
                   className={`text-lg text-on-variant ${

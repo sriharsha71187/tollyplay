@@ -62,3 +62,14 @@ dialogue) costing score stars. Streaks + shareable result card.
   shipped as static JSON.
 - Song challenges reference movie titles only — no lyrics are ever stored or
   displayed (copyright + it's more fun when humans sing).
+
+## Media policy (2026-07-21)
+- Posters + actor photos come from Wikipedia lead images, fetched on-demand
+  in the browser (people.json maps names → articles), cached in localStorage.
+- **Kill-switch**: build with `VITE_MEDIA=off` and no image is ever fetched
+  or rendered (all call sites no-op; duo cards drop out of decks). REQUIRED
+  for any public / store / monetized distribution — posters are studio
+  copyright and actor likenesses carry personality rights (see Delhi HC
+  injunctions); family-scope use is the only place media stays on.
+- Family build (default): media on. Public build command:
+  `VITE_MEDIA=off DEPLOY_BASE=/tollyplay/ npm run build`.

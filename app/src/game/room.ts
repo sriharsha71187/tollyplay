@@ -11,6 +11,8 @@ export interface NetLink {
   via: string | null
   playerId: string
   points: number
+  /** Wikipedia article for poster lookups (media builds only). */
+  w?: string | null
 }
 
 export type RoomMode = 'chain' | 'story'
@@ -21,6 +23,7 @@ export interface StoryRound {
   secretTitle: string
   secretYear: number
   secretId: string
+  secretW?: string | null
   story: string | null
   /** playerId -> tries used */
   tries: Record<string, number>
