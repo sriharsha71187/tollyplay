@@ -6,6 +6,7 @@ import {
   cardPool,
   kindMeta,
   type Card,
+  type Difficulty,
   type Era,
 } from '../game/livingroom'
 import { loadMovies, type Movie } from '../game/movies'
@@ -34,6 +35,7 @@ export default function LivingRoom() {
     { name: 'Team B', score: 0 },
   ])
   const [era, setEra] = useState<Era>('all')
+  const [diff, setDiff] = useState<Difficulty>('classic')
   const [roundSeconds, setRoundSeconds] = useState(60)
   const [roundsPerTeam, setRoundsPerTeam] = useState(3)
   const [teamIdx, setTeamIdx] = useState(0)
@@ -51,8 +53,8 @@ export default function LivingRoom() {
   }, [])
 
   const pool = useMemo(
-    () => (movies ? cardPool(movies, era) : []),
-    [movies, era],
+    () => (movies ? cardPool(movies, era, diff) : []),
+    [movies, era, diff],
   )
 
   useEffect(() => {
@@ -70,7 +72,7 @@ export default function LivingRoom() {
     const fresh = pool.filter(
       (m) => !usedMovies.current.has(`${m.title}|${m.year}`),
     )
-    const cards = buildDeck(fresh, 40, era, Math.random, usedCards.current)
+    const cards = buildDeck(fresh, 40, era, diff, Math.random, usedCards.current)
     setDeck(cards)
     setCardIdx(0)
     setRoundScore(0)
@@ -147,7 +149,28 @@ export default function LivingRoom() {
           </section>
 
           <section className="rounded-3xl bg-surface-container p-5">
-            <SectionLabel>MOVIE ERA</SectionLabel>
+            <SectionLabel>DIFFICULTY</SectionLabel>
+            <div className="mt-3 flex gap-2">
+              {(
+                [
+                  ['easy', 'Easy'],
+                  ['classic', 'Classic'],
+                  ['expert', 'Expert'],
+                ] as [Difficulty, string][]
+              ).map(([k, label]) => (
+                <Pill key={k} active={diff === k} onClick={() => setDiff(k)}>
+                  {label}
+                </Pill>
+              ))}
+            </div>
+            <p className="mt-2 text-xs text-on-variant">
+              {diff === 'easy' && 'Well-known films from 1985 onwards.'}
+              {diff === 'classic' && 'All famous films, every era.'}
+              {diff === 'expert' && 'Everything — deep cuts included. True fans only.'}
+            </p>
+            <SectionLabel>
+              <span className="mt-4 block">MOVIE ERA</span>
+            </SectionLabel>
             <div className="mt-3 flex flex-wrap gap-2">
               {eras.map((e) => (
                 <Pill
@@ -160,7 +183,7 @@ export default function LivingRoom() {
               ))}
             </div>
             <p className="mt-2 text-xs text-on-variant">
-              {cardPool(movies, era).length} famous films in this pool
+              {pool.length} films in this pool
             </p>
           </section>
 

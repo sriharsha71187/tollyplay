@@ -1,6 +1,6 @@
 import type { Movie } from './movies'
 import { dialogues } from '../content/dialogues'
-import { trivia } from '../content/trivia'
+import { trivia, triviaHard } from '../content/trivia'
 
 export type ChallengeKind = 'describe' | 'sing' | 'act' | 'trivia' | 'dialogue'
 
@@ -31,11 +31,17 @@ function inEra(year: number, era: Era): boolean {
   return year >= lo && year <= hi
 }
 
-/** Famous-biased pool: films with their own Wikipedia article and real credits. */
-export function cardPool(movies: Movie[], era: Era): Movie[] {
-  return movies.filter(
-    (m) => m.linked && m.cast.length >= 2 && m.director && inEra(m.year, era),
-  )
+export type Difficulty = 'easy' | 'classic' | 'expert'
+
+/** Pool depth by difficulty: easy = modern famous, classic = all famous,
+ *  expert = everything including deep cuts without their own wiki page. */
+export function cardPool(movies: Movie[], era: Era, diff: Difficulty): Movie[] {
+  return movies.filter((m) => {
+    if (!m.director || !inEra(m.year, era)) return false
+    if (diff === 'easy') return m.linked && m.cast.length >= 2 && m.year >= 1985
+    if (diff === 'classic') return m.linked && m.cast.length >= 2
+    return m.cast.length >= 1
+  })
 }
 
 const movieKinds: ChallengeKind[] = [
@@ -90,6 +96,7 @@ export function buildDeck(
   pool: Movie[],
   count: number,
   era: Era,
+  diff: Difficulty,
   rand: () => number,
   used?: Set<string>,
 ): Card[] {
@@ -97,6 +104,7 @@ export function buildDeck(
     .slice(0, count)
     .map((m) => movieCard(m, rand))
     .filter((c) => !used?.has(cardKey(c)))
+  const triviaSet = diff === 'easy' ? trivia : [...trivia, ...triviaHard]
   const curated: Card[] = shuffle(
     [
       ...dialogues
@@ -104,7 +112,7 @@ export function buildDeck(
         .map<Card>((d) => ({
           kind: 'dialogue', title: d.movie, year: d.year, banned: [], clue: d.text,
         })),
-      ...trivia.map<Card>((t) => ({
+      ...triviaSet.map<Card>((t) => ({
         kind: 'trivia', title: t.answer, banned: [], clue: t.q,
       })),
     ].filter((c) => !used?.has(cardKey(c))),

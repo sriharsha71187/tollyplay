@@ -1,6 +1,6 @@
 import { dialogues } from '../content/dialogues'
-import { kathas } from '../content/kathas'
-import { trivia } from '../content/trivia'
+import { kathas, kathasHard } from '../content/kathas'
+import { trivia, triviaHard } from '../content/trivia'
 
 export interface DailyQuestion {
   kind: 'katha' | 'dialogue' | 'trivia'
@@ -36,39 +36,38 @@ function pick<T>(arr: T[], n: number, rand: () => number, skip = 0): T[] {
 }
 
 const moviePool = [
-  ...new Set([...kathas.map((k) => k.movie), ...dialogues.map((d) => d.movie)]),
+  ...new Map(
+    [...kathas, ...kathasHard, ...dialogues].map((x) => [
+      x.movie,
+      { movie: x.movie, year: x.year },
+    ]),
+  ).values(),
 ]
 
-function movieOptions(answer: string, rand: () => number): string[] {
-  const wrong = pick(moviePool.filter((m) => m !== answer), 3, rand)
+/** Distractors from the same era when possible — no more decade giveaways. */
+function movieOptions(answer: string, year: number, rand: () => number): string[] {
+  const near = moviePool.filter(
+    (m) => m.movie !== answer && Math.abs(m.year - year) <= 12,
+  )
+  const from = near.length >= 3 ? near : moviePool.filter((m) => m.movie !== answer)
+  const wrong = pick(from, 3, rand).map((m) => m.movie)
   return pick([answer, ...wrong], 4, rand)
 }
 
-/** The same five questions for everyone on a given day. */
+/** The same five questions for everyone on a given day: 2 easy, 3 harder. */
 export function dailySet(day: number): DailyQuestion[] {
   const rand = mulberry32(day * 2654435761)
   const k = kathas[day % kathas.length]
-  const ds = pick(dialogues, 2, rand)
-  const ts = pick(trivia, 2, rand)
+  const kh = kathasHard[day % kathasHard.length]
+  const [d] = pick(dialogues, 1, rand)
+  const [t] = pick(trivia, 1, rand)
+  const [th] = pick(triviaHard, 1, rand)
   return [
-    {
-      kind: 'katha',
-      prompt: k.story,
-      options: movieOptions(k.movie, rand),
-      answer: k.movie,
-    },
-    ...ds.map<DailyQuestion>((d) => ({
-      kind: 'dialogue',
-      prompt: `“${d.text}”`,
-      options: movieOptions(d.movie, rand),
-      answer: d.movie,
-    })),
-    ...ts.map<DailyQuestion>((t) => ({
-      kind: 'trivia',
-      prompt: t.q,
-      options: pick([t.answer, ...t.wrong], 4, rand),
-      answer: t.answer,
-    })),
+    { kind: 'dialogue', prompt: `“${d.text}”`, options: movieOptions(d.movie, d.year, rand), answer: d.movie },
+    { kind: 'katha', prompt: k.story, options: movieOptions(k.movie, k.year, rand), answer: k.movie },
+    { kind: 'trivia', prompt: t.q, options: pick([t.answer, ...t.wrong], 4, rand), answer: t.answer },
+    { kind: 'katha', prompt: kh.story, options: movieOptions(kh.movie, kh.year, rand), answer: kh.movie },
+    { kind: 'trivia', prompt: th.q, options: pick([th.answer, ...th.wrong], 4, rand), answer: th.answer },
   ]
 }
 

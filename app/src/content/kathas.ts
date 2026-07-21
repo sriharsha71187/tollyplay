@@ -25,3 +25,17 @@ export const kathas: Katha[] = [
   { story: 'An heir goes undercover as a driver to bring his estranged aunt home.', movie: 'Attarintiki Daredi', year: 2013 },
   { story: 'Four freshers, four years, one campus — friendship graduates into life.', movie: 'Happy Days', year: 2007 },
 ]
+
+/** Harder tier — classics and deeper cuts. */
+export const kathasHard: Katha[] = [
+  { story: 'A time machine drops two lovers into the court of a 16th-century emperor.', movie: 'Aditya 369', year: 1991 },
+  { story: 'An innocent soul ties a knot to a widow at a temple — without knowing what marriage means.', movie: 'Swathi Muthyam', year: 1986 },
+  { story: "A genius dancer drowns his art in drink, then secretly trains his lost love's daughter.", movie: 'Sagara Sangamam', year: 1983 },
+  { story: 'Two lovers, both told they will die soon, decide to out-laugh death together.', movie: 'Geethanjali', year: 1989 },
+  { story: 'A witness to a heist and a cheerful thief go on the run with everyone chasing the money.', movie: 'Kshana Kshanam', year: 1991 },
+  { story: 'A jobless quartet signs up for a hijack to get rich quick.', movie: 'Aithe', year: 2003 },
+  { story: "A sculptor's beloved is summoned to the palace, priced out of his reach.", movie: 'Malliswari', year: 1951 },
+  { story: "Two strangers pretend to be married — it's the only way either gets the job.", movie: 'Missamma', year: 1955 },
+  { story: 'A student answers the campus mafia with a bicycle chain.', movie: 'Siva', year: 1989 },
+  { story: 'A quiet singer next door makes a bride call off her own wedding.', movie: 'Anand', year: 2004 },
+]
