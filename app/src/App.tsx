@@ -5,6 +5,7 @@ import Daily from './screens/Daily'
 import Rooms from './screens/Rooms'
 import Profile from './screens/Profile'
 import ChainGame from './screens/ChainGame'
+import LivingRoom from './screens/LivingRoom'
 
 export default function App() {
   return (
@@ -15,6 +16,8 @@ export default function App() {
         <Route path="/rooms" element={<Rooms />} />
         <Route path="/profile" element={<Profile />} />
       </Route>
+      <Route path="/play/living" element={<LivingRoom />} />
+      {/* dev preview of the chain turn engine; ships inside party rooms */}
       <Route path="/play/chain" element={<ChainGame />} />
     </Routes>
   )

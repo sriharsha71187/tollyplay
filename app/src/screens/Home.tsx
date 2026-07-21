@@ -31,38 +31,34 @@ export default function Home() {
         </span>
       </Link>
 
-      {/* Mode cards */}
-      <div className="grid grid-cols-2 gap-4">
-        <Link
-          to="/play/chain"
-          className="rounded-3xl bg-surface-container p-5 active:scale-95"
-        >
-          <span className="text-3xl">🎬</span>
-          <p className="mt-3 font-display text-xl">CHAIN</p>
-          <p className="mt-1 text-xs text-on-variant">
-            Link movies through stars &amp; directors
-          </p>
-        </Link>
-        <Link
-          to="/daily"
-          className="rounded-3xl bg-surface-container p-5 active:scale-95"
-        >
-          <span className="text-3xl">📖</span>
-          <p className="mt-3 font-display text-xl">KATHA</p>
-          <p className="mt-1 text-xs text-on-variant">
-            Guess the movie from a sneaky plot
-          </p>
-        </Link>
-      </div>
-
+      {/* Play modes */}
       <Link
         to="/rooms"
-        className="rounded-full bg-gold py-4 text-center font-display text-lg tracking-wider text-on-gold active:scale-95"
+        className="rounded-3xl bg-surface-container p-5 active:scale-[0.98]"
       >
-        CREATE PARTY ROOM
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="font-display text-xl">🎬 PARTY ROOM</p>
+            <p className="mt-1 text-xs text-on-variant">
+              Friends anywhere — Chain &amp; Story mode, live
+            </p>
+          </div>
+          <span className="text-2xl text-on-variant">›</span>
+        </div>
       </Link>
-      <Link to="/rooms" className="-mt-3 text-center text-sm text-on-variant underline">
-        Join with a code
+      <Link
+        to="/play/living"
+        className="rounded-3xl bg-surface-container p-5 active:scale-[0.98]"
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="font-display text-xl">🛋️ LIVING ROOM</p>
+            <p className="mt-1 text-xs text-on-variant">
+              Same room, teams — describe, sing, act, trivia
+            </p>
+          </div>
+          <span className="text-2xl text-on-variant">›</span>
+        </div>
       </Link>
     </div>
   )
