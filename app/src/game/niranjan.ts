@@ -3,6 +3,18 @@ import { dialogues } from '../content/dialogues'
 import { kathas, kathasHard } from '../content/kathas'
 import { trivia, triviaHard } from '../content/trivia'
 import { hasPhoto, mediaEnabled } from '../lib/media'
+import genders from '../data/genders.json'
+
+const GENDER = genders as Record<string, 'm' | 'f'>
+const genderOf = (name?: string): 'm' | 'f' | undefined =>
+  name ? GENDER[name] : undefined
+
+/** A distractor for `answer` is fine unless we KNOW it's the opposite gender. */
+const notOppositeGender = (answer: string) => (n: string) => {
+  const g = genderOf(answer)
+  const gn = genderOf(n)
+  return !(g && gn && gn !== g)
+}
 
 /** Ek Niranjan — endless trivia. Levels ramp every 6 questions. */
 
@@ -53,6 +65,55 @@ function distinct(base: string[], answer: string, n: number, rand: () => number)
 
 function options4(answer: string, wrong: string[], rand: () => number) {
   return shuffle([answer, ...wrong.slice(0, 3)], rand)
+}
+
+/**
+ * Per-dataset indexes for building believable distractors:
+ *  - coLead: person -> the lead partners they've shared top billing with
+ *    (a hero's set is his heroines — real, same-era, opposite gender).
+ *  - years:  person -> the span of years they were on screen (era matching).
+ *  - byGender: recognizable (linked-film) leads split by gender.
+ */
+interface MovieMeta {
+  coLead: Map<string, Set<string>>
+  years: Map<string, { lo: number; hi: number }>
+  byGender: { m: string[]; f: string[] }
+}
+let metaCache: { movies: Movie[]; meta: MovieMeta } | null = null
+
+function movieMeta(movies: Movie[]): MovieMeta {
+  if (metaCache && metaCache.movies === movies) return metaCache.meta
+  const coLead = new Map<string, Set<string>>()
+  const years = new Map<string, { lo: number; hi: number }>()
+  const famous = { m: new Set<string>(), f: new Set<string>() }
+  const link = (a: string, b: string) => {
+    if (!coLead.has(a)) coLead.set(a, new Set())
+    coLead.get(a)!.add(b)
+  }
+  for (const mv of movies) {
+    const leads = mv.cast.slice(0, 2).filter(Boolean)
+    for (const p of leads) {
+      const y = years.get(p)
+      if (!y) years.set(p, { lo: mv.year, hi: mv.year })
+      else {
+        if (mv.year < y.lo) y.lo = mv.year
+        if (mv.year > y.hi) y.hi = mv.year
+      }
+      const g = genderOf(p)
+      if (g && mv.linked) famous[g].add(p)
+    }
+    if (leads.length >= 2) {
+      link(leads[0], leads[1])
+      link(leads[1], leads[0])
+    }
+  }
+  const meta: MovieMeta = {
+    coLead,
+    years,
+    byGender: { m: [...famous.m], f: [...famous.f] },
+  }
+  metaCache = { movies, meta }
+  return meta
 }
 
 /**
@@ -119,7 +180,8 @@ export function nextQuestion(
       if (wrong.length < 3) continue
       built = { kindLabel: '🎬 DIRECTOR', prompt: `Who directed ${m.title} (${m.year})?`, options: options4(m.director, wrong, rand), answer: m.director, points, tag }
     } else if (kind === 'hero' && m.cast[0]) {
-      const wrong = distinct(p.map((x) => x.cast[0]).filter(Boolean), m.cast[0], 3, rand)
+      const src = p.map((x) => x.cast[0]).filter(Boolean).filter(notOppositeGender(m.cast[0]))
+      const wrong = distinct(src, m.cast[0], 3, rand)
       if (wrong.length < 3) continue
       built = { kindLabel: '⭐ LEAD', prompt: `Who played the lead in ${m.title} (${m.year})?`, options: options4(m.cast[0], wrong, rand), answer: m.cast[0], points, tag }
     } else if (kind === 'year') {
@@ -128,9 +190,39 @@ export function nextQuestion(
       const wrong = [String(y + offs[0]), String(y + offs[1]), String(y + offs[2])]
       built = { kindLabel: '📅 YEAR', prompt: `Which year did ${m.title} release?`, options: options4(String(y), wrong, rand), answer: String(y), points, tag }
     } else if (kind === 'costar' && m.cast.length >= 2) {
-      const wrong = distinct(p.map((x) => x.cast[1]).filter(Boolean), m.cast[1], 3, rand)
+      const hero = m.cast[0]
+      const ans = m.cast[1]
+      const gAns = genderOf(ans)
+      const gHero = genderOf(hero)
+      // Only a genuine, opposite-gender hero–heroine pairing is a fair question:
+      // asking who starred "opposite" the hero means his heroine.
+      if (!gAns || !gHero || gAns === gHero) continue
+      const meta = movieMeta(movies)
+      const inMovie = new Set(m.cast)
+      // A usable distractor is the answer's gender, not in this film, not the
+      // answer — so an option is never the wrong gender or a co-star giveaway.
+      const ok = (n: string) =>
+        !!n && n !== ans && !inMovie.has(n) && genderOf(n) === gAns
+      const near = (n: string) => {
+        const y = meta.years.get(n)
+        return !!y && y.hi >= m.year - 10 && y.lo <= m.year + 10
+      }
+      // Priority: the hero's OTHER leading ladies (real, contemporary), then any
+      // same-gender star active in the same era, then a same-gender fallback.
+      const heroLadies = [...(meta.coLead.get(hero) ?? [])].filter(ok)
+      const contemporaries = meta.byGender[gAns].filter((n) => ok(n) && near(n))
+      const anySame = meta.byGender[gAns].filter(ok)
+      const wrong: string[] = []
+      for (const n of [
+        ...shuffle(heroLadies, rand),
+        ...shuffle(contemporaries, rand),
+        ...shuffle(anySame, rand),
+      ]) {
+        if (!wrong.includes(n)) wrong.push(n)
+        if (wrong.length >= 3) break
+      }
       if (wrong.length < 3) continue
-      built = { kindLabel: '🎭 CO-STAR', prompt: `Who starred opposite ${m.cast[0]} in ${m.title} (${m.year})?`, options: options4(m.cast[1], wrong, rand), answer: m.cast[1], points, tag }
+      built = { kindLabel: '🎭 CO-STAR', prompt: `Who starred opposite ${hero} in ${m.title} (${m.year})?`, options: options4(ans, wrong, rand), answer: ans, points, tag }
     } else if (kind === 'filmography') {
       const others = p.filter((x) => x.director !== m.director)
       const wrong = distinct(others.map((x) => x.title), m.title, 3, rand)
@@ -150,7 +242,8 @@ export function nextQuestion(
         photoPeople: [m.cast[0], m.cast[1]],
       }
     } else if (kind === 'who-photo' && m.cast[0] && m.linked && hasPhoto(m.cast[0])) {
-      const wrong = distinct(p.map((x) => x.cast[0]).filter(Boolean), m.cast[0], 3, rand)
+      const src = p.map((x) => x.cast[0]).filter(Boolean).filter(notOppositeGender(m.cast[0]))
+      const wrong = distinct(src, m.cast[0], 3, rand)
       if (wrong.length < 3) continue
       built = {
         kindLabel: '📸 WHO IS THIS',
