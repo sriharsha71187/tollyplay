@@ -561,6 +561,34 @@ export default function RoomPlay() {
               }`}
             >
               <p className="text-xs font-bold tracking-[0.1em] text-on-variant">
+                LIVES
+              </p>
+              <div className="mt-3 flex gap-2">
+                {(
+                  [
+                    [1, 'Sudden death'],
+                    [2, 'One second chance'],
+                  ] as const
+                ).map(([n, label]) => (
+                  <button
+                    key={n}
+                    onClick={() =>
+                      push({
+                        ...state,
+                        settings: { ...state.settings, strikesToEliminate: n },
+                      })
+                    }
+                    className={`rounded-full px-4 py-2 text-sm font-bold ${
+                      state.settings.strikesToEliminate === n
+                        ? 'bg-gold text-on-gold'
+                        : 'bg-surface-high text-on-variant'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+              <p className="mt-4 text-xs font-bold tracking-[0.1em] text-on-variant">
                 VALID LINKS
               </p>
               <div className="mt-3 flex gap-2">
@@ -639,7 +667,9 @@ export default function RoomPlay() {
   // ---------- game over ----------
   if (state.phase === 'over') {
     const ranked = [...state.players].sort(
-      (a, b) => (state.scores[b.id] ?? 0) - (state.scores[a.id] ?? 0),
+      (a, b) =>
+        (state.scores[b.id] ?? 0) - (state.scores[a.id] ?? 0) ||
+        (state.strikes[a.id] ?? 0) - (state.strikes[b.id] ?? 0),
     )
     return (
       <Screen code={code}>

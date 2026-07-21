@@ -273,7 +273,9 @@ export default function ChainGame() {
   }
 
   if (phase === 'over') {
-    const ranked = [...players].sort((a, b) => b.score - a.score)
+    const ranked = [...players].sort(
+      (a, b) => b.score - a.score || a.strikes - b.strikes,
+    )
     return (
       <Screen>
         <Header />

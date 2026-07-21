@@ -12,7 +12,7 @@ export const defaultSettings: ChainSettings = {
   roles: ['hero', 'heroine', 'director'],
   personLimit: 3,
   turnSeconds: 30,
-  strikesToEliminate: 2,
+  strikesToEliminate: 1, // sudden death — miss once and you're out
 }
 
 export interface ChainLink {
