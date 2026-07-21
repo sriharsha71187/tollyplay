@@ -61,8 +61,8 @@ async function fetchPage(title, attempt = 0) {
   const res = await fetch(`${API}?${params}`, {
     headers: { 'User-Agent': 'TollyPlay/1.0 (photo overrides; family app)' },
   })
-  if (res.status === 429 && attempt < 6) {
-    await sleep(3000 * (attempt + 1))
+  if (res.status === 429 && attempt < 8) {
+    await sleep(8000 * (attempt + 1))
     return fetchPage(title, attempt + 1)
   }
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
@@ -89,7 +89,7 @@ for (const [name, candidates] of Object.entries(OVERRIDES)) {
       const thumb = verify(await fetchPage(cand))
       if (thumb) { result[name] = thumb; added++; done = true; console.log(`✓ ${name} -> ${cand}`); break }
     } catch (e) { console.log(`  ${name} (${cand}): ${e.message}`) }
-    await sleep(1200)
+    await sleep(5000)
   }
   if (!done) failed.push(name)
 }
