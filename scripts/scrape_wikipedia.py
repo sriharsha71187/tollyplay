@@ -224,10 +224,17 @@ def resolve_redirects(names):
     return cache
 
 
+CREDIT_JUNK = re.compile(
+    r"\s*(Story|Dialogues?|Screenplay|Written|Lyrics|Producer|Banner|Presents)\b\s*[:/]?.*$",
+    re.I,
+)
+
+
 def display_name(canonical):
-    """Strip parenthetical disambiguators for display: 'Tarun (Telugu
-    actor)' -> 'Tarun'."""
-    return clean(re.sub(r"\s*\([^)]*\)\s*$", "", canonical))
+    """Strip parenthetical disambiguators and stray credit text:
+    'Tarun (Telugu actor)' -> 'Tarun'; '<name> Story: X' -> '<name>'."""
+    s = clean(re.sub(r"\s*\([^)]*\)\s*$", "", canonical))
+    return CREDIT_JUNK.sub("", s).strip(" ,:")
 
 
 def main():
