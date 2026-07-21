@@ -1,7 +1,7 @@
 import type { Movie } from './movies'
 import { dialogues } from '../content/dialogues'
 import { trivia, triviaHard } from '../content/trivia'
-import { mediaEnabled } from '../lib/media'
+import { hasPhoto, mediaEnabled } from '../lib/media'
 
 export type ChallengeKind =
   | 'describe'
@@ -71,8 +71,11 @@ function bannedWords(m: Movie): string[] {
 }
 
 function movieCard(m: Movie, rand: () => number, media: boolean): Card {
-  const kinds =
-    media && m.cast.length >= 2 ? movieKindsWithMedia : movieKinds
+  // A duo card is only offered when BOTH co-stars have a verified photo —
+  // otherwise the card would show a wrong or missing face.
+  const canDuo =
+    media && m.cast.length >= 2 && hasPhoto(m.cast[0]) && hasPhoto(m.cast[1])
+  const kinds = canDuo ? movieKindsWithMedia : movieKinds
   const kind = kinds[Math.floor(rand() * kinds.length)]
   return {
     kind,
@@ -140,38 +143,46 @@ export function buildDeck(
   return deck.slice(0, count)
 }
 
+// `ask` is the bold headline (what the clue-giver must DO); `help` is a small
+// secondary hint. Kept separate so the UI can make the ask big and bold.
 export const kindMeta: Record<
   ChallengeKind,
-  { label: string; icon: string; help: string }
+  { label: string; icon: string; ask: string; help: string }
 > = {
   describe: {
     label: 'DESCRIBE',
     icon: '🗣️',
-    help: 'Tell the story — without the banned words!',
+    ask: 'Describe the plot',
+    help: 'No banned words below',
   },
   sing: {
     label: 'SING',
     icon: '🎵',
-    help: 'Hum or sing any song from this movie. No title words!',
+    ask: 'Sing a song from the film',
+    help: 'No words from the title',
   },
   act: {
     label: 'ACT',
     icon: '🎭',
-    help: 'Dumb charades — not a single word!',
+    ask: 'Act it out',
+    help: 'Not a single word',
   },
   trivia: {
     label: 'TRIVIA',
     icon: '🧠',
-    help: 'Read the clue aloud — team shouts the answer.',
+    ask: 'Read the clue aloud',
+    help: 'Team shouts the movie',
   },
   dialogue: {
     label: 'DIALOGUE',
     icon: '💬',
-    help: 'Deliver the dialogue with full feeling — team names the movie!',
+    ask: 'Perform this dialogue',
+    help: 'Team names the movie',
   },
   duo: {
     label: 'CO-STARS',
     icon: '🎞️',
-    help: 'Show the phone to everyone — name a movie starring BOTH.',
+    ask: 'Name a movie starring BOTH',
+    help: 'Show everyone the photos',
   },
 }

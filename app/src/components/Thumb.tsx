@@ -19,11 +19,13 @@ export default function Thumb({
   fallback?: boolean
 }) {
   const [url, setUrl] = useState<string>('')
+  const [broken, setBroken] = useState(false)
   const key = article ?? person ?? ''
 
   useEffect(() => {
     let dead = false
     setUrl('')
+    setBroken(false)
     if (!mediaEnabled || !key) return
     const p = article ? thumbForArticle(article) : thumbForPerson(person!)
     p.then((u) => {
@@ -35,7 +37,7 @@ export default function Thumb({
   }, [article, person, key])
 
   if (!mediaEnabled) return null
-  if (!url) {
+  if (!url || broken) {
     if (!fallback) return null
     return (
       <div
@@ -50,6 +52,7 @@ export default function Thumb({
       src={url}
       alt={label ?? key}
       loading="lazy"
+      onError={() => setBroken(true)}
       className={`object-cover ${className}`}
     />
   )

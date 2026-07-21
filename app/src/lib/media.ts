@@ -6,17 +6,16 @@
 export const mediaEnabled =
   ((import.meta.env?.VITE_MEDIA as string | undefined) ?? 'on') !== 'off'
 
-let peopleMap: Record<string, string> | null = null
+// Verified actor photos: name -> Wikipedia lead-image URL, built offline by
+// scripts/verify_photos.mjs. Only names whose article was confirmed to be a
+// real film person WITH a lead image are here — so we never surface a wrong
+// article (e.g. a deity painting for "Krishna") or an empty result at runtime.
+import photos from '../data/photos.json'
+const PHOTOS = photos as Record<string, string>
 
-async function loadPeople(): Promise<Record<string, string>> {
-  if (peopleMap) return peopleMap
-  try {
-    const res = await fetch(import.meta.env.BASE_URL + 'people.json')
-    peopleMap = (await res.json()) as Record<string, string>
-  } catch {
-    peopleMap = {}
-  }
-  return peopleMap
+/** True when we have a verified photo for this person. Gates photo cards. */
+export function hasPhoto(name?: string | null): boolean {
+  return mediaEnabled && !!name && name in PHOTOS
 }
 
 const CACHE_KEY = 'tp-thumbs-v1'
@@ -63,9 +62,8 @@ export async function thumbForArticle(article: string): Promise<string> {
   return url
 }
 
-/** Thumbnail for a person by display name (via the people map). */
+/** Verified thumbnail for a person by display name ('' if none). */
 export async function thumbForPerson(name: string): Promise<string> {
   if (!mediaEnabled) return ''
-  const map = await loadPeople()
-  return thumbForArticle(map[name] ?? name)
+  return PHOTOS[name] ?? ''
 }

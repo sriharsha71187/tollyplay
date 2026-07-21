@@ -2,7 +2,7 @@ import type { Movie } from './movies'
 import { dialogues } from '../content/dialogues'
 import { kathas, kathasHard } from '../content/kathas'
 import { trivia, triviaHard } from '../content/trivia'
-import { mediaEnabled } from '../lib/media'
+import { hasPhoto, mediaEnabled } from '../lib/media'
 
 /** Ek Niranjan — endless trivia. Levels ramp every 6 questions. */
 
@@ -136,7 +136,7 @@ export function nextQuestion(
       const wrong = distinct(others.map((x) => x.title), m.title, 3, rand)
       if (wrong.length < 3) continue
       built = { kindLabel: '🎬 FILMOGRAPHY', prompt: `Which of these was directed by ${m.director}?`, options: options4(m.title, wrong, rand), answer: m.title, points, tag }
-    } else if (kind === 'duo-photo' && m.cast.length >= 2 && m.linked) {
+    } else if (kind === 'duo-photo' && m.cast.length >= 2 && m.linked && hasPhoto(m.cast[0]) && hasPhoto(m.cast[1])) {
       const others = p.filter((x) => x.id !== m.id)
       const wrong = distinct(others.map((x) => x.title), m.title, 3, rand)
       if (wrong.length < 3) continue
@@ -149,7 +149,7 @@ export function nextQuestion(
         tag,
         photoPeople: [m.cast[0], m.cast[1]],
       }
-    } else if (kind === 'who-photo' && m.cast[0] && m.linked) {
+    } else if (kind === 'who-photo' && m.cast[0] && m.linked && hasPhoto(m.cast[0])) {
       const wrong = distinct(p.map((x) => x.cast[0]).filter(Boolean), m.cast[0], 3, rand)
       if (wrong.length < 3) continue
       built = {

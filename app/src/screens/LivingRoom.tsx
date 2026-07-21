@@ -279,75 +279,81 @@ export default function LivingRoom() {
           <span className="self-center rounded-full bg-surface-highest px-4 py-1.5 text-sm font-bold tracking-wider">
             {meta.icon} {meta.label}
           </span>
-          <div className="flex flex-1 flex-col items-center justify-center gap-4 text-center">
+          <div className="flex flex-1 flex-col items-center justify-center gap-5 text-center">
             {card.kind === 'duo' ? (
+              // Everyone sees the photos; the ask leads, the answer hides.
               <>
+                <p className="font-display text-3xl leading-tight text-gold-bright">
+                  {meta.ask}
+                </p>
                 <div className="flex items-center gap-4">
                   {card.people!.map((p) => (
-                    <div key={p} className="flex flex-col items-center gap-2">
-                      <Thumb
-                        person={p}
-                        label={p}
-                        className="h-32 w-32 rounded-2xl border border-gold/30 md:h-40 md:w-40"
-                      />
-                    </div>
+                    <Thumb
+                      key={p}
+                      person={p}
+                      label={p}
+                      className="h-32 w-32 rounded-2xl border border-gold/30 md:h-40 md:w-40"
+                    />
                   ))}
                 </div>
                 {revealed ? (
-                  <>
-                    <p className="font-display text-2xl text-gold-bright">
-                      {card.title.toUpperCase()}
-                    </p>
-                    <p className="text-sm text-on-variant">
-                      {card.people!.join(' & ')} · {card.year}
-                    </p>
-                  </>
+                  <p className="text-sm text-on-variant">
+                    <span className="text-gold">{card.title}</span> · {card.year}
+                  </p>
                 ) : (
                   <button
                     onClick={() => setRevealed(true)}
-                    className="rounded-full bg-surface-highest px-5 py-2.5 text-sm font-bold text-on-variant active:scale-95"
+                    className="text-xs font-bold uppercase tracking-wider text-on-variant/60 underline underline-offset-4 active:scale-95"
                   >
-                    👁 REVEAL ANSWER
+                    peek at answer
                   </button>
                 )}
               </>
             ) : card.kind === 'trivia' || card.kind === 'dialogue' ? (
+              // The clue-giver reads the clue; the answer stays subdued.
               <>
+                <p className="font-display text-2xl leading-tight text-gold-bright">
+                  {meta.ask}
+                </p>
                 <p
-                  className={`text-lg text-on-variant ${
+                  className={`text-xl leading-relaxed text-on-surface ${
                     card.kind === 'dialogue' ? 'italic' : ''
                   }`}
                 >
                   {card.kind === 'dialogue' ? `“${card.clue}”` : card.clue}
                 </p>
-                <p className="font-display text-2xl text-gold-bright">
-                  {card.title.toUpperCase()}
+                <p className="text-xs uppercase tracking-wider text-on-variant/70">
+                  answer · {card.title}
                 </p>
               </>
             ) : (
+              // Describe / sing / act — the movie IS the thing to perform.
               <>
-                <p className="font-display text-3xl leading-snug">
+                <p className="font-display text-lg uppercase tracking-wider text-gold-bright">
+                  {meta.ask}
+                </p>
+                <p className="font-display text-4xl leading-snug">
                   {card.title.toUpperCase()}
                 </p>
                 <p className="text-sm text-on-variant">{card.year}</p>
+                {card.kind === 'describe' && card.banned.length > 0 && (
+                  <div className="mt-1">
+                    <p className="text-xs font-bold tracking-[0.1em] text-urgent-soft">
+                      BANNED
+                    </p>
+                    <div className="mt-2 flex flex-wrap justify-center gap-2">
+                      {card.banned.map((w) => (
+                        <span
+                          key={w}
+                          className="rounded-full bg-urgent-deep/50 px-3 py-1 text-sm text-urgent-soft"
+                        >
+                          {w}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </>
-            )}
-            {card.kind === 'describe' && card.banned.length > 0 && (
-              <div className="mt-2">
-                <p className="text-xs font-bold tracking-[0.1em] text-urgent-soft">
-                  BANNED
-                </p>
-                <div className="mt-2 flex flex-wrap justify-center gap-2">
-                  {card.banned.map((w) => (
-                    <span
-                      key={w}
-                      className="rounded-full bg-urgent-deep/50 px-3 py-1 text-sm text-urgent-soft"
-                    >
-                      {w}
-                    </span>
-                  ))}
-                </div>
-              </div>
             )}
             <p className="text-xs text-on-variant">{meta.help}</p>
           </div>
