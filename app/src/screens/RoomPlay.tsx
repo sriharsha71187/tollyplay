@@ -29,7 +29,7 @@ const me = playerId()
 export default function RoomPlay() {
   const { code = '' } = useParams()
   const [params] = useSearchParams()
-  const isHost = params.get('host') === '1'
+  const wantsHost = params.get('host') === '1'
 
   const [movies, setMovies] = useState<Movie[] | null>(null)
   const [state, setState] = useState<RoomState | null>(null)
@@ -38,8 +38,11 @@ export default function RoomPlay() {
   const [query, setQuery] = useState('')
   const [now, setNow] = useState(Date.now())
   const [copied, setCopied] = useState(false)
+  /** Set once we've listened long enough to know no host is already running the room. */
+  const [claimHost, setClaimHost] = useState(false)
 
   const chRef = useRef<RealtimeChannel | null>(null)
+  const stateRef = useRef<RoomState | null>(null)
   // Host-only referee state
   const hostState = useRef<RoomState | null>(null)
   const usedMovies = useRef(new Set<string>())
@@ -64,6 +67,7 @@ export default function RoomPlay() {
   // ---- host: broadcast state and (re)arm the turn timer
   function push(s: RoomState) {
     hostState.current = s
+    stateRef.current = s
     setState(s)
     chRef.current?.send({ type: 'broadcast', event: 'state', payload: s })
     if (timerRef.current) clearTimeout(timerRef.current)
@@ -187,7 +191,24 @@ export default function RoomPlay() {
       setPresent(players)
     })
     ch.on('broadcast', { event: 'state' }, ({ payload }) => {
-      setState(payload as RoomState)
+      const p = payload as RoomState
+      // Two claimed hosts (e.g. room URL with ?host=1 opened twice):
+      // deterministic tie-break — smaller player id keeps the room.
+      if (hostState.current && p.hostId !== me) {
+        if (p.hostId < me) {
+          hostState.current = null
+          if (timerRef.current) clearTimeout(timerRef.current)
+        } else {
+          chRef.current?.send({
+            type: 'broadcast',
+            event: 'state',
+            payload: hostState.current,
+          })
+          return
+        }
+      }
+      stateRef.current = p
+      setState(p)
     })
     ch.on('broadcast', { event: 'reject' }, ({ payload }) => {
       const p = payload as { playerId: string; reason: string }
@@ -205,6 +226,7 @@ export default function RoomPlay() {
       if (status === 'SUBSCRIBED') {
         ch.track({ name: savedName() || 'Player' })
         ch.send({ type: 'broadcast', event: 'hello', payload: { id: me } })
+        if (wantsHost) setTimeout(() => setClaimHost(true), 1500)
       }
     })
     return () => {
@@ -215,9 +237,10 @@ export default function RoomPlay() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code])
 
-  // host initializes lobby state once presence is known
+  // Host claim: only if nobody broadcast state while we waited.
   useEffect(() => {
-    if (!isHost || hostState.current || present.length === 0) return
+    if (!claimHost || stateRef.current || hostState.current || present.length === 0)
+      return
     push({
       phase: 'lobby',
       hostId: me,
@@ -232,12 +255,12 @@ export default function RoomPlay() {
       hint: null,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHost, present])
+  }, [claimHost, present])
 
   // host keeps lobby roster synced with presence
   useEffect(() => {
     const s = hostState.current
-    if (!isHost || !s || s.phase !== 'lobby') return
+    if (!s || s.phase !== 'lobby') return
     if (
       s.players.length !== present.length ||
       s.players.some((p, i) => present[i]?.id !== p.id || present[i]?.name !== p.name)
@@ -245,7 +268,7 @@ export default function RoomPlay() {
       push({ ...s, players: present })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [present, isHost])
+  }, [present])
 
   function send(action: RoomAction) {
     chRef.current?.send({ type: 'broadcast', event: 'action', payload: action })
@@ -269,7 +292,7 @@ export default function RoomPlay() {
     return (
       <Screen code={code}>
         <p className="m-auto text-on-variant">
-          {isHost ? 'Opening the room…' : 'Joining the room…'}
+          {wantsHost ? 'Opening the room…' : 'Joining the room…'}
         </p>
       </Screen>
     )
@@ -322,7 +345,7 @@ export default function RoomPlay() {
           </div>
         </div>
 
-        {isHost ? (
+        {state.hostId === me ? (
           <>
             <div className="rounded-3xl bg-surface-container p-5">
               <p className="text-xs font-bold tracking-[0.1em] text-on-variant">
@@ -418,7 +441,7 @@ export default function RoomPlay() {
         <p className="text-center text-sm text-on-variant">
           Chain length: {state.chain.length}
         </p>
-        {isHost && (
+        {state.hostId === me && (
           <button
             onClick={() => push({ ...state, phase: 'lobby' })}
             className="rounded-full bg-gold py-4 font-display text-lg tracking-wider text-on-gold active:scale-95"
@@ -488,6 +511,13 @@ export default function RoomPlay() {
           </span>
         ))}
       </div>
+
+      {!s.players.some((p) => p.id === me) && (
+        <div className="mt-3 rounded-2xl border border-gold/40 bg-surface-container px-4 py-3 text-sm text-on-variant">
+          👋 You&apos;re in the room — you&apos;ll be dealt in when the next game
+          starts.
+        </div>
+      )}
 
       {reject && myTurn && (
         <div className="mt-3 rounded-2xl bg-urgent-deep/60 px-4 py-3 text-sm text-urgent-soft">
