@@ -1,17 +1,17 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import Icon from './Icon'
-import { loadRecord } from '../game/daily'
+import { loadStats } from '../game/niranjan'
 
 const tabs = [
   { to: '/', label: 'Home', icon: 'home' },
-  { to: '/daily', label: 'Daily', icon: 'calendar_today' },
+  { to: '/daily', label: 'Trivia', icon: 'quiz' },
   { to: '/rooms', label: 'Rooms', icon: 'groups' },
   { to: '/profile', label: 'Profile', icon: 'person' },
 ]
 
 export default function Shell() {
   const nav = useNavigate()
-  const streak = loadRecord()?.streak ?? 0
+  const points = loadStats().totalPoints
   return (
     <div className="film-grain flex min-h-dvh bg-surface">
       {/* Desktop sidebar */}
@@ -69,9 +69,9 @@ export default function Shell() {
             </span>
           </div>
           <div className="flex items-center gap-1 rounded-full bg-surface-container px-3 py-1.5 text-xs font-bold tracking-widest">
-            <span className="text-on-variant">STREAK</span>
-            <span>{streak}</span>
-            <span className="text-base">🔥</span>
+            <span className="text-on-variant">PTS</span>
+            <span className="text-gold">{points}</span>
+            <span className="text-base">⭐</span>
           </div>
         </header>
 

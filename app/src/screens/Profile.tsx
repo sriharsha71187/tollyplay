@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import type { User } from '@supabase/supabase-js'
 import { signInWithEmail, signInWithGoogle, supabase } from '../lib/supabase'
-import { loadRecord } from '../game/daily'
+import { loadStats } from '../game/niranjan'
 
 export default function Profile() {
   const [user, setUser] = useState<User | null>(null)
-  const daily = loadRecord()
+  const stats = loadStats()
 
   useEffect(() => {
     if (!supabase) return
@@ -39,7 +39,7 @@ export default function Profile() {
               : 'GUEST'}
           </p>
           <p className="text-sm text-on-variant">
-            🔥 {daily?.streak ?? 0}-day streak
+            ⭐ {stats.totalPoints} trivia points
           </p>
         </div>
       </div>
@@ -61,8 +61,8 @@ export default function Profile() {
 
       <div className="grid grid-cols-2 gap-4">
         {[
-          ['Daily best streak', daily?.best ?? 0],
-          ['Last score', daily ? `${daily.score}/5` : '—'],
+          ['Best run', stats.bestRun],
+          ['Runs played', stats.runs],
           ['Wins', '—'],
           ['Deep cuts', '—'],
         ].map(([k, v]) => (

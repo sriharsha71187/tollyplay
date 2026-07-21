@@ -1,27 +1,6 @@
-import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Icon from '../components/Icon'
-import { loadRecord, todayNumber } from '../game/daily'
-
-function useMidnightCountdown() {
-  const [left, setLeft] = useState('')
-  useEffect(() => {
-    const tick = () => {
-      const now = new Date()
-      const mid = new Date(now)
-      mid.setHours(24, 0, 0, 0)
-      const s = Math.max(0, Math.floor((mid.getTime() - now.getTime()) / 1000))
-      const h = String(Math.floor(s / 3600)).padStart(2, '0')
-      const m = String(Math.floor((s % 3600) / 60)).padStart(2, '0')
-      const sec = String(s % 60).padStart(2, '0')
-      setLeft(`${h}:${m}:${sec}`)
-    }
-    tick()
-    const t = setInterval(tick, 1000)
-    return () => clearInterval(t)
-  }, [])
-  return left
-}
+import { loadStats } from '../game/niranjan'
 
 const posters: [string, string, string][] = [
   ['MAYABAZAR', '1957', 'from-[#3a2f14] to-[#1c1a29]'],
@@ -52,9 +31,7 @@ function PosterStack() {
 }
 
 export default function Home() {
-  const countdown = useMidnightCountdown()
-  const rec = loadRecord()
-  const playedToday = rec?.day === todayNumber()
+  const nstats = loadStats()
 
   const hero = (
     <section className="hero-backdrop group relative overflow-hidden rounded-3xl">
@@ -63,15 +40,15 @@ export default function Home() {
         <div className="flex w-max items-center gap-2 rounded-full border border-gold/50 bg-gold/15 px-4 py-1.5 backdrop-blur-md">
           <Icon name="local_fire_department" fill className="text-sm text-gold" />
           <span className="text-xs font-bold tracking-[0.15em] text-gold-bright">
-            TODAY&apos;S FEATURED · #{todayNumber()}
+            ENDLESS TRIVIA
           </span>
         </div>
         <h2 className="font-display text-5xl leading-none drop-shadow-lg md:text-7xl">
-          DAILY KATHA
+          EK NIRANJAN
         </h2>
         <p className="max-w-md text-on-variant md:text-lg">
-          One cryptic story, two famous dialogues, two trivia. Same five for
-          everyone — brag in the family group.
+          Three lives, no limit. Questions climb from blockbuster to deep cut —
+          how far can you run?
         </p>
         <div className="mt-2 flex flex-wrap items-center gap-4">
           <Link
@@ -79,11 +56,11 @@ export default function Home() {
             className="marquee-glow-strong flex items-center gap-2 rounded-full bg-gold px-8 py-3.5 font-display text-lg tracking-wider text-on-gold transition-all hover:opacity-90 active:scale-95"
           >
             <Icon name="play_arrow" fill />
-            {playedToday ? 'SEE RESULT' : "PLAY TODAY'S PUZZLE"}
+            START A RUN
           </Link>
           <div className="flex items-center gap-2 rounded-full border border-surface-highest bg-surface-container/60 px-4 py-2 text-sm text-on-variant backdrop-blur-sm">
-            <Icon name="schedule" className="text-sm" />
-            Resets in {countdown}
+            <Icon name="trophy" className="text-sm" />
+            Best run {nstats.bestRun} · {nstats.totalPoints} pts banked
           </div>
         </div>
       </div>
@@ -152,9 +129,9 @@ export default function Home() {
       </div>
       <div className="grid grid-cols-3 gap-3">
         {[
-          ['Streak', `${rec?.streak ?? 0} 🔥`],
-          ['Best', `${rec?.best ?? 0}`],
-          ['Last score', rec ? `${rec.score}/5` : '—'],
+          ['Points', `${nstats.totalPoints} ⭐`],
+          ['Best run', `${nstats.bestRun}`],
+          ['Runs', `${nstats.runs}`],
         ].map(([k, v]) => (
           <div key={k} className="rounded-2xl bg-surface p-4 text-center">
             <p className="text-[11px] font-bold tracking-[0.12em] text-on-variant">
