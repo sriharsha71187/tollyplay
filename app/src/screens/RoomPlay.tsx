@@ -348,7 +348,9 @@ export default function RoomPlay() {
       if (status === 'SUBSCRIBED') {
         ch.track({ name: savedName() || 'Player' })
         ch.send({ type: 'broadcast', event: 'hello', payload: { id: me } })
-        if (wantsHost) setTimeout(() => setClaimHost(true), 1500)
+        // Everyone is eligible to claim an ownerless room — the creator just
+        // claims faster. Duplicate claims resolve via the id tie-break.
+        setTimeout(() => setClaimHost(true), wantsHost ? 1200 : 3000)
       }
     })
     return () => {
@@ -381,6 +383,55 @@ export default function RoomPlay() {
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [claimHost, present])
+
+  // Host-absence watchdog: if the host drops from presence for ~8s, the
+  // lowest-id present player adopts the room, rebuilding referee state.
+  const adoptTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => {
+    const s = stateRef.current
+    const hostPresent = !s || present.some((p) => p.id === s.hostId)
+    if (hostPresent || hostState.current || present.length === 0 || !movies) {
+      if (adoptTimer.current) {
+        clearTimeout(adoptTimer.current)
+        adoptTimer.current = null
+      }
+      return
+    }
+    if (adoptTimer.current) return
+    adoptTimer.current = setTimeout(() => {
+      adoptTimer.current = null
+      const cur = stateRef.current
+      if (!cur || hostState.current) return
+      if (present.some((p) => p.id === cur.hostId)) return
+      if (present[0]?.id !== me) return // lowest id adopts
+      usedMovies.current.clear()
+      personUse.current.clear()
+      chainMovies.current = []
+      for (const l of cur.chain) {
+        const m = movies.find(
+          (x) => x.title === l.title && x.year === l.year,
+        )
+        if (m) {
+          chainMovies.current.push(m)
+          usedMovies.current.add(m.id)
+        }
+        if (l.via) {
+          const k = l.via.toLowerCase().normalize('NFKC').trim()
+          personUse.current.set(k, (personUse.current.get(k) ?? 0) + 1)
+        }
+      }
+      push({
+        ...cur,
+        hostId: me,
+        players:
+          cur.phase === 'lobby'
+            ? present
+            : cur.players,
+        deadline: cur.deadline ? Math.max(cur.deadline, Date.now() + 5000) : null,
+      })
+    }, 8000)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [present, state, movies])
 
   // host keeps lobby roster synced with presence
   useEffect(() => {
