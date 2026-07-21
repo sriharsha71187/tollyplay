@@ -66,11 +66,23 @@ def clean(s):
     return s
 
 
+def canonical_person(a):
+    """Raw article title from a wiki link (parenthetical kept — needed for
+    redirect resolution). Falls back to the link text for red links."""
+    href = a.get("href") or ""
+    cls = a.get("class") or []
+    if "/wiki/" in href and "new" not in cls and "redlink=1" not in href:
+        t = urllib.parse.unquote(href.split("/wiki/")[-1]).replace("_", " ")
+        return clean(t.split("#")[0])
+    return clean(a.get_text())
+
+
 def cell_names(cell):
-    """Extract person names from a table cell, preferring link text."""
+    """Extract person names from a table cell, preferring canonical link
+    targets over display text so 'Tarun' and 'Tarun Kumar' collapse."""
     names = []
     for a in cell.find_all("a"):
-        t = clean(a.get_text())
+        t = canonical_person(a)
         if t and not re.match(r"^\d+$", t):
             names.append(t)
     if not names:
@@ -158,6 +170,56 @@ def parse_year(year, html):
     return movies
 
 
+REDIRECT_CACHE = ROOT / "data" / "redirects.json"
+
+
+def resolve_redirects(names):
+    """Map raw wiki article titles -> canonical titles via the API
+    (redirects=1), batched and cached. Same person, one name."""
+    cache = {}
+    if REDIRECT_CACHE.exists():
+        cache = json.loads(REDIRECT_CACHE.read_text())
+    todo = sorted({n for n in names if n and n not in cache})
+    qapi = "https://en.wikipedia.org/w/api.php?action=query&format=json&redirects=1&titles="
+    for i in range(0, len(todo), 50):
+        batch = todo[i : i + 50]
+        url = qapi + urllib.parse.quote("|".join(batch))
+        d = None
+        for backoff in [0, 15, 45]:
+            if backoff:
+                time.sleep(backoff)
+            try:
+                req = urllib.request.Request(url, headers=HEADERS)
+                with urllib.request.urlopen(req, timeout=30) as r:
+                    d = json.load(r)
+                break
+            except Exception as e:
+                print(f"redirects: {e}", file=sys.stderr)
+        mapping = {}
+        if d:
+            q = d.get("query", {})
+            for n in q.get("normalized", []):
+                mapping[n["from"]] = n["to"]
+            red = {r_["from"]: r_["to"] for r_ in q.get("redirects", [])}
+            for name in batch:
+                final = mapping.get(name, name)
+                final = red.get(final, final)
+                cache[name] = final
+        else:
+            for name in batch:
+                cache[name] = name
+        print(f"redirects: {min(i + 50, len(todo))}/{len(todo)}", flush=True)
+        time.sleep(1.0)
+    REDIRECT_CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=0))
+    return cache
+
+
+def display_name(canonical):
+    """Strip parenthetical disambiguators for display: 'Tarun (Telugu
+    actor)' -> 'Tarun'."""
+    return clean(re.sub(r"\s*\([^)]*\)\s*$", "", canonical))
+
+
 def main():
     all_movies, per_year = [], {}
     for year in YEARS:
@@ -169,6 +231,26 @@ def main():
         per_year[year] = len(ms)
         all_movies.extend(ms)
         print(f"{year}: {len(ms)} films", flush=True)
+
+    # unify person-name variants: resolve wiki redirects, then strip
+    # parentheticals ('Tarun (actor)'/'Tarun Kumar' -> 'Tarun (Telugu
+    # actor)' -> 'Tarun')
+    people = set()
+    for m in all_movies:
+        people.update(m["cast"])
+        people.update(x.strip() for x in m["director"].split(","))
+    resolved = resolve_redirects(people)
+
+    def fix(name):
+        return display_name(resolved.get(name, name))
+
+    for m in all_movies:
+        m["cast"] = list(dict.fromkeys(fix(c) for c in m["cast"] if fix(c)))
+        m["director"] = ", ".join(
+            dict.fromkeys(
+                fix(x.strip()) for x in m["director"].split(",") if fix(x.strip())
+            )
+        )
 
     # de-dup (title, year)
     seen, out = set(), []

@@ -12,6 +12,7 @@ import {
 import {
   linkPeople,
   loadMovies,
+  personKey,
   searchMovies,
   type LinkRole,
   type Movie,
@@ -416,7 +417,7 @@ export default function RoomPlay() {
           usedMovies.current.add(m.id)
         }
         if (l.via) {
-          const k = l.via.toLowerCase().normalize('NFKC').trim()
+          const k = personKey(l.via)
           personUse.current.set(k, (personUse.current.get(k) ?? 0) + 1)
         }
       }

@@ -1,4 +1,4 @@
-import { linkPeople, type LinkRole, type Movie } from './movies'
+import { linkPeople, personKey, type LinkRole, type Movie } from './movies'
 
 export interface ChainSettings {
   roles: LinkRole[]
@@ -72,7 +72,7 @@ export function recordMove(
 ) {
   usedMovies.add(next.id)
   if (verdict.via) {
-    const key = verdict.via.toLowerCase().normalize('NFKC').trim()
+    const key = personKey(verdict.via)
     personUse.set(key, (personUse.get(key) ?? 0) + 1)
   }
 }
