@@ -82,8 +82,11 @@ const isFilmPerson = (page) => {
   if (!page || page.missing !== undefined) return null
   const thumb = page.thumbnail?.source
   if (!thumb) return null
-  const text = `${page.description ?? ''} ${page.extract ?? ''}`
-  if (NOT_PERSON.test(text) || !PERSON.test(text)) return null
+  // Reject on the SHORT description only — the full extract mentions things
+  // like "Film Festival" or "temple town" that would false-reject real actors.
+  const desc = page.description ?? ''
+  if (NOT_PERSON.test(desc)) return null
+  if (!PERSON.test(`${desc} ${page.extract ?? ''}`)) return null
   return thumb
 }
 
