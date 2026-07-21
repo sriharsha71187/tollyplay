@@ -18,6 +18,7 @@ import {
   type Movie,
 } from '../game/movies'
 import { supabase } from '../lib/supabase'
+import { realPlotSnippet } from '../lib/plots'
 import Icon from '../components/Icon'
 import Thumb from '../components/Thumb'
 
@@ -101,10 +102,48 @@ export default function RoomPlay() {
     return pool[Math.floor(Math.random() * pool.length)]
   }
 
-  function startStoryRound(s: RoomState, roundNo: number) {
+  async function startStoryRound(s: RoomState, roundNo: number) {
     const writer = s.players[roundNo - 1]
+    if (!writer) {
+      push({ ...s, phase: 'over', deadline: null })
+      return
+    }
+    const wantReal =
+      s.storySource === 'real' ||
+      (s.storySource === 'mix' && roundNo % 2 === 0)
+
+    if (wantReal) {
+      // App deals a real plot — no writer, straight to guessing.
+      for (let attempt = 0; attempt < 6; attempt++) {
+        const secret = pickSecret()
+        if (!secret) break
+        const plot = await realPlotSnippet(secret)
+        if (!plot) continue
+        push({
+          ...s,
+          phase: 'story-guess',
+          story: {
+            kind: 'real',
+            writerId: '__app__',
+            secretTitle: secret.title,
+            secretYear: secret.year,
+            secretId: secret.id,
+            secretW: secret.w,
+            story: plot,
+            tries: {},
+            correct: [],
+            roundNo,
+          },
+          storyAwards: null,
+          deadline: Date.now() + 75_000,
+        })
+        return
+      }
+      // fetch failed repeatedly — fall through to a player round
+    }
+
     const secret = pickSecret()
-    if (!writer || !secret) {
+    if (!secret) {
       push({ ...s, phase: 'over', deadline: null })
       return
     }
@@ -112,6 +151,7 @@ export default function RoomPlay() {
       ...s,
       phase: 'story-write',
       story: {
+        kind: 'player',
         writerId: writer.id,
         secretTitle: secret.title,
         secretYear: secret.year,
@@ -134,7 +174,9 @@ export default function RoomPlay() {
     const c = st.correct.length
     const awards: Record<string, number> = {}
     if (st.story) {
-      awards[st.writerId] = c > 0 ? (guessers.length - c) * 2 + 2 : 0
+      if (st.kind === 'player') {
+        awards[st.writerId] = c > 0 ? (guessers.length - c) * 2 + 2 : 0
+      }
       st.correct.forEach((id, i) => {
         awards[id] = i === 0 ? 3 : 2
       })
@@ -383,6 +425,7 @@ export default function RoomPlay() {
       hint: null,
       story: null,
       storyAwards: null,
+      storySource: 'mix',
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [claimHost, present])
@@ -556,6 +599,38 @@ export default function RoomPlay() {
                   ? 'Take turns linking movies through shared stars & directors.'
                   : 'Each round one player disguises a movie as a story — fewer correct guesses, more points for the writer.'}
               </p>
+              {state.mode === 'story' && (
+                <>
+                  <p className="mt-4 text-xs font-bold tracking-[0.1em] text-on-variant">
+                    STORY SOURCE
+                  </p>
+                  <div className="mt-3 flex gap-2">
+                    {(
+                      [
+                        ['players', 'Players write'],
+                        ['real', 'Real plots'],
+                        ['mix', 'Mix'],
+                      ] as const
+                    ).map(([k, label]) => (
+                      <button
+                        key={k}
+                        onClick={() => push({ ...state, storySource: k })}
+                        className={`rounded-full px-4 py-2 text-sm font-bold ${
+                          state.storySource === k
+                            ? 'bg-gold text-on-gold'
+                            : 'bg-surface-high text-on-variant'
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="mt-2 text-xs text-on-variant">
+                    Real plots come straight from the films — names blacked
+                    out, everyone guesses.
+                  </p>
+                </>
+              )}
             </div>
             <div
               className={`rounded-3xl bg-surface-container p-5 ${
@@ -813,7 +888,9 @@ export default function RoomPlay() {
                 “{st.story}”
               </p>
               <p className="mt-3 text-xs text-on-variant">
-                — as told by {writer?.name}
+                {st.kind === 'real'
+                  ? '— the real story, straight from the reels'
+                  : `— as told by ${writer?.name}`}
               </p>
             </div>
             {iAmWriter ? (

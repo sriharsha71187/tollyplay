@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
+import type { User } from '@supabase/supabase-js'
+import AuthForm from '../components/AuthForm'
 import Thumb from '../components/Thumb'
+import { supabase } from '../lib/supabase'
 import {
   bankRun,
   levelFor,
@@ -15,6 +18,20 @@ type Phase = 'idle' | 'run' | 'over'
 export default function Niranjan() {
   const [movies, setMovies] = useState<Movie[] | null>(null)
   const [phase, setPhase] = useState<Phase>('idle')
+  const [user, setUser] = useState<User | null>(null)
+  const [authChecked, setAuthChecked] = useState(!supabase)
+
+  useEffect(() => {
+    if (!supabase) return
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user)
+      setAuthChecked(true)
+    })
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) =>
+      setUser(session?.user ?? null),
+    )
+    return () => sub.subscription.unsubscribe()
+  }, [])
   const [stats, setStats] = useState(loadStats())
   const [q, setQ] = useState<NQuestion | null>(null)
   const [qIndex, setQIndex] = useState(0)
@@ -60,11 +77,25 @@ export default function Niranjan() {
 
   const level = levelFor(qIndex)
 
-  if (!movies) {
+  if (!movies || !authChecked) {
     return (
       <div className="mx-auto flex w-full max-w-2xl flex-col gap-6">
         <Head />
         <p className="text-center text-on-variant">Loading the film archive…</p>
+      </div>
+    )
+  }
+
+  // Signed-in players only — points need an owner.
+  if (supabase && !user) {
+    return (
+      <div className="mx-auto flex w-full max-w-2xl flex-col gap-6">
+        <Head />
+        <p className="rounded-3xl border border-gold/30 bg-surface-container p-5 text-center text-sm text-on-variant">
+          🔒 Sign in to play — your points and best runs are saved to your
+          account.
+        </p>
+        <AuthForm />
       </div>
     )
   }

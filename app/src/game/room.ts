@@ -17,7 +17,11 @@ export interface NetLink {
 
 export type RoomMode = 'chain' | 'story'
 
+export type StoryRoundKind = 'player' | 'real'
+
 export interface StoryRound {
+  /** 'real' rounds have no writer — the app deals an actual plot. */
+  kind: StoryRoundKind
   writerId: string
   /** Visible to everyone; the writer's own client hides nothing — family game. */
   secretTitle: string
@@ -57,6 +61,8 @@ export interface RoomState {
   story: StoryRound | null
   /** Points awarded in the last story round, shown on reveal. */
   storyAwards: Record<string, number> | null
+  /** Story mode round source: players write / real plots / mix. */
+  storySource: 'players' | 'real' | 'mix'
 }
 
 export type RoomAction =
