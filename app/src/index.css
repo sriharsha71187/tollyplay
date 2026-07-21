@@ -1,0 +1,54 @@
+@import 'tailwindcss';
+@import '@fontsource/anton/index.css';
+@import '@fontsource/hanken-grotesk/400.css';
+@import '@fontsource/hanken-grotesk/500.css';
+@import '@fontsource/hanken-grotesk/700.css';
+
+@theme {
+  /* Night-Show palette — design/DESIGN.md */
+  --color-surface: #131121;
+  --color-surface-lowest: #0e0c1b;
+  --color-surface-low: #1c1a29;
+  --color-surface-container: #201e2d;
+  --color-surface-high: #2a2838;
+  --color-surface-highest: #353343;
+  --color-on-surface: #e5dff5;
+  --color-on-variant: #d4c4af;
+  --color-outline: #9c8f7b;
+
+  --color-gold: #f5b942;
+  --color-gold-bright: #ffda9c;
+  --color-on-gold: #422d00;
+
+  --color-urgent: #e4405f;
+  --color-urgent-deep: #a20234;
+  --color-urgent-soft: #ffb2b9;
+
+  --color-success: #34c759;
+  --color-success-bright: #6efa85;
+
+  --font-display: 'Anton', sans-serif;
+  --font-body: 'Hanken Grotesk', sans-serif;
+}
+
+html {
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: var(--font-body);
+}
+
+/* Film-grain overlay (base layer, ~5% opacity) */
+.film-grain::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  z-index: 50;
+}
+
+/* Marquee glow for active elements */
+.marquee-glow {
+  box-shadow: 0 0 18px 2px rgb(245 185 66 / 0.3);
+}
