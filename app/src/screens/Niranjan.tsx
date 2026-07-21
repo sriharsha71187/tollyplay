@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { User } from '@supabase/supabase-js'
 import AuthForm from '../components/AuthForm'
 import Thumb from '../components/Thumb'
@@ -7,8 +7,10 @@ import {
   bankRun,
   levelFor,
   LIVES,
+  loadRecent,
   loadStats,
   nextQuestion,
+  rememberSeen,
   type NQuestion,
 } from '../game/niranjan'
 import { loadMovies, type Movie } from '../game/movies'
@@ -39,18 +41,33 @@ export default function Niranjan() {
   const [score, setScore] = useState(0)
   const [picked, setPicked] = useState<string | null>(null)
   const [used] = useState(() => new Set<string>())
+  // Cross-run repeat avoidance: `recent` is the persisted window of tags the
+  // player has seen lately; `avoid` is its Set form, handed to the generator.
+  const recent = useRef<string[]>([])
+  const avoid = useRef<Set<string>>(new Set())
 
   useEffect(() => {
     loadMovies().then(setMovies)
   }, [])
 
+  /** Persist a served question so it won't recur across runs. */
+  function record(q: NQuestion | null) {
+    if (!q) return
+    recent.current = rememberSeen(user?.id ?? null, recent.current, q.tag)
+    avoid.current.add(q.tag)
+  }
+
   function startRun() {
     used.clear()
+    recent.current = loadRecent(user?.id ?? null)
+    avoid.current = new Set(recent.current)
     setQIndex(0)
     setLives(LIVES)
     setScore(0)
     setPicked(null)
-    setQ(nextQuestion(movies!, 0, used, Math.random))
+    const first = nextQuestion(movies!, 0, used, avoid.current, Math.random)
+    record(first)
+    setQ(first)
     setPhase('run')
   }
 
@@ -71,7 +88,9 @@ export default function Niranjan() {
       const ni = qIndex + 1
       setQIndex(ni)
       setPicked(null)
-      setQ(nextQuestion(movies!, ni, used, Math.random))
+      const nq = nextQuestion(movies!, ni, used, avoid.current, Math.random)
+      record(nq)
+      setQ(nq)
     }, 1100)
   }
 

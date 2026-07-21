@@ -4,7 +4,7 @@
  * and no image is ever fetched or rendered — all call sites no-op.
  */
 export const mediaEnabled =
-  ((import.meta.env.VITE_MEDIA as string | undefined) ?? 'on') !== 'off'
+  ((import.meta.env?.VITE_MEDIA as string | undefined) ?? 'on') !== 'off'
 
 let peopleMap: Record<string, string> | null = null
 
