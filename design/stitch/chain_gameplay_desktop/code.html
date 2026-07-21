@@ -1,0 +1,439 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>TollyPlay - Movie Chain</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Hanken+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-primary": "#7c5800",
+                      "surface-bright": "#3a3748",
+                      "surface": "#131121",
+                      "on-primary-fixed": "#271900",
+                      "on-tertiary-container": "#005d21",
+                      "on-surface": "#e5dff5",
+                      "inverse-surface": "#e5dff5",
+                      "tertiary-fixed": "#72fe88",
+                      "on-primary": "#422d00",
+                      "on-secondary-fixed-variant": "#91002d",
+                      "on-secondary-container": "#ffacb4",
+                      "on-tertiary-fixed-variant": "#00531c",
+                      "tertiary-fixed-dim": "#53e16f",
+                      "surface-variant": "#353343",
+                      "surface-dim": "#131121",
+                      "primary-fixed-dim": "#f9bc45",
+                      "outline-variant": "#504535",
+                      "secondary": "#ffb2b9",
+                      "on-background": "#e5dff5",
+                      "error": "#ffb4ab",
+                      "tertiary": "#6efa85",
+                      "on-error-container": "#ffdad6",
+                      "primary-fixed": "#ffdea8",
+                      "error-container": "#93000a",
+                      "inverse-on-surface": "#312e3f",
+                      "on-secondary": "#67001e",
+                      "primary": "#ffda9c",
+                      "background": "#131121",
+                      "surface-container": "#201e2d",
+                      "on-primary-container": "#6a4a00",
+                      "secondary-fixed": "#ffdadb",
+                      "secondary-fixed-dim": "#ffb2b9",
+                      "secondary-container": "#a20234",
+                      "surface-container-lowest": "#0e0c1b",
+                      "on-secondary-fixed": "#40000f",
+                      "on-tertiary-fixed": "#002107",
+                      "on-primary-fixed-variant": "#5e4200",
+                      "outline": "#9c8f7b",
+                      "on-tertiary": "#003911",
+                      "on-error": "#690005",
+                      "on-surface-variant": "#d4c4af",
+                      "tertiary-container": "#4fdd6c",
+                      "surface-container-highest": "#353343",
+                      "primary-container": "#f5b942",
+                      "surface-container-high": "#2a2838",
+                      "surface-tint": "#f9bc45",
+                      "surface-container-low": "#1c1a29"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "card-inner": "24px",
+                      "stack-gap": "16px",
+                      "base": "8px",
+                      "container-padding": "20px",
+                      "section-gap": "32px"
+              },
+              "fontFamily": {
+                      "body-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-lg": [
+                              "Anton"
+                      ],
+                      "body-md": [
+                              "Hanken Grotesk"
+                      ],
+                      "label-caps": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-md": [
+                              "Anton"
+                      ],
+                      "display-xl": [
+                              "Anton"
+                      ],
+                      "score-display": [
+                              "Anton"
+                      ],
+                      "headline-lg-mobile": [
+                              "Anton"
+                      ]
+              },
+              "fontSize": {
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "26px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "0.04em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.1em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "30px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-xl": [
+                              "64px",
+                              {
+                                      "lineHeight": "72px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "score-display": [
+                              "48px",
+                              {
+                                      "lineHeight": "48px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "34px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        body {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" opacity="0.05"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)"/></svg>');
+            background-color: #131121; /* surface */
+        }
+        
+        .glass-card {
+            background: rgba(32, 30, 45, 0.7); /* surface-container with opacity */
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .gold-glow {
+            box-shadow: 0 0 20px rgba(249, 188, 69, 0.3); /* primary-fixed-dim */
+        }
+        
+        .timer-pulse {
+            animation: pulse-red 1s infinite alternate;
+        }
+
+        @keyframes pulse-red {
+            0% { text-shadow: 0 0 10px rgba(255, 178, 185, 0); color: #f9bc45; }
+            100% { text-shadow: 0 0 20px rgba(255, 178, 185, 0.8); color: #ffb2b9; } /* secondary */
+        }
+
+        /* Hide scrollbar for timeline */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background h-screen flex flex-col overflow-hidden font-body-md" style="background-color: rgb(18, 16, 31); background-image: none;">
+<!-- TopNavBar -->
+<nav class="w-full top-0 sticky bg-surface dark:bg-surface shadow-md flex justify-between items-center px-section-gap py-base max-w-full mx-auto z-50">
+<div class="flex items-center gap-8">
+<h1 class="font-display-xl text-display-xl text-primary dark:text-primary tracking-tighter">TollyPlay</h1>
+<div class="hidden md:flex gap-6">
+<!-- Highlight 'Rooms' as we are in a game room -->
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium hover:text-primary-container dark:hover:text-primary-container transition-colors duration-200" href="#">Home</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium hover:text-primary-container dark:hover:text-primary-container transition-colors duration-200" href="#">Daily</a>
+<a class="text-primary dark:text-primary font-bold border-b-2 border-primary pb-1 active:scale-95 transition-transform duration-150" href="#">Rooms</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium hover:text-primary-container dark:hover:text-primary-container transition-colors duration-200" href="#">Profile</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]" data-icon="settings">settings</span>
+</button>
+<button class="bg-primary text-on-primary font-headline-md text-headline-md px-6 py-2 rounded-full hover:bg-primary-container transition-colors active:scale-95">
+                Go Live
+            </button>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-surface-variant">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="A close up portrait of a stylized cinematic character avatar in a dark neon-lit environment, highly detailed, vibrant colors, premium gaming aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-j2l6JIr7o5JJ-Xi067DVimte_nv8yjyuWRvFz0unCaSnKnCvxyy8uQxvWq5xshjfOCGrN94PbvrnKsTHsl37piEKeq8D33dZrxRpamhI-tTnFAQfPHB6Nkt0wnRNUJMYMAxZVoitgcGgJmWjnUQ71odwESbREyiKzG33rv8HA2EQrZMoliGd1DSJndr4KdJ08doXMC0BrELIPXNdjm2yUbK4NPCPvUV0z914S4DFLT3TD4d4e_Zh5A">
+</div>
+</div>
+</nav>
+<!-- Main Game Area -->
+<div class="flex flex-1 overflow-hidden">
+<!-- Center Canvas: Chain & Gameplay -->
+<main class="flex-1 flex flex-col relative">
+<!-- Room Header / Status -->
+<header class="flex justify-between items-center p-section-gap">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Tollywood Megastars Room</h2>
+<p class="font-body-md text-on-surface-variant mt-1">Movie Chain Mode • Round 4</p>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-display-xl text-display-xl text-primary" id="game-timer">05</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">SECONDS LEFT</span>
+</div>
+</header>
+<!-- Movie Chain Timeline -->
+<section class="w-full px-section-gap py-8 overflow-x-auto no-scrollbar relative flex items-center min-h-[300px]">
+<!-- Connection Line -->
+<div class="absolute h-1 bg-surface-variant top-1/2 left-0 right-0 -translate-y-1/2 z-0"></div>
+<div class="flex gap-stack-gap items-center z-10 px-8">
+<!-- Chain Node 1 -->
+<div class="flex flex-col items-center gap-4 shrink-0 opacity-50">
+<div class="w-32 h-48 rounded-lg overflow-hidden border-2 border-surface-variant shadow-lg">
+<img class="w-full h-full object-cover" data-alt="Cinematic movie poster for a high octane action thriller, dark gritty tones, solitary hero walking away from an explosion, dramatic lighting, premium quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1GRarDZjuvDhde382gH8T2aZOCJO2T22kshi-DQ7c2X4uYwEp3cAlXJ_QDs1umZBVWE-liHyIrL0CN2W7mGEUQP_aISmnw6SpEbf0crlRHqQeGvDnL1MathS3z-c8OKD0rEO5Qok085YHW96m61sZKddhbs49lbZClU1sxOuWTYDSknJSyzIRNmbNqkAt_qqKXFFJ_vDwsLkE-XJQyHbc5lg2Uo8d34tlZ_gNwuXVaArvnSKgFKs-uQ">
+</div>
+<div class="text-center">
+<p class="font-headline-md text-headline-md text-on-surface truncate w-32">Pushpa</p>
+<p class="font-label-caps text-label-caps text-primary truncate w-32">Allu Arjun</p>
+</div>
+</div>
+<!-- Actor Link -->
+<div class="shrink-0 text-primary-container px-4">
+<span class="material-symbols-outlined text-[32px]">link</span>
+</div>
+<!-- Chain Node 2 -->
+<div class="flex flex-col items-center gap-4 shrink-0 opacity-70">
+<div class="w-32 h-48 rounded-lg overflow-hidden border-2 border-surface-variant shadow-lg">
+<img class="w-full h-full object-cover" data-alt="Cinematic movie poster for an intense emotional drama, deep shadows, neon highlights, characters in silhouette, premium theatrical release style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZNEEvoTqJrOhTghBhq_HhG5tyjIe3vq8cLYRl8015SZ4RplqfdNr87ehwUwleyaDiFZoF6DTa8LWejS1flaoQs1SB9SySbkMdiTU0RkyOQ2bHroyYUQAMc98rRBevStnM_5_YnYXtRIqOhv3RkEhn-k-J04uTxshuKq_u5iPAJWiV3p5lyaYST3oWEU_caDjcEKq8K0iVoHHR52dBkODkOYIZdWYewreU2_Ma_rtTObhmC5kq3wGpQg">
+</div>
+<div class="text-center">
+<p class="font-headline-md text-headline-md text-on-surface truncate w-32">Arya</p>
+<p class="font-label-caps text-label-caps text-primary truncate w-32">Sukumar</p>
+</div>
+</div>
+<!-- Director Link -->
+<div class="shrink-0 text-primary-container px-4">
+<span class="material-symbols-outlined text-[32px]">movie</span>
+</div>
+<!-- Chain Node 3 -->
+<div class="flex flex-col items-center gap-4 shrink-0 opacity-85">
+<div class="w-32 h-48 rounded-lg overflow-hidden border-2 border-surface-variant shadow-lg">
+<img class="w-full h-full object-cover" data-alt="Cinematic movie poster for a rural village epic, dusty atmosphere, intense character portraits, golden hour lighting, premium Indian cinema aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBw2s_9YRt9jc2OfqPnuaZQmSd2rteWvSXLXwonh3aCyu9GdA6CRWIKm4McLAqhiwOnDo6wImKt9SQBCQt4zbtxQl9NN7VVCiukr4-zMh_yCW2FFT6uw6hnDesPTyvDi5M2NplZWcKklWg6zRpclYS2fNfVGDqr7NdLd3hdcpTHuQ-WVYhtZLXeRAwjYPime9eFiUS6P-d0uLbKtq6ifelH6mnLKQT6AC8YQRVZOJ99fs5GauY5gil_sg">
+</div>
+<div class="text-center">
+<p class="font-headline-md text-headline-md text-on-surface truncate w-32">Rangasthalam</p>
+<p class="font-label-caps text-label-caps text-primary truncate w-32">Ram Charan</p>
+</div>
+</div>
+<!-- Actor Link -->
+<div class="shrink-0 text-primary-container px-4">
+<span class="material-symbols-outlined text-[32px]">link</span>
+</div>
+<!-- Active Node (Current Challenge) -->
+<div class="flex flex-col items-center gap-4 shrink-0 scale-110 mx-6 relative">
+<div class="absolute -inset-4 bg-primary/20 rounded-xl blur-xl z-0"></div>
+<div class="w-40 h-56 rounded-lg overflow-hidden border-2 border-primary gold-glow shadow-2xl z-10 relative bg-surface-container flex flex-col justify-center items-center p-4 text-center">
+<span class="material-symbols-outlined text-[48px] text-primary mb-2">question_mark</span>
+<p class="font-headline-md text-headline-md text-on-surface">Link with <br><span class="text-primary">Ram Charan</span></p>
+</div>
+</div>
+</div>
+</section>
+<!-- Interaction Area (Bottom) -->
+<div class="mt-auto p-section-gap flex flex-col items-center justify-end flex-1 pb-12">
+<!-- Current Player Spotlight -->
+<div class="mb-8 flex flex-col items-center gap-2">
+<p class="font-label-caps text-label-caps text-on-surface-variant tracking-widest">CURRENT TURN</p>
+<div class="flex items-center gap-4 bg-surface-container rounded-full pr-6 pl-2 py-2 border border-primary/30 gold-glow">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary">
+<img class="w-full h-full object-cover" data-alt="A stylized portrait of an energetic young gamer wearing headphones in a dark neon-lit studio, high contrast cinematic lighting, premium quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaTpJQLvdmYXt4vrzqqaMhS7yTppq_5B9kLqeaBy6Kg3NMg1_z3-0WCOv1G5x0BpaYSBsDH2cdQMdknn81_I4cn7ABYgHV0XVcPPiO0fyutfkj8T4Hk6gB33AWTUhF2Z7MXp0HfMUE7xxQ4X2sYgrWcvrB-GhETUffPuJ9bqZ0kmb89kwYRt294FjTKlrgt3OhSZBkKBkqmsUV6RiJINHRl-eNosiHyMn7ZxpnuRqi66LlncF4HWByxQ">
+</div>
+<div>
+<p class="font-headline-md text-headline-md text-on-surface leading-tight">You</p>
+<p class="font-body-md text-primary text-sm leading-tight">Thinking...</p>
+</div>
+</div>
+</div>
+<!-- Input / Search -->
+<div class="w-full max-w-2xl relative">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-6 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors text-[28px]">search</span>
+<input class="w-full bg-surface-container border-2 border-surface-variant rounded-full py-5 pl-16 pr-6 text-headline-md font-headline-md text-on-surface focus:outline-none focus:border-primary focus:ring-0 transition-all placeholder:text-on-surface-variant/50 shadow-lg" placeholder="Type a movie or actor..." type="text">
+<button class="absolute right-4 top-1/2 -translate-y-1/2 bg-primary text-on-primary rounded-full px-6 py-3 font-headline-md text-headline-md hover:bg-primary-container transition-colors active:scale-95 shadow-md">
+                            Submit
+                        </button>
+</div>
+<!-- Autocomplete Suggestions (Simulated Dropdown) -->
+<div class="absolute top-full left-0 right-0 mt-2 glass-card border border-surface-variant rounded-xl overflow-hidden shadow-2xl z-20">
+<ul class="flex flex-col">
+<li class="px-6 py-4 hover:bg-surface-variant cursor-pointer transition-colors border-b border-surface-variant/50 flex items-center justify-between">
+<div>
+<span class="font-headline-md text-headline-md text-on-surface">RRR</span>
+<span class="font-body-md text-on-surface-variant ml-2">Movie</span>
+</div>
+<span class="material-symbols-outlined text-primary-container">arrow_forward</span>
+</li>
+<li class="px-6 py-4 hover:bg-surface-variant cursor-pointer transition-colors border-b border-surface-variant/50 flex items-center justify-between">
+<div>
+<span class="font-headline-md text-headline-md text-on-surface">Magadheera</span>
+<span class="font-body-md text-on-surface-variant ml-2">Movie</span>
+</div>
+<span class="material-symbols-outlined text-primary-container">arrow_forward</span>
+</li>
+<li class="px-6 py-4 hover:bg-surface-variant cursor-pointer transition-colors flex items-center justify-between">
+<div>
+<span class="font-headline-md text-headline-md text-on-surface">Dhruva</span>
+<span class="font-body-md text-on-surface-variant ml-2">Movie</span>
+</div>
+<span class="material-symbols-outlined text-primary-container">arrow_forward</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</main>
+<!-- Right Sidebar: Leaderboard & Players -->
+<aside class="w-80 bg-surface-container-low border-l border-surface-variant flex flex-col h-full shadow-2xl z-10 hidden lg:flex">
+<div class="p-card-inner border-b border-surface-variant">
+<h3 class="font-headline-md text-headline-md text-primary flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+                    Live Standings
+                </h3>
+</div>
+<div class="flex-1 overflow-y-auto p-4 flex flex-col gap-2">
+<!-- Player 1 (You) -->
+<div class="bg-primary-container/10 border border-primary/30 rounded-xl p-3 flex items-center gap-3">
+<div class="font-headline-md text-headline-md text-primary w-6 text-center">1</div>
+<div class="relative">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-primary">
+<img class="w-full h-full object-cover" data-alt="Stylized portrait avatar of a gamer." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBw3donNQ5y969zcnSWaU_2qTtRO0ZihlCXJfZwNt2crKMNXwPoIaHSZInYpezhq9W8oySmVwpPxnoa37a7OFVKJQmD9tHcRBGeVegzMuXrxRnUxfovfLSbNDKHXGbgA-0Ckzo0BTfd-7HArH6-gfoSr49iFyIAu_bJMTxQCOcD1P-YistAKFIFAdaacv7aWOiRHiHtuikGsKi7IkTk1mSM9OMKHYZJhrM7i_z4aQAmZpZK_XkZbFmPsw">
+</div>
+<div class="absolute -bottom-1 -right-1 w-4 h-4 bg-tertiary rounded-full border-2 border-surface-container-low"></div>
+</div>
+<div class="flex-1">
+<p class="font-headline-md text-headline-md text-primary text-sm leading-tight">You</p>
+<p class="font-body-md text-on-surface-variant text-xs">Chain Master</p>
+</div>
+<div class="font-score-display text-score-display text-on-surface text-2xl">450</div>
+</div>
+<!-- Player 2 -->
+<div class="bg-surface rounded-xl p-3 flex items-center gap-3 hover:bg-surface-variant transition-colors cursor-default">
+<div class="font-headline-md text-headline-md text-on-surface-variant w-6 text-center">2</div>
+<div class="relative">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-surface-variant">
+<img class="w-full h-full object-cover" data-alt="Portrait avatar of a female gamer in moody lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_GwsyFfyWvQWvR8lf3sZJF17oBzw4RXGQS0bEd2JWDR0y3mJXevI28ZOavm1Udgl0kAEcZSRIuae1bMwMVQszWTneujUYTcqu8df2Q5HhB6zjEpfZQWgHHwKR9Vr_Amdy_jaboGsKpwkPByOqi1Bpkk9eqMVHiObmMfzWJKxUiJye90bEJF-V0wzKq6KPBcHPkHgfGYPBmsIqZuw_FeyUlWtxFRHIpdGNhnv81VrCO_2jE8kZ9TdrhA">
+</div>
+<div class="absolute -bottom-1 -right-1 w-4 h-4 bg-surface-variant rounded-full border-2 border-surface-container-low"></div>
+</div>
+<div class="flex-1">
+<p class="font-body-lg text-on-surface text-sm leading-tight font-bold">Rahul_T</p>
+<p class="font-body-md text-on-surface-variant text-xs">Waiting</p>
+</div>
+<div class="font-score-display text-score-display text-on-surface-variant text-2xl">320</div>
+</div>
+<!-- Player 3 -->
+<div class="bg-surface rounded-xl p-3 flex items-center gap-3 hover:bg-surface-variant transition-colors cursor-default">
+<div class="font-headline-md text-headline-md text-on-surface-variant w-6 text-center">3</div>
+<div class="relative">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-surface-variant opacity-50 grayscale">
+<img class="w-full h-full object-cover" data-alt="Portrait avatar of a gamer, desaturated." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDY2ZbtugtWYQW6bs7ILD5OdGuBLmTFEzooIgcrzcUlCcUB2Zh1bfCLpCn1q34CODLU4DY5bgjfkmwdZ6e9Au6jDK0oVP-pqnPuujlsWpgxf4DD582y4U3wrSRl-RgcgwbqV7uNmSZl03ci5RjN3Ta7Wf2XVenD4lomME9sXoxnWW6-iTVdOZctL_LAeKFPaeeJLqiIBmUjcADjSkP7syJaeaDQiqvdEb8VjMvPmDreWRwIIkR8Bb6Ogw">
+</div>
+<div class="absolute -bottom-1 -right-1 w-4 h-4 bg-error rounded-full border-2 border-surface-container-low"></div>
+</div>
+<div class="flex-1">
+<p class="font-body-lg text-on-surface text-sm leading-tight font-bold line-through text-on-surface-variant">Sneha99</p>
+<p class="font-body-md text-error text-xs">Eliminated</p>
+</div>
+<div class="font-score-display text-score-display text-on-surface-variant text-2xl opacity-50">150</div>
+</div>
+</div>
+<div class="p-card-inner border-t border-surface-variant mt-auto">
+<button class="w-full py-3 bg-surface border border-surface-variant rounded-full font-headline-md text-headline-md text-on-surface hover:bg-surface-variant transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+                    Leave Room
+                </button>
+</div>
+</aside>
+</div>
+<script>
+        // Simple timer logic for demonstration
+        const timerElement = document.getElementById('game-timer');
+        let timeLeft = 8;
+
+        const countdown = setInterval(() => {
+            timeLeft--;
+            if (timeLeft >= 0) {
+                timerElement.innerText = timeLeft.toString().padStart(2, '0');
+                if (timeLeft <= 3) {
+                    timerElement.classList.add('timer-pulse');
+                    timerElement.classList.remove('text-primary');
+                }
+            } else {
+                clearInterval(countdown);
+                timerElement.innerText = "00";
+            }
+        }, 1000);
+    </script>
+
+
+</body></html>

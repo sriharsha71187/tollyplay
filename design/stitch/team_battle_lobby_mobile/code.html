@@ -1,0 +1,313 @@
+<!DOCTYPE html><html lang="en" class="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Hanken+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed": "#002107",
+                    "on-secondary-fixed": "#40000f",
+                    "outline": "#9c8f7b",
+                    "on-tertiary": "#003911",
+                    "on-error": "#690005",
+                    "on-primary-fixed-variant": "#5e4200",
+                    "tertiary-container": "#4fdd6c",
+                    "surface-container-highest": "#353343",
+                    "on-surface-variant": "#d4c4af",
+                    "surface-tint": "#f9bc45",
+                    "surface-container-low": "#1c1a29",
+                    "surface-container-high": "#2a2838",
+                    "primary-container": "#f5b942",
+                    "surface-container": "#201e2d",
+                    "primary": "#ffda9c",
+                    "background": "#131121",
+                    "on-secondary": "#67001e",
+                    "secondary-fixed": "#ffdadb",
+                    "on-primary-container": "#6a4a00",
+                    "secondary-container": "#a20234",
+                    "secondary-fixed-dim": "#ffb2b9",
+                    "surface-container-lowest": "#0e0c1b",
+                    "outline-variant": "#504535",
+                    "surface-variant": "#353343",
+                    "surface-dim": "#131121",
+                    "primary-fixed-dim": "#f9bc45",
+                    "on-background": "#e5dff5",
+                    "secondary": "#ffb2b9",
+                    "primary-fixed": "#ffdea8",
+                    "tertiary": "#6efa85",
+                    "on-error-container": "#ffdad6",
+                    "error": "#ffb4ab",
+                    "inverse-on-surface": "#312e3f",
+                    "error-container": "#93000a",
+                    "surface": "#131121",
+                    "on-primary-fixed": "#271900",
+                    "surface-bright": "#3a3748",
+                    "inverse-primary": "#7c5800",
+                    "on-surface": "#e5dff5",
+                    "inverse-surface": "#e5dff5",
+                    "on-tertiary-container": "#005d21",
+                    "on-secondary-fixed-variant": "#91002d",
+                    "on-primary": "#422d00",
+                    "tertiary-fixed": "#72fe88",
+                    "tertiary-fixed-dim": "#53e16f",
+                    "on-tertiary-fixed-variant": "#00531c",
+                    "on-secondary-container": "#ffacb4"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "section-gap": "32px",
+                    "base": "8px",
+                    "container-padding": "20px",
+                    "card-inner": "24px",
+                    "stack-gap": "16px"
+            },
+            "fontFamily": {
+                    "label-caps": [
+                            "Hanken Grotesk"
+                    ],
+                    "headline-md": [
+                            "Anton"
+                    ],
+                    "display-xl": [
+                            "Anton"
+                    ],
+                    "headline-lg": [
+                            "Anton"
+                    ],
+                    "body-md": [
+                            "Hanken Grotesk"
+                    ],
+                    "body-lg": [
+                            "Hanken Grotesk"
+                    ],
+                    "headline-lg-mobile": [
+                            "Anton"
+                    ],
+                    "score-display": [
+                            "Anton"
+                    ]
+            },
+            "fontSize": {
+                    "label-caps": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.1em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "30px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-xl": [
+                            "64px",
+                            {
+                                    "lineHeight": "72px",
+                                    "letterSpacing": "0.02em",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "letterSpacing": "0.04em",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "26px",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "headline-lg-mobile": [
+                            "28px",
+                            {
+                                    "lineHeight": "34px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "score-display": [
+                            "48px",
+                            {
+                                    "lineHeight": "48px",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    }catch(_e){}</script><meta charset="utf-8"></head><body class="bg-background text-on-background min-h-screen relative overflow-x-hidden pb-32" style="background-color: rgb(18, 16, 31);">
+
+<!-- TopAppBar -->
+<header class="bg-background/80 backdrop-blur-md flex justify-between items-center px-container-padding py-base w-full sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center overflow-hidden border border-outline-variant/30">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="Close up profile picture of a young man with styled hair, cinematic lighting, neon purple and gold rim light, cinematic moody premium aesthetic, high resolution portrait." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVCZZAzOxhGCuWVK8GyejE-qZrq0m4uVbtQyojnPTsy-KKYbaENTH58IQQEoC0E72POADGxsoMjQeN8vYEFxrwZBmxef69inffR-J4AzZmlD0u8SudCJNXZakSUxredgFyJ_vx5aRm7TbItRurrkmGq-DMUfYwZoFnmwyIrKPCUAHbnVGj8DwvAm6PeQmMSkJaE0A2NkEjO7iU9p3AR3JQ5HGsIRAyQ4uymdA5H2XUoKmB_X2BX-5i_g">
+</div>
+<span class="font-body-md text-body-md text-primary font-bold">12 <span class="material-symbols-outlined text-sm align-middle">local_fire_department</span></span>
+</div>
+<h1 class="font-display-xl text-headline-md text-primary tracking-wider uppercase">TollyPlay</h1>
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity p-2">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</header>
+<main class="px-container-padding pt-section-gap pb-section-gap max-w-4xl mx-auto flex flex-col gap-section-gap">
+<!-- Header area -->
+<div class="text-center flex flex-col gap-2">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary">Team Battle Lobby</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Gather your crew. The premiere begins soon.</p>
+</div>
+<!-- Team Selection Area -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-gap">
+<!-- Team A (Gold) -->
+<div class="bg-surface rounded-xl p-card-inner border border-primary-container/20 relative overflow-hidden flex flex-col gap-stack-gap">
+<!-- Atmospheric glow -->
+<div class="absolute -top-20 -right-20 w-64 h-64 bg-primary-container/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="flex justify-between items-center z-10">
+<h3 class="font-headline-md text-headline-md text-primary">Team Gold</h3>
+<span class="font-body-md text-body-md text-on-surface bg-surface-container-high px-3 py-1 rounded-full text-sm">3/5</span>
+</div>
+<!-- Players -->
+<div class="flex flex-wrap gap-4 z-10 min-h-[120px] content-start">
+<!-- Current User / Active Player -->
+<div class="flex flex-col items-center gap-1">
+<div class="w-16 h-16 rounded-full overflow-hidden marquee-glow-primary border-2 border-primary">
+<img alt="Player 1" class="w-full h-full object-cover" data-alt="Cinematic portrait of a male user in dark environment with warm gold lighting on face, moody premium aesthetic, high contrast photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-R475BA1u7PZPKHFTVit_Ie5GMG5UYufarR-rR1XvEavm2gggJxAtWx_3w4eAOWDTg7Q4pq7H5h0Lo7n78g8g9n3Zx5d-i6hOse66bd_lDvjMZcMXn3l4Mrfmtq4dUdx6rAcTGqnHGDIQWWKasifesqgP9fw2tOe6lYMC2TL96Weevjhw5cZfZumMVzq1-AvT7GFcEni7kD_ZEba6hK4k7Nzb7R8HkS-JMdAPr68nOsUNqjIKSv6oDA">
+</div>
+<span class="font-label-caps text-label-caps text-primary">YOU</span>
+</div>
+<div class="flex flex-col items-center gap-1">
+<div class="w-16 h-16 rounded-full overflow-hidden border border-outline-variant/30">
+<img alt="Player 2" class="w-full h-full object-cover" data-alt="Cinematic portrait of a female user with neon rim lighting in a dark theater environment, premium moody aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlGeIqlupEb9lLBdSl_GWhYlAK5WE8UPFJcwNYgmnB80BdSDWU66odeN_vUpzJfWjtEvp-dwYUqKIM-IpQn5rY2BJoqEqfH1NikAK9mSid3LymcQ5RuqVudaVS9_jY0XV7-6JdLkYuiy_2l_jtVZBQA8s6e-XLP8uOAi6XdmIQPTp8ae2LgLgjhMMSupyHbVFRvzyw6K2z8FG_-N-CqtotW-YXi5ZOPnyuOAaBCEvvpJMEUvO-YMkIsA">
+</div>
+<span class="font-label-caps text-label-caps text-on-surface">Priya</span>
+</div>
+<div class="flex flex-col items-center gap-1">
+<div class="w-16 h-16 rounded-full overflow-hidden border border-outline-variant/30">
+<img alt="Player 3" class="w-full h-full object-cover" data-alt="Cinematic portrait of an older male user with glasses, dramatic shadow, moody premium lighting setup." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4CDnGWgQ5BvhdSSN5hw1r4i2JL9bbGm6680ntpfjHdqfrvMnwQDHBh6uADSzR7C9oma2lgtfU_jAUckEDPX9ZYXrlogqde6t34m3fGts2FwoPOm7M-fXM1iY7VKBNMOtmwPe2dQBvoXskQo0nIMrb7As2eDC7yCkIWa5AfsWug5fNWL2C8xEJqFrrsyf-iCW4ZlFmh6ZWp1QCTjB1Lfen1X3Yy9iKzZoZo-o7cPWEEBuVEGNB5Tmv5w">
+</div>
+<span class="font-label-caps text-label-caps text-on-surface">Raj</span>
+</div>
+</div>
+<button class="w-full py-4 rounded-full bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 text-on-surface font-body-lg text-body-lg transition-colors z-10">
+                    Leave Team
+                </button>
+</div>
+<!-- Team B (Magenta) -->
+<div class="bg-surface rounded-xl p-card-inner border border-secondary-container/20 relative overflow-hidden flex flex-col gap-stack-gap">
+<!-- Atmospheric glow -->
+<div class="absolute -top-20 -left-20 w-64 h-64 bg-secondary-container/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="flex justify-between items-center z-10">
+<h3 class="font-headline-md text-headline-md text-secondary-container">Team Magenta</h3>
+<span class="font-body-md text-body-md text-on-surface bg-surface-container-high px-3 py-1 rounded-full text-sm">2/5</span>
+</div>
+<!-- Players -->
+<div class="flex flex-wrap gap-4 z-10 min-h-[120px] content-start">
+<div class="flex flex-col items-center gap-1">
+<div class="w-16 h-16 rounded-full overflow-hidden border border-outline-variant/30">
+<img alt="Player 4" class="w-full h-full object-cover" data-alt="Cinematic portrait of a young male with magenta rim lighting in a dark environment, premium moody aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrLmOYMOP48uuHypOKjA4V2ozw3RhotPzY2GGnrTDWp6ryzWjNaovPs2c0J_j29f25K0w1F9x2pK96J1uTsgGfyQQvVwi6UF2C52Cjkt66_B7eiUsC_Jj-80_dUt8vs0iBM_S9qn4qN0wfBY9iYJQZEiKdE7j4et4zI5GfQsreAhgIdQexHvH7_LTj3BifZS2zy1PYnAhTYQI2UuBXahGrAAwuWyet4dywWR3HsRutBVpuwDNM9_2ZDw">
+</div>
+<span class="font-label-caps text-label-caps text-on-surface">Kiran</span>
+</div>
+<div class="flex flex-col items-center gap-1">
+<div class="w-16 h-16 rounded-full overflow-hidden border border-outline-variant/30">
+<img alt="Player 5" class="w-full h-full object-cover" data-alt="Cinematic portrait of a young female smiling softly, dramatic lighting, premium dark aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDchDA-w3avzP4ScUJuJzxgQe4qAlZWPs0WJB3OHl33NizTg2Tml9E2_zF2_gEPrz5UI7rxwL5e9bgH6o_Xoh23mb6FG98r3-axbU_8arW1vjnZrFS9opQOEilizI9dLikRmM1yEbzXICNHBEAxBAap57Z9zcjL0_NLsW_PZO1qALLos9CpdPyeL0Egmg9gO4WZj42LLHZdph2wYTu8NbF07ICDwkQQxuNNZ1ofbpRlDF5oB7USj1nF2Q">
+</div>
+<span class="font-label-caps text-label-caps text-on-surface">Deepa</span>
+</div>
+<!-- Empty Slot Indicator -->
+<div class="flex flex-col items-center gap-1 opacity-50">
+<div class="w-16 h-16 rounded-full border border-dashed border-outline-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-outline-variant">person_add</span>
+</div>
+<span class="font-label-caps text-label-caps text-outline-variant">Open</span>
+</div>
+</div>
+<button class="w-full py-4 rounded-full bg-secondary-container/20 hover:bg-secondary-container/30 border border-secondary-container/50 text-secondary-container font-body-lg text-body-lg transition-colors z-10">
+                    Join Team
+                </button>
+</div>
+</div>
+<!-- Battle Settings -->
+<div class="bg-surface-container rounded-xl p-card-inner flex flex-col gap-stack-gap">
+<h3 class="font-body-lg text-body-lg text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined">tune</span> Battle Settings
+            </h3>
+<div class="flex flex-col gap-6">
+<!-- Rounds Setting -->
+<div class="flex flex-col gap-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant">NUMBER OF ROUNDS</label>
+<div class="flex gap-2 bg-surface p-1 rounded-lg w-fit">
+<button class="px-6 py-2 rounded-md font-body-md text-body-md text-on-surface hover:bg-surface-container transition-colors">3</button>
+<button class="px-6 py-2 rounded-md bg-surface-container-high font-body-md text-body-md text-primary font-bold shadow-sm">5</button>
+<button class="px-6 py-2 rounded-md font-body-md text-body-md text-on-surface hover:bg-surface-container transition-colors">7</button>
+</div>
+</div>
+<!-- Categories Setting -->
+<div class="flex flex-col gap-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant">CATEGORIES IN PLAY</label>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 rounded-full border border-primary text-primary font-body-md text-body-md flex items-center gap-2 marquee-glow-primary bg-primary/10">
+<span class="material-symbols-outlined text-sm">check</span> Dialogue
+                        </button>
+<button class="px-4 py-2 rounded-full border border-primary text-primary font-body-md text-body-md flex items-center gap-2 marquee-glow-primary bg-primary/10">
+<span class="material-symbols-outlined text-sm">check</span> Song
+                        </button>
+<button class="px-4 py-2 rounded-full border border-primary text-primary font-body-md text-body-md flex items-center gap-2 marquee-glow-primary bg-primary/10">
+<span class="material-symbols-outlined text-sm">check</span> Story
+                        </button>
+<button class="px-4 py-2 rounded-full border border-outline-variant text-on-surface-variant font-body-md text-body-md hover:border-primary/50 hover:text-primary/80 transition-colors">
+                            Trivia
+                        </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Area -->
+<div class="mt-4 flex flex-col items-center gap-4">
+<button class="w-full md:w-auto min-w-[280px] bg-primary text-on-primary font-headline-md text-headline-md py-4 px-8 rounded-full shadow-[0_4px_20px_rgba(249,188,69,0.3)] hover:scale-105 hover:bg-primary-fixed transition-all duration-200 active:scale-95 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">movie</span> START BATTLE
+            </button>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Waiting for host to start...</p>
+</div>
+</main>
+<!-- BottomNavBar (Hidden on desktop, shown on mobile) -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-lg bg-surface-container-high/90 backdrop-blur-xl border-t border-outline-variant/20 shadow-[0_-4px_20px_rgba(249,188,69,0.15)] flex justify-around items-center px-4 pb-safe pt-2 md:hidden">
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-2 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-caps text-label-caps mt-1">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-2 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-label-caps text-label-caps mt-1">Daily</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 mt-1 scale-110 duration-200 ease-out">
+<span class="material-symbols-outlined">groups</span>
+<span class="font-label-caps text-label-caps mt-1">Rooms</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-2 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-caps text-label-caps mt-1">Profile</span>
+</button>
+</nav>
+
+</body></html>

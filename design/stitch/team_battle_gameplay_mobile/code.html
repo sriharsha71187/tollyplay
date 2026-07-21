@@ -1,0 +1,187 @@
+<!DOCTYPE html><html lang="en" class="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Hanken+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-tertiary-fixed": "#002107",
+                        "on-secondary-fixed": "#40000f",
+                        "outline": "#9c8f7b",
+                        "on-tertiary": "#003911",
+                        "on-error": "#690005",
+                        "on-primary-fixed-variant": "#5e4200",
+                        "tertiary-container": "#4fdd6c",
+                        "surface-container-highest": "#353343",
+                        "on-surface-variant": "#d4c4af",
+                        "surface-tint": "#f9bc45",
+                        "surface-container-low": "#1c1a29",
+                        "surface-container-high": "#2a2838",
+                        "primary-container": "#f5b942",
+                        "surface-container": "#201e2d",
+                        "primary": "#ffda9c",
+                        "background": "#131121",
+                        "on-secondary": "#67001e",
+                        "secondary-fixed": "#ffdadb",
+                        "on-primary-container": "#6a4a00",
+                        "secondary-container": "#a20234",
+                        "secondary-fixed-dim": "#ffb2b9",
+                        "surface-container-lowest": "#0e0c1b",
+                        "outline-variant": "#504535",
+                        "surface-variant": "#353343",
+                        "surface-dim": "#131121",
+                        "primary-fixed-dim": "#f9bc45",
+                        "on-background": "#e5dff5",
+                        "secondary": "#ffb2b9",
+                        "primary-fixed": "#ffdea8",
+                        "tertiary": "#6efa85",
+                        "on-error-container": "#ffdad6",
+                        "error": "#ffb4ab",
+                        "inverse-on-surface": "#312e3f",
+                        "error-container": "#93000a",
+                        "surface": "#131121",
+                        "on-primary-fixed": "#271900",
+                        "surface-bright": "#3a3748",
+                        "inverse-primary": "#7c5800",
+                        "on-surface": "#e5dff5",
+                        "inverse-surface": "#e5dff5",
+                        "on-tertiary-container": "#005d21",
+                        "on-secondary-fixed-variant": "#91002d",
+                        "on-primary": "#422d00",
+                        "tertiary-fixed": "#72fe88",
+                        "tertiary-fixed-dim": "#53e16f",
+                        "on-tertiary-fixed-variant": "#00531c",
+                        "on-secondary-container": "#ffacb4"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "section-gap": "32px",
+                        "base": "8px",
+                        "container-padding": "20px",
+                        "card-inner": "24px",
+                        "stack-gap": "16px"
+                    },
+                    fontFamily: {
+                        "label-caps": ["Hanken Grotesk"],
+                        "headline-md": ["Anton"],
+                        "display-xl": ["Anton"],
+                        "headline-lg": ["Anton"],
+                        "body-md": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Anton"],
+                        "score-display": ["Anton"]
+                    },
+                    fontSize: {
+                        "label-caps": ["12px", { lineHeight: "16px", letterSpacing: "0.1em", fontWeight: "700" }],
+                        "headline-md": ["24px", { lineHeight: "30px", fontWeight: "400" }],
+                        "display-xl": ["64px", { lineHeight: "72px", letterSpacing: "0.02em", fontWeight: "400" }],
+                        "headline-lg": ["32px", { lineHeight: "40px", letterSpacing: "0.04em", fontWeight: "400" }],
+                        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+                        "body-lg": ["18px", { lineHeight: "26px", fontWeight: "500" }],
+                        "headline-lg-mobile": ["28px", { lineHeight: "34px", fontWeight: "400" }],
+                        "score-display": ["48px", { lineHeight: "48px", fontWeight: "400" }]
+                    }
+                }
+            }
+        }
+    }catch(_e){}</script><meta charset="utf-8"></head><body class="bg-background text-on-background min-h-screen relative flex flex-col font-body-md" style="background-color: rgb(18, 16, 31);">
+
+<!-- Active Gameplay Header -->
+<header class="flex flex-col px-container-padding py-base sticky top-0 z-50 bg-background/80 backdrop-blur-md">
+<div class="flex justify-between items-center mb-4">
+<span class="font-headline-md text-headline-md text-primary">TEAM A's TURN</span>
+<span class="material-symbols-outlined text-primary text-3xl" data-original-icon="local_fire_department">local_fire_department</span>
+</div>
+<!-- Scoreboard -->
+<div class="flex justify-between items-center bg-surface-container rounded-lg p-3 marquee-glow">
+<div class="flex flex-col items-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant">TEAM A</span>
+<span class="font-score-display text-score-display text-primary">120</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-headline-md text-headline-md text-on-background">VS</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant">TEAM B</span>
+<span class="font-score-display text-score-display text-on-surface">95</span>
+</div>
+</div>
+</header>
+<!-- Main Game Area -->
+<main class="flex-1 px-container-padding flex flex-col justify-center gap-stack-gap overflow-hidden pb-[120px]">
+<!-- Timer -->
+<div class="text-center mb-2">
+<span id="countdown" class="font-display-xl text-display-xl text-primary timer-pulse transition-colors duration-300">30</span>
+<span class="block font-label-caps text-label-caps text-on-surface-variant mt-1">SECONDS LEFT</span>
+</div>
+<!-- Trivia Card -->
+<div class="bg-surface rounded-3xl p-card-inner flex flex-col items-center text-center relative marquee-glow flex-1 min-h-[40vh] justify-center">
+<div class="absolute top-4 bg-surface-container-highest px-4 py-1 rounded-full flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+<span class="font-label-caps text-label-caps text-primary tracking-widest">DIALOGUE</span>
+</div>
+<p class="font-headline-lg-mobile text-headline-lg-mobile text-on-background mt-8 mb-4">
+                "Evadu kodithe dhimma thirigi mind block ayipothundo..."
+            </p>
+<div class="mt-auto w-full text-on-surface-variant font-body-md text-body-md italic">
+                Guess the movie!
+            </div>
+</div>
+<!-- Action Buttons -->
+<div class="flex gap-4 w-full mt-4">
+<button class="flex-1 py-4 rounded-full border-2 border-outline text-on-surface font-headline-md text-headline-md uppercase tracking-wider hover:bg-surface-container transition-colors min-h-[56px] flex items-center justify-center">
+                Pass
+            </button>
+<button class="flex-1 py-4 rounded-full bg-primary text-on-primary-fixed font-headline-md text-headline-md uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all min-h-[56px] flex items-center justify-center shadow-[0_4px_14px_rgba(249,188,69,0.4)]">
+                Correct
+            </button>
+</div>
+</main>
+<!-- Audience/Opposition (Bottom Docked) -->
+<div class="fixed bottom-0 w-full bg-surface-container-high/90 backdrop-blur-xl rounded-t-3xl pt-4 pb-safe px-container-padding z-40 border-t border-outline-variant/20 shadow-[0_-4px_20px_rgba(249,188,69,0.1)]">
+<div class="text-center mb-3">
+<span class="font-label-caps text-label-caps text-on-surface-variant">OPPOSITION WATCHING</span>
+</div>
+<div class="flex justify-center gap-4 pb-4">
+<div class="flex flex-col items-center">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-surface-variant opacity-70">
+<img class="w-full h-full object-cover" data-alt="A cinematic portrait of a young Indian man in dramatic neon lighting, representing a game player in a dark room. The mood is intense and competitive, with deep shadows and vibrant cyan and magenta highlights. 8k resolution, photorealistic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxDR9bWHuckq6bckG44KNOctT2yzwW4OzUdz1q92YjiOc04zRTSm-1QAznkCAj6w-54R4YKqditBqKiZJMsWB4qqOGhAi_dpubnVZzIIid6KjBhx27JgrJlrb6_6q3BoBRYgnia8NIkfmDZemsbEfqhS5lKQKLsBOy0enqmfdU5IYDBAk7d5m9NKQ-n4lYKUE2dsx3zZwFVuhvjohOqc63ugW0_xUeEAFg020JYihFCGjAvJ1x-gftZw">
+</div>
+</div>
+<div class="flex flex-col items-center">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-surface-variant opacity-70">
+<img class="w-full h-full object-cover" data-alt="A dramatic close-up of a young Indian woman looking intently at a screen, lit by soft golden light in a dark cinematic environment. High contrast, atmospheric film grain, representing an opponent waiting for their turn." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0vh03cbdpNgh8l-aZar1SUXYUOtfDADIMQw2zUi5uz8zNHe75XUu24G8GERQS008vRcIRflU1Bgs4FVGZFyviQGfwij6Yzn-65fDb1g_t90MOCgiUujnz8jQj8MmX6pHjoUDEX71C8E9Z1BLk0ukHHUuyzdj4davtt0gXjtOLrLdOklb6nB99vOr8Va4cwUS7oxqPtT3tEzAsO-cpkKDzIZShlOZHCUs41T0h79WfzRMe9T3Gmgxz2g">
+</div>
+</div>
+<div class="flex flex-col items-center">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-surface-variant opacity-70">
+<img class="w-full h-full object-cover" data-alt="A shadowy portrait of a player in a competitive mobile game, illuminated by the glow of a screen with subtle gold accents. The background is a dark, out-of-focus room, emphasizing focus and anticipation." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhU12UqYrzgatRLC-YHInNh2mHykgBKvwDdmzFHY6iIis7wTC141UY-ck0xRgtzk0gWmiUiRTFMbBm7BPb_n5Q80dcF8Z6kNE3cBzwQ1K5t6EAkCKu34CJuVAS3dE9AuZIGoSLg7ROn99J-bVPQ2Tyg21y44wBdxjQTDRmV1nQ38VcigECebpEDDUochkcUo93kAm1WL53veeLiDwdm9Gc-cZN7M6nkcgeUKc4_k3_gyYvXhNoLpeOmg">
+</div>
+</div>
+</div>
+</div>
+<script>
+        // Simple timer animation logic
+        let timeLeft = 30;
+        const timerElement = document.getElementById('countdown');
+        
+        const countdownInterval = setInterval(() => {
+            timeLeft--;
+            if (timeLeft >= 0) {
+                timerElement.textContent = timeLeft;
+                if(timeLeft < 10) {
+                    timerElement.classList.add('text-error');
+                    timerElement.classList.remove('text-primary');
+                }
+            } else {
+                clearInterval(countdownInterval);
+                timerElement.textContent = "0";
+            }
+        }, 1000);
+    </script>
+
+</body></html>

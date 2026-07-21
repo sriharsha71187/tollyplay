@@ -1,0 +1,280 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>TollyPlay - Chain Gameplay</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Hanken+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-primary": "#7c5800",
+                        "surface-bright": "#3a3748",
+                        "surface": "#131121",
+                        "on-primary-fixed": "#271900",
+                        "on-tertiary-container": "#005d21",
+                        "on-surface": "#e5dff5",
+                        "inverse-surface": "#e5dff5",
+                        "tertiary-fixed": "#72fe88",
+                        "on-primary": "#422d00",
+                        "on-secondary-fixed-variant": "#91002d",
+                        "on-secondary-container": "#ffacb4",
+                        "on-tertiary-fixed-variant": "#00531c",
+                        "tertiary-fixed-dim": "#53e16f",
+                        "surface-variant": "#353343",
+                        "surface-dim": "#131121",
+                        "primary-fixed-dim": "#f9bc45",
+                        "outline-variant": "#504535",
+                        "secondary": "#ffb2b9",
+                        "on-background": "#e5dff5",
+                        "error": "#ffb4ab",
+                        "tertiary": "#6efa85",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#ffdea8",
+                        "error-container": "#93000a",
+                        "inverse-on-surface": "#312e3f",
+                        "on-secondary": "#67001e",
+                        "primary": "#ffda9c",
+                        "background": "#131121",
+                        "surface-container": "#201e2d",
+                        "on-primary-container": "#6a4a00",
+                        "secondary-fixed": "#ffdadb",
+                        "secondary-fixed-dim": "#ffb2b9",
+                        "secondary-container": "#a20234",
+                        "surface-container-lowest": "#0e0c1b",
+                        "on-secondary-fixed": "#40000f",
+                        "on-tertiary-fixed": "#002107",
+                        "on-primary-fixed-variant": "#5e4200",
+                        "outline": "#9c8f7b",
+                        "on-tertiary": "#003911",
+                        "on-error": "#690005",
+                        "on-surface-variant": "#d4c4af",
+                        "tertiary-container": "#4fdd6c",
+                        "surface-container-highest": "#353343",
+                        "primary-container": "#f5b942",
+                        "surface-container-high": "#2a2838",
+                        "surface-tint": "#f9bc45",
+                        "surface-container-low": "#1c1a29"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "card-inner": "24px",
+                        "stack-gap": "16px",
+                        "base": "8px",
+                        "container-padding": "20px",
+                        "section-gap": "32px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-lg": ["Anton"],
+                        "body-md": ["Hanken Grotesk"],
+                        "label-caps": ["Hanken Grotesk"],
+                        "headline-md": ["Anton"],
+                        "display-xl": ["Anton"],
+                        "score-display": ["Anton"],
+                        "headline-lg-mobile": ["Anton"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", { "lineHeight": "26px", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "0.04em", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "30px", "fontWeight": "400" }],
+                        "display-xl": ["64px", { "lineHeight": "72px", "letterSpacing": "0.02em", "fontWeight": "400" }],
+                        "score-display": ["48px", { "lineHeight": "48px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .film-grain {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 10;
+            background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.05"/%3E%3C/svg%3E');
+        }
+        .marquee-glow {
+            box-shadow: 0 0 20px 5px rgba(249, 188, 69, 0.3);
+        }
+        .timer-ring-draining {
+            stroke-dasharray: 188; /* 2 * pi * r (approx r=30) */
+            stroke-dashoffset: 0;
+            animation: drainTimer 10s linear forwards;
+        }
+        @keyframes drainTimer {
+            from { stroke-dashoffset: 0; stroke: #ffda9c; } /* primary */
+            50% { stroke: #ffda9c; }
+            70% { stroke: #ffacb4; } /* secondary (magenta-red intent) */
+            to { stroke-dashoffset: 188; stroke: #ffb4ab; } /* error */
+        }
+        .timer-pulse {
+            animation: pulseWarning 1s infinite alternate;
+        }
+        @keyframes pulseWarning {
+            from { transform: scale(1); opacity: 1; }
+            to { transform: scale(1.05); opacity: 0.8; }
+        }
+        /* Custom scrollbar for chain */
+        .hide-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scroll {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen relative overflow-hidden flex flex-col font-body-md text-body-md md:hidden" style="background-color: rgb(18, 16, 31);">
+<!-- Atmospheric Layer -->
+
+<div class="absolute inset-0 bg-gradient-to-b from-surface-container/50 to-background pointer-events-none z-0"></div>
+<!-- Live Scores / TopAppBar Context -->
+<header class="flex justify-between items-center px-container-padding h-16 w-full z-50 bg-surface/80 backdrop-blur-md relative border-b border-surface-container-highest">
+<div class="flex items-center gap-2">
+<span class="font-headline-md text-headline-md text-primary tracking-wider">TollyPlay</span>
+</div>
+<div class="flex items-center gap-stack-gap">
+<div class="flex flex-col items-end">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Team A</span>
+<span class="font-score-display text-[24px] leading-[24px] text-on-background">240</span>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant"></div>
+<div class="flex flex-col items-start">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Team B</span>
+<span class="font-score-display text-[24px] leading-[24px] text-primary-fixed-dim">180</span>
+</div>
+</div>
+</header>
+<!-- Main Game Canvas -->
+<main class="flex-1 flex flex-col relative z-20 pb-[120px]">
+<!-- Horizontal Scrolling Chain -->
+<div class="w-full pt-section-gap pb-stack-gap overflow-x-auto hide-scroll flex items-center px-container-padding snap-x snap-mandatory">
+<!-- Movie 1 -->
+<div class="flex-shrink-0 w-32 snap-center relative">
+<div class="w-full aspect-[2/3] rounded-lg overflow-hidden bg-surface-container shadow-md border border-outline-variant/30">
+<img class="w-full h-full object-cover" data-alt="A vintage style movie poster featuring an intense, dramatic scene in a dimly lit, high-contrast aesthetic typical of classic neo-noir cinema. Dark shadows dominate, punctuated by bright, sharp highlights, capturing a mood of tension and mystery within a modern cinematic style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkQsXF7VoaY4HG4D8O8SlmEPHw2mhJxfsdg5ifzBwOSJcHmuN4x6XHyEjsKXGaOxVywEvyMJBc8I4FY9_YawGZO7EhnTGocGo9WUifgYjEDK5DXZx_radvYWnoJhzsFNr69oBYztAvMxytpVDubPWqe4KSuJoz2_4pZxUSFr5og8vMAtqnKgJHMbko2AWueYhMDSBkXYPwKavhgIQdH6DiwcgMzBQ9312vZhENct_lxn7XqpKXM_N_FA">
+</div>
+<div class="mt-2 text-center">
+<p class="font-body-md text-body-md text-on-surface truncate">Baahubali</p>
+</div>
+</div>
+<!-- Connection 1 -->
+<div class="flex-shrink-0 w-16 flex items-center justify-center -mx-4 z-10">
+<div class="bg-surface-container-high rounded-full p-1 border-2 border-primary-container/50 shadow-lg relative flex flex-col items-center group">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A close-up headshot of a charismatic Indian actor with a rugged beard, captured in dramatic studio lighting. The lighting creates a premium, cinematic look with a subtle golden rim light against a dark, moody background, conveying a sense of stardom and intensity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhuFwk5PB1M3ovxWFAhzVPjGFegyZ1LCLwbxLjWh2XdDHKSCGrwzlG1nSIm8a2pae83mj35t3-F1ZleaUUHG52pCx_IT-aHOybuz-hfJm8gnNS4XaVzcF-QA4mFveQErb3YOZQXLcFbTo6G1W-VPPlGP28TUh5vr23X5lk56zta3sohdCrSxHIUGa6eJqmkZTUdqLo4WTNd9276wwrytoGRk22p7Lg-5uQr4HiWd4fPVLxpwXIGVjMVg">
+<div class="absolute -bottom-6 bg-surface-container px-2 py-1 rounded text-[10px] text-on-surface border border-outline-variant whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                        Prabhas
+                    </div>
+</div>
+<div class="h-[2px] w-full bg-gradient-to-r from-primary-container/50 to-primary-container/50 absolute z-[-1]"></div>
+</div>
+<!-- Movie 2 -->
+<div class="flex-shrink-0 w-32 snap-center relative">
+<div class="w-full aspect-[2/3] rounded-lg overflow-hidden bg-surface-container shadow-md border border-outline-variant/30">
+<img class="w-full h-full object-cover" data-alt="An energetic, vibrant movie poster showing a high-speed action sequence with sleek cars and dynamic motion blur. The aesthetic is ultra-modern and polished, featuring deep indigo and vibrant neon accents that create a thrilling, cinematic atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3o1C4kO3E6x7BhGoDrjTXTF2PZ0KmM1_9MCifcaqrK-mFAgWtw2YmNr1Z3Xa_p3fP4hjFXsRWzjTyc4_9egq7YIxPU1h4UjNiGDSaGFkgAKm06pDvULTG2QlyZOrot3jd-gHPRjZDgzwV8xcHN5jxD95T8I24lFqtYxgxHF3bopmwhHSjEr7JHuWeAU96xQqSaad0WYESIuXzCteq_tVfFMh99xQcCQl8kabTI3jKhdvQawAvxAHNkA">
+</div>
+<div class="mt-2 text-center">
+<p class="font-body-md text-body-md text-on-surface truncate">Saaho</p>
+</div>
+</div>
+<!-- Connection 2 (Current Focus) -->
+<div class="flex-shrink-0 w-16 flex items-center justify-center -mx-4 z-10">
+<div class="bg-surface-container-high rounded-full p-1 border-2 border-tertiary-container shadow-lg relative flex flex-col items-center">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">movie</span>
+</div>
+<div class="absolute -bottom-6 bg-surface-container px-2 py-1 rounded text-[10px] text-tertiary border border-outline-variant whitespace-nowrap">
+                        Director
+                    </div>
+</div>
+<div class="h-[2px] w-full bg-gradient-to-r from-primary-container/50 to-surface-variant absolute z-[-1]"></div>
+</div>
+<!-- Empty Slot (Awaiting Input) -->
+<div class="flex-shrink-0 w-32 snap-center relative opacity-50">
+<div class="w-full aspect-[2/3] rounded-lg overflow-hidden bg-surface border-2 border-dashed border-outline-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-outline-variant text-3xl">add</span>
+</div>
+<div class="mt-2 text-center">
+<p class="font-body-md text-body-md text-on-surface-variant italic">Waiting...</p>
+</div>
+</div>
+</div>
+<!-- Center: Current Player & Timer -->
+<div class="flex-1 flex flex-col items-center justify-center mt-4">
+<div class="relative w-32 h-32 flex items-center justify-center marquee-glow rounded-full">
+<!-- SVG Timer Ring -->
+<svg class="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 64 64">
+<circle class="stroke-surface-container-high" cx="32" cy="32" fill="none" r="30" stroke-width="4"></circle>
+<circle class="timer-ring-draining" cx="32" cy="32" fill="none" r="30" stroke-linecap="round" stroke-width="4"></circle>
+</svg>
+<!-- Avatar -->
+<img class="w-24 h-24 rounded-full object-cover border-4 border-surface" data-alt="A candid profile photo of a modern gamer, dimly lit by the glow of a screen. The lighting is cinematic and moody, predominantly deep indigo with a soft, warm marquee glow reflecting on their face, capturing a moment of intense focus and excitement." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7EJElUlR8HQ0doPXJROxB7GoojMSHy0ako6zgIAJ_aoqzGa7hfPwxL2CsVmpXR4cGtntHYE0WmwDJwxAb27jp_nizRwF9rVkS5TwyA-N5YyPtD91yX4p8ORfbA9ld3Zd5kKybO1NHinO9T51lnB6ZC-h8yPKRAJoUHhZO6oR8HV6bH4-aETION2_CyluoKSD1UPcRWYdYXMFLPPY21_tgKgT2dh112gwX1no50jW_00sYmmwqSMTLCg">
+<!-- Time Text inside SVG ring visually -->
+<div class="absolute -top-4 bg-error text-on-error font-headline-md text-headline-md px-3 py-1 rounded-full timer-pulse">
+                    08s
+                </div>
+</div>
+<p class="mt-4 font-headline-md text-headline-md text-on-surface tracking-wide">YOUR TURN</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Link a movie by Sujeeth</p>
+</div>
+<!-- Interaction Area (Bottom Section) -->
+<div class="w-full px-container-padding absolute bottom-0 left-0 pb-6 pt-4 bg-gradient-to-t from-surface-dim via-surface-dim to-transparent z-30">
+<!-- Valid Link Targets (Chips) -->
+<div class="flex gap-2 overflow-x-auto hide-scroll mb-4 pb-2">
+<button class="flex items-center gap-1 bg-surface-container px-4 py-2 rounded-full border border-outline-variant opacity-50 cursor-not-allowed shrink-0">
+<span class="font-body-md text-body-md text-on-surface-variant">Hero</span>
+<span class="font-label-caps text-label-caps bg-surface-container-highest px-1.5 py-0.5 rounded text-outline-variant">x0</span>
+</button>
+<button class="flex items-center gap-1 bg-surface-container-high px-4 py-2 rounded-full border border-primary-container/30 shrink-0">
+<span class="font-body-md text-body-md text-primary">Heroine</span>
+<span class="font-label-caps text-label-caps bg-primary/20 px-1.5 py-0.5 rounded text-primary">x2</span>
+</button>
+<button class="flex items-center gap-1 bg-tertiary-container/20 px-4 py-2 rounded-full border border-tertiary-container/50 shrink-0 marquee-glow">
+<span class="font-body-md text-body-md text-tertiary">Director</span>
+<span class="font-label-caps text-label-caps bg-tertiary/20 px-1.5 py-0.5 rounded text-tertiary">x1</span>
+</button>
+</div>
+<!-- Input & Actions -->
+<div class="flex gap-2 items-end">
+<!-- Challenge Button -->
+<button class="shrink-0 w-12 h-12 rounded-xl bg-error-container text-on-error-container flex items-center justify-center active:scale-95 transition-transform shadow-lg border border-error/30">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">gavel</span>
+</button>
+<!-- Search Input Container -->
+<div class="flex-1 relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-on-surface-variant">search</span>
+</div>
+<input class="w-full bg-surface-container text-on-surface border border-outline-variant rounded-xl pl-10 pr-4 py-3 font-body-md text-body-md focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container shadow-inner placeholder-on-surface-variant" placeholder="Name a movie..." type="text" value="Run Raja">
+<!-- Autocomplete Dropdown (Simulated Open State) -->
+<div class="absolute bottom-[calc(100%+8px)] left-0 w-full bg-surface-container-high rounded-xl border border-outline-variant shadow-[0_-4px_20px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col z-40">
+<button class="w-full text-left px-4 py-3 font-body-md text-body-md text-on-surface hover:bg-surface-variant active:bg-surface-variant transition-colors flex items-center gap-3 border-b border-surface">
+<span class="material-symbols-outlined text-primary-fixed-dim">movie</span>
+<span class="">Run Raja Run</span>
+<span class="ml-auto font-label-caps text-label-caps text-tertiary-fixed-dim px-2 py-0.5 bg-tertiary-container/10 rounded">Valid Link</span>
+</button>
+<button class="w-full text-left px-4 py-3 font-body-md text-body-md text-on-surface-variant hover:bg-surface-variant active:bg-surface-variant transition-colors flex items-center gap-3">
+<span class="material-symbols-outlined text-outline-variant">movie</span>
+<span class="">Run</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body></html>

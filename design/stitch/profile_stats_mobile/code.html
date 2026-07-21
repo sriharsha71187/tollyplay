@@ -1,0 +1,303 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>TollyPlay - Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Hanken+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#72fe88",
+                        "outline": "#9c8f7b",
+                        "surface-container-highest": "#353343",
+                        "secondary-fixed": "#ffdadb",
+                        "on-secondary-fixed-variant": "#91002d",
+                        "on-secondary-fixed": "#40000f",
+                        "on-tertiary-fixed": "#002107",
+                        "on-primary-container": "#6a4a00",
+                        "tertiary-fixed-dim": "#53e16f",
+                        "surface-container-lowest": "#0e0c1b",
+                        "surface-container-low": "#1c1a29",
+                        "surface-container-high": "#2a2838",
+                        "outline-variant": "#504535",
+                        "secondary-container": "#a20234",
+                        "on-tertiary": "#003911",
+                        "primary-container": "#f5b942",
+                        "surface-dim": "#131121",
+                        "on-background": "#e5dff5",
+                        "inverse-surface": "#e5dff5",
+                        "primary": "#ffda9c",
+                        "on-error-container": "#ffdad6",
+                        "error": "#ffb4ab",
+                        "on-surface-variant": "#d4c4af",
+                        "tertiary": "#6efa85",
+                        "secondary": "#ffb2b9",
+                        "on-primary-fixed": "#271900",
+                        "background": "#131121",
+                        "surface-container": "#201e2d",
+                        "tertiary-container": "#4fdd6c",
+                        "on-tertiary-fixed-variant": "#00531c",
+                        "surface": "#131121",
+                        "primary-fixed": "#ffdea8",
+                        "on-tertiary-container": "#005d21",
+                        "primary-fixed-dim": "#f9bc45",
+                        "on-error": "#690005",
+                        "surface-bright": "#3a3748",
+                        "on-surface": "#e5dff5",
+                        "on-primary-fixed-variant": "#5e4200",
+                        "error-container": "#93000a",
+                        "inverse-on-surface": "#312e3f",
+                        "surface-tint": "#f9bc45",
+                        "inverse-primary": "#7c5800",
+                        "on-primary": "#422d00",
+                        "surface-variant": "#353343",
+                        "secondary-fixed-dim": "#ffb2b9",
+                        "on-secondary-container": "#ffacb4",
+                        "on-secondary": "#67001e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-padding": "20px",
+                        "card-inner": "24px",
+                        "base": "8px",
+                        "section-gap": "32px",
+                        "stack-gap": "16px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-md": ["Anton"],
+                        "display-xl": ["Anton"],
+                        "body-md": ["Hanken Grotesk"],
+                        "score-display": ["Anton"],
+                        "headline-lg": ["Anton"],
+                        "label-caps": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Anton"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", { "lineHeight": "26px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "30px", "fontWeight": "400" }],
+                        "display-xl": ["64px", { "lineHeight": "72px", "letterSpacing": "0.02em", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "score-display": ["48px", { "lineHeight": "48px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "0.04em", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        /* Film Grain Overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        .marquee-glow {
+            box-shadow: 0 0 20px rgba(249, 188, 69, 0.3);
+        }
+        .glass-card {
+            background: linear-gradient(145deg, rgba(32, 30, 45, 0.8), rgba(28, 26, 41, 0.4));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 218, 156, 0.05);
+        }
+    </style>
+</head>
+<body class="pb-[100px]" style="background-color: rgb(18, 16, 31); background-image: none;">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-surface dark:bg-surface shadow-none z-40">
+<div class="flex justify-between items-center px-container-padding h-16 w-full">
+<div class="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer active:scale-95 transition-transform">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="A stylized, glowing cinematic clapboard icon acting as an avatar. Set against a dark, dramatic background with soft edge lighting reflecting Tollywood glamour." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC93WFXF_ecYMvT8dQieHXvrWfkEfmM0RTYQMM4cMcv1tvpzSHwxfmYnq8cSFPqnKMHkRxREo1rEzS1sFhIXO6hhAr-wN1aojfAvUp11f1roROfvy1twytii9_DoXaLlZ97Tw9T6bJBX7bF8cwbuMueNlZFKSJF9CzWbDX63xWlBMwVOZp4uPQTuUboEbd0HB-9KsmpD_xR2iwe_ac8zuXwAT9lBIDsRfhGhhWtbvQqU4F8SHSVw5wuxg">
+</div>
+<div class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary-container tracking-wider">
+                TollyPlay
+            </div>
+<div class="text-primary dark:text-primary hover:opacity-80 transition-opacity cursor-pointer active:scale-95 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+</div>
+</div>
+</header>
+<main class="px-container-padding py-base max-w-4xl mx-auto space-y-section-gap">
+<!-- Profile Header -->
+<section class="flex flex-col items-center pt-8 pb-4 relative">
+<div class="relative w-32 h-32 md:w-40 md:h-40 rounded-full marquee-glow p-1 bg-gradient-to-br from-primary to-primary-container">
+<img class="w-full h-full rounded-full object-cover border-4 border-surface-container-highest" data-alt="A high-quality profile picture of a cinematic hero persona. Dark background with vibrant rim lighting in gold and purple, characteristic of a high-energy theater environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAODkG3PRk3q2g7cMmJCwu-t0HG4NnlB689G-ixjEpkPrLOUu4d0RTETxe00ubLduOORQciBVRwJDbUI9UM96hc-UV1vpmJirYG3JlUatQ30Kayuklm8MUG3m62fyzCBHZwsdYJrgd-ig8EqrfpHL79TQD20t70Yb1z1QU5QcauDGOyWLjsT73wWYx6qEuyuyvy_O4OZEsTO3vsyZJwTFWIui4Ls9cbbzuNRjMZz_u-QtaRU4zvrrt3rw">
+<!-- Streak Badge Overlay -->
+<div class="absolute -bottom-2 -right-2 bg-surface-container-highest rounded-full p-1 shadow-lg">
+<div class="bg-gradient-to-t from-[#ff512f] to-[#dd2476] rounded-full w-10 h-10 flex items-center justify-center border-2 border-surface">
+<span class="material-symbols-outlined text-white text-lg" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</div>
+</div>
+</div>
+<div class="mt-stack-gap text-center">
+<h1 class="font-display-xl text-display-xl text-primary">Tolly Hero</h1>
+<div class="flex items-center justify-center gap-2 mt-2">
+<span class="bg-secondary-container text-on-secondary-container font-label-caps text-label-caps px-3 py-1 rounded-full uppercase">Level 42</span>
+<span class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">local_fire_department</span> 42 Day Streak
+                    </span>
+</div>
+</div>
+</section>
+<!-- Stats Grid (Bento Style) -->
+<section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="glass-card rounded-xl p-4 flex flex-col items-center justify-center relative overflow-hidden group hover:scale-[1.02] transition-transform">
+<div class="absolute inset-0 bg-primary opacity-0 group-hover:opacity-5 transition-opacity"></div>
+<span class="material-symbols-outlined text-primary text-3xl mb-2">emoji_events</span>
+<span class="font-score-display text-score-display text-on-surface">1,204</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest mt-1">Total Wins</span>
+</div>
+<div class="glass-card rounded-xl p-4 flex flex-col items-center justify-center relative overflow-hidden group hover:scale-[1.02] transition-transform">
+<div class="absolute inset-0 bg-tertiary opacity-0 group-hover:opacity-5 transition-opacity"></div>
+<span class="material-symbols-outlined text-tertiary text-3xl mb-2">diamond</span>
+<span class="font-score-display text-score-display text-on-surface">342</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest mt-1">Deep Cuts</span>
+</div>
+<div class="glass-card rounded-xl p-4 flex flex-col items-center justify-center relative overflow-hidden group hover:scale-[1.02] transition-transform">
+<div class="absolute inset-0 bg-secondary opacity-0 group-hover:opacity-5 transition-opacity"></div>
+<span class="material-symbols-outlined text-secondary text-3xl mb-2">whatshot</span>
+<span class="font-score-display text-score-display text-on-surface">89</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest mt-1">Best Streak</span>
+</div>
+<div class="glass-card rounded-xl p-4 flex flex-col items-center justify-center relative overflow-hidden group hover:scale-[1.02] transition-transform bg-gradient-to-br from-surface-container to-surface-container-high border-primary-container/20 border">
+<div class="absolute inset-0 bg-primary-container opacity-5"></div>
+<span class="material-symbols-outlined text-primary-container text-3xl mb-2" style="font-variation-settings: 'FILL' 1;">movie</span>
+<span class="font-headline-md text-headline-md text-primary-fixed text-center leading-tight">90s<br>Expert</span>
+<span class="font-label-caps text-label-caps text-primary-container uppercase tracking-widest mt-2">Fav Era</span>
+</div>
+</section>
+<!-- Earned Badges -->
+<section>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-stack-gap flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">military_tech</span> Badges
+            </h2>
+<div class="flex overflow-x-auto gap-4 pb-4 snap-x no-scrollbar">
+<!-- Badge 1 -->
+<div class="glass-card rounded-lg p-card-inner min-w-[140px] flex flex-col items-center text-center snap-center flex-shrink-0">
+<div class="w-16 h-16 rounded-full bg-surface-container-highest border border-outline-variant flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(110,250,133,0.15)]">
+<span class="material-symbols-outlined text-tertiary text-3xl" style="font-variation-settings: 'FILL' 1;">search</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface">Deep Cut Hunter</span>
+</div>
+<!-- Badge 2 -->
+<div class="glass-card rounded-lg p-card-inner min-w-[140px] flex flex-col items-center text-center snap-center flex-shrink-0 relative">
+<!-- Inner glow for premium badge -->
+<div class="absolute inset-0 rounded-lg shadow-[inset_0_0_20px_rgba(249,188,69,0.05)] pointer-events-none"></div>
+<div class="w-16 h-16 rounded-full bg-gradient-to-br from-primary-container to-primary-fixed border border-primary flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(249,188,69,0.2)]">
+<span class="material-symbols-outlined text-on-primary-container text-3xl" style="font-variation-settings: 'FILL' 1;">link_off</span>
+</div>
+<span class="font-body-md text-body-md text-primary-fixed">Chain Breaker</span>
+</div>
+<!-- Badge 3 -->
+<div class="glass-card rounded-lg p-card-inner min-w-[140px] flex flex-col items-center text-center snap-center flex-shrink-0 opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer">
+<div class="w-16 h-16 rounded-full bg-surface-container border border-surface-variant flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-on-surface-variant text-3xl">star</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant">Blockbuster</span>
+</div>
+<!-- Badge 4 -->
+<div class="glass-card rounded-lg p-card-inner min-w-[140px] flex flex-col items-center text-center snap-center flex-shrink-0 opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer">
+<div class="w-16 h-16 rounded-full bg-surface-container border border-surface-variant flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-on-surface-variant text-3xl">theater_comedy</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant">Drama King</span>
+</div>
+</div>
+</section>
+<!-- Friends / Head-to-Head -->
+<section>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-stack-gap flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">group</span> Rivals
+            </h2>
+<div class="space-y-2">
+<!-- Rival 1 -->
+<div class="glass-card rounded-xl p-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<img class="w-12 h-12 rounded-full object-cover" data-alt="A small circular avatar of a competitor. Moody lighting, dark background, cinematic feel, neon pink and blue accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_uG_6Clz2qC_lPHNZjHA8lyLVCPEB0iIn3uUFuH7QITWT17U5t_yWxRn6MxV_t3ovG1II3jp9jxUkhezsZZCsaXF2WjR5Q6HNApBDgsAeMIhsxB0AKBpVmNszls_tVl_OTVRZo3STwn52_qRpCz3TWeRXgdtwnlRrmd5IB62zQcT3vUx5CXi7L6AUdJsGTtivUvfMb0BAn5ZiORlyGx4g-YN7Ftqj0Ul9-Io76KARMCN4yxoS3ZQZCA">
+<div>
+<div class="font-body-lg text-body-lg text-on-surface">Cinema Buff 99</div>
+<div class="font-body-md text-body-md text-tertiary-fixed-dim text-sm">You are leading</div>
+</div>
+</div>
+<div class="flex items-center gap-2 bg-surface-container-highest px-3 py-1 rounded-full font-headline-md text-headline-md">
+<span class="text-tertiary">14</span>
+<span class="text-outline-variant">-</span>
+<span class="text-on-surface-variant">9</span>
+</div>
+</div>
+<!-- Rival 2 -->
+<div class="glass-card rounded-xl p-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<img class="w-12 h-12 rounded-full object-cover" data-alt="A small circular avatar of another competitor. High contrast, dark theatrical setting, subtle gold rim light." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdTDnuYP4RZqUX1jY8O3ts1Qcz2P0s8OzxatN7Ofrpaa3lDdI0uhqYdRlk74ZVzgTLD7AYNY5VH3wbeARVYxJ4sok6zhNoSNnSdzoThHPOj7vEAwiYASNvYSdO0xC0JiP2bF4cLJGusyMEMCa0pk6u4mqpArNOXkVM8a5x_dPgwZDJ7OAZDB3dfw7oSek2AiPDiw6E3w4IM6HkRWoEYNvXn1hMkSy_OVv-A5_EK7Jo8jPcb6SkW0BYdQ">
+<div>
+<div class="font-body-lg text-body-lg text-on-surface">Tollywood Fan</div>
+<div class="font-body-md text-body-md text-secondary-fixed text-sm">You are trailing</div>
+</div>
+</div>
+<div class="flex items-center gap-2 bg-surface-container-highest px-3 py-1 rounded-full font-headline-md text-headline-md">
+<span class="text-on-surface-variant">5</span>
+<span class="text-outline-variant">-</span>
+<span class="text-secondary">12</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full rounded-t-lg z-50 bg-surface-container dark:bg-surface-container shadow-lg md:hidden">
+<div class="fixed bottom-0 left-0 w-full flex justify-around items-center h-20 px-4 pb-2">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-200 w-16" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-label-caps text-label-caps">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-200 w-16" href="#">
+<span class="material-symbols-outlined mb-1">sports_esports</span>
+<span class="font-label-caps text-label-caps">Games</span>
+</a>
+<!-- Active Tab: Profile -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 shadow-[0_0_15px_rgba(249,188,69,0.3)] active:scale-90 transition-transform duration-200 -mt-2" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-caps text-label-caps">Profile</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-200 w-16" href="#">
+<span class="material-symbols-outlined mb-1">military_tech</span>
+<span class="font-label-caps text-label-caps">Badges</span>
+</a>
+</div>
+</nav>
+<style>
+        /* Hide scrollbar for badge section but keep functionality */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+
+
+
+</body></html>

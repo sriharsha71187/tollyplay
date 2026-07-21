@@ -1,0 +1,270 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Party Room Lobby</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Hanken+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-primary": "#7c5800",
+                        "surface-bright": "#3a3748",
+                        "surface": "#131121",
+                        "on-primary-fixed": "#271900",
+                        "on-tertiary-container": "#005d21",
+                        "on-surface": "#e5dff5",
+                        "inverse-surface": "#e5dff5",
+                        "tertiary-fixed": "#72fe88",
+                        "on-primary": "#422d00",
+                        "on-secondary-fixed-variant": "#91002d",
+                        "on-secondary-container": "#ffacb4",
+                        "on-tertiary-fixed-variant": "#00531c",
+                        "tertiary-fixed-dim": "#53e16f",
+                        "surface-variant": "#353343",
+                        "surface-dim": "#131121",
+                        "primary-fixed-dim": "#f9bc45",
+                        "outline-variant": "#504535",
+                        "secondary": "#ffb2b9",
+                        "on-background": "#e5dff5",
+                        "error": "#ffb4ab",
+                        "tertiary": "#6efa85",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#ffdea8",
+                        "error-container": "#93000a",
+                        "inverse-on-surface": "#312e3f",
+                        "on-secondary": "#67001e",
+                        "primary": "#ffda9c",
+                        "background": "#131121",
+                        "surface-container": "#201e2d",
+                        "on-primary-container": "#6a4a00",
+                        "secondary-fixed": "#ffdadb",
+                        "secondary-fixed-dim": "#ffb2b9",
+                        "secondary-container": "#a20234",
+                        "surface-container-lowest": "#0e0c1b",
+                        "on-secondary-fixed": "#40000f",
+                        "on-tertiary-fixed": "#002107",
+                        "on-primary-fixed-variant": "#5e4200",
+                        "outline": "#9c8f7b",
+                        "on-tertiary": "#003911",
+                        "on-error": "#690005",
+                        "on-surface-variant": "#d4c4af",
+                        "tertiary-container": "#4fdd6c",
+                        "surface-container-highest": "#353343",
+                        "primary-container": "#f5b942",
+                        "surface-container-high": "#2a2838",
+                        "surface-tint": "#f9bc45",
+                        "surface-container-low": "#1c1a29"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "card-inner": "24px",
+                        "stack-gap": "16px",
+                        "base": "8px",
+                        "container-padding": "20px",
+                        "section-gap": "32px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-lg": ["Anton"],
+                        "body-md": ["Hanken Grotesk"],
+                        "label-caps": ["Hanken Grotesk"],
+                        "headline-md": ["Anton"],
+                        "display-xl": ["Anton"],
+                        "score-display": ["Anton"],
+                        "headline-lg-mobile": ["Anton"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", { "lineHeight": "26px", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "0.04em", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "30px", "fontWeight": "400" }],
+                        "display-xl": ["64px", { "lineHeight": "72px", "letterSpacing": "0.02em", "fontWeight": "400" }],
+                        "score-display": ["48px", { "lineHeight": "48px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .film-grain {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.05"/%3E%3C/svg%3E');
+            pointer-events: none;
+            z-index: 10;
+        }
+        .marquee-glow {
+            box-shadow: 0 0 15px rgba(249,188,69,0.3);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen relative overflow-x-hidden flex flex-col md:hidden" style="background-color: rgb(18, 16, 31);">
+
+<div class="fixed inset-0 pointer-events-none" style="background: radial-gradient(circle at 50% 0%, rgba(249,188,69,0.05) 0%, transparent 70%); z-index: 0;"></div>
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface font-headline-md text-headline-md shadow-none flex justify-between items-center px-container-padding h-16 w-full z-50 sticky top-0">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary cursor-pointer active:scale-95 transition-transform" data-icon="arrow_back" data-weight="fill" style="font-variation-settings: 'FILL' 1;">arrow_back</span>
+<h1 class="text-primary dark:text-primary tracking-wider font-headline-md text-headline-md">TollyPlay</h1>
+</div>
+<div class="flex items-center">
+<span class="text-primary dark:text-primary text-body-md font-body-md mr-1">🔥 5</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col px-container-padding pt-stack-gap pb-32 z-10 relative overflow-y-auto">
+<!-- Room Code Header -->
+<section class="flex flex-col items-center justify-center mb-section-gap">
+<h2 class="font-label-caps text-label-caps text-on-surface-variant mb-2 tracking-widest uppercase">Room Code</h2>
+<div class="flex items-center justify-center gap-4 bg-surface-container rounded-3xl p-6 w-full max-w-sm relative overflow-hidden group cursor-pointer active:scale-95 transition-transform" id="copy-code-btn">
+<div class="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="font-display-xl text-display-xl text-primary tracking-widest">TXJ89L</div>
+<div class="flex flex-col gap-2 ml-4">
+<button class="bg-surface-container-high rounded-full p-3 text-on-surface hover:text-primary transition-colors flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined" data-icon="content_copy">content_copy</span>
+</button>
+<button class="bg-surface-container-high rounded-full p-3 text-on-surface hover:text-primary transition-colors flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+</button>
+</div>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant mt-2 text-sm" id="copy-feedback">Tap to copy code</p>
+</section>
+<!-- Mode Selector -->
+<section class="mb-section-gap w-full flex justify-center">
+<div class="bg-surface-container rounded-full p-1 flex w-full max-w-sm">
+<button class="flex-1 rounded-full py-3 px-4 font-headline-md text-headline-md bg-primary text-on-primary-fixed shadow-md transition-all active:scale-95">Chain</button>
+<button class="flex-1 rounded-full py-3 px-4 font-headline-md text-headline-md text-on-surface-variant hover:text-primary transition-colors active:scale-95">Katha</button>
+</div>
+</section>
+<!-- Player Grid -->
+<section class="mb-section-gap flex-1">
+<div class="flex justify-between items-end mb-4">
+<h3 class="font-headline-md text-headline-md text-on-surface">Players (3/6)</h3>
+</div>
+<div class="grid grid-cols-3 gap-x-4 gap-y-6">
+<!-- Host Player -->
+<div class="flex flex-col items-center gap-2 relative group">
+<div class="relative">
+<img class="w-16 h-16 rounded-full object-cover border-2 border-primary marquee-glow z-10 relative shadow-[0_0_20px_rgba(249,188,69,0.4)]" data-alt="A stylized, cinematic 3D avatar of a young man with trendy hair and glasses, lit by neon cinema lighting, against a dark indigo background. High energy, premium Tollywood vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5zAaFRqI88l9T_G3nwEMordeeyhYWitNU1lQ5Y4XtEhHU4hI9WbO9qb6uHWPRuAyrw57WrlrjijrQxxsY0i9SjcP8-iy7EBuoreokVLGarqLal8YMUdxLk4PfoXmJqi489OL8OxelngySmt6Q-abzDhx1V5yyy1xxV8-aA2bzLIwMNvy3DU_Stin4oyIJhZ18hIZJ_p3xngJVZ_Vufwmg_2JX88gYh0oyz20QP4J9tOFDEbl_ScTXnw">
+<div class="absolute -top-3 -right-2 bg-surface rounded-full p-1 z-20">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="crown" data-weight="fill" style="font-variation-settings: 'FILL' 1;">crown</span>
+</div>
+</div>
+<span class="font-label-caps text-label-caps text-primary text-center truncate w-full">You (Host)</span>
+</div>
+<!-- Joined Player 1 -->
+<div class="flex flex-col items-center gap-2">
+<img class="w-16 h-16 rounded-full object-cover border-2 border-surface-container-highest shadow-md" data-alt="A stylized, cinematic 3D avatar of a young woman with a vibrant red headscarf, cinematic lighting, dark moody background. Premium party app style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrc0Jc_oL-cLx8UaLXvVEdokweDrFU5ptVqIgQAdCPteY_Ea6sB3r4fRKyWBq7X-l0ikNTqYFn0osM85p7elC8dJjK2pdsA9xqPAJf85sJA1GI_6c0tq3z6vXTrmubzVsnZ9wlE4BLCAQkITob_mFZ8tZmrRwbU79-Pg6mgtrLzepMHLu_cMrWkrj8fonhxvpbwiyPVwdrHPo99HZL1Qow4xJo4DmaGBGC_U4h7WXZoZaL_mwdkSQPBg">
+<span class="font-label-caps text-label-caps text-on-surface text-center truncate w-full">Rahul_K</span>
+</div>
+<!-- Joined Player 2 -->
+<div class="flex flex-col items-center gap-2">
+<img class="w-16 h-16 rounded-full object-cover border-2 border-surface-container-highest shadow-md" data-alt="A stylized, cinematic 3D avatar of a cool guy with a leather jacket, moody rim lighting, dark cinema background. High energy party game aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYq_WElXMKxwkbRHVXpkc8wBg9NUtd1X5hCJFGE5hFMcw8ZpcbcPdgM4i-d9IS3o7OKpmXAyOQ6jIi9OElfV-q92CbAWup99160v4iv-3aOXb__4NzbUQlRPhoW2ca2Pu2SJteOktWN3qpzp_HEkXrlT5YmbIxXaejieMXQmVmdl9ln8am5WdKUrrnET-2wMQa9ydB91MBDdrQxw_w_jX0hTxyRSdz_Z_smnsMWtmTpJv8JiY_xd25Nw">
+<span class="font-label-caps text-label-caps text-on-surface text-center truncate w-full">Priya99</span>
+</div>
+<!-- Empty Slot 1 -->
+<div class="flex flex-col items-center gap-2">
+<div class="w-16 h-16 rounded-full border-2 border-dashed border-outline-variant flex items-center justify-center bg-surface-container-low">
+<span class="material-symbols-outlined text-outline-variant" data-icon="person_add">person_add</span>
+</div>
+<span class="font-label-caps text-label-caps text-outline-variant text-center">Waiting...</span>
+</div>
+<!-- Empty Slot 2 -->
+<div class="flex flex-col items-center gap-2">
+<div class="w-16 h-16 rounded-full border-2 border-dashed border-outline-variant flex items-center justify-center bg-surface-container-low">
+<span class="material-symbols-outlined text-outline-variant" data-icon="person_add">person_add</span>
+</div>
+<span class="font-label-caps text-label-caps text-outline-variant text-center">Waiting...</span>
+</div>
+<!-- Empty Slot 3 -->
+<div class="flex flex-col items-center gap-2">
+<div class="w-16 h-16 rounded-full border-2 border-dashed border-outline-variant flex items-center justify-center bg-surface-container-low">
+<span class="material-symbols-outlined text-outline-variant" data-icon="person_add">person_add</span>
+</div>
+<span class="font-label-caps text-label-caps text-outline-variant text-center">Waiting...</span>
+</div>
+</div>
+</section>
+<!-- Settings Panel (Collapsible) -->
+<section class="bg-surface-container rounded-[2rem] p-card-inner mb-8">
+<button class="flex justify-between items-center w-full mb-4 group" onclick="document.getElementById('settings-content').classList.toggle('hidden')">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="settings">settings</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Game Settings</h3>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors" data-icon="expand_more">expand_more</span>
+</button>
+<div class="flex flex-col gap-6" id="settings-content">
+<!-- Turn Timer -->
+<div>
+<label class="font-label-caps text-label-caps text-on-surface-variant block mb-3">Turn Timer</label>
+<div class="flex gap-2">
+<button class="flex-1 rounded-full py-2 bg-primary-container text-on-primary-container font-body-md text-body-md active:scale-95 transition-transform border border-primary">15s</button>
+<button class="flex-1 rounded-full py-2 bg-surface-container-high text-on-surface font-body-md text-body-md active:scale-95 transition-transform border border-transparent hover:border-outline-variant">30s</button>
+<button class="flex-1 rounded-full py-2 bg-surface-container-high text-on-surface font-body-md text-body-md active:scale-95 transition-transform border border-transparent hover:border-outline-variant">45s</button>
+</div>
+</div>
+<!-- Rounds -->
+<div>
+<label class="font-label-caps text-label-caps text-on-surface-variant block mb-3">Rounds</label>
+<div class="flex items-center gap-4 bg-surface-container-high rounded-full p-2 w-max">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface hover:bg-surface-variant transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="remove">remove</span>
+</button>
+<span class="font-headline-md text-headline-md text-on-surface w-6 text-center">3</span>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface hover:bg-surface-variant transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+<!-- Link Exhaustion Limit -->
+<div>
+<label class="font-label-caps text-label-caps text-on-surface-variant block mb-3">Actor Usage Limit</label>
+<div class="flex items-center justify-between bg-surface-container-high p-4 rounded-3xl">
+<span class="font-body-md text-body-md text-on-surface">Max 3 times per actor</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value="">
+<div class="w-11 h-6 bg-surface-variant rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Action Button (Pinned) -->
+<div class="fixed bottom-0 left-0 w-full p-container-padding bg-surface-container/90 backdrop-blur-md pb-8 z-40 rounded-t-[2rem] border-t-0 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] flex justify-center">
+<button class="w-full max-w-sm rounded-full py-4 px-6 bg-primary font-headline-lg-mobile text-headline-lg-mobile text-on-primary-fixed shadow-[0_0_30px_rgba(249,188,69,0.2)] active:scale-95 transition-all flex justify-center items-center gap-2 group relative overflow-hidden">
+<div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 rounded-full"></div>
+<span class="relative z-10 tracking-wide uppercase">Start Game</span>
+<span class="material-symbols-outlined relative z-10" data-icon="play_arrow" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+<!-- BottomNavBar (Hidden on Top-Level Intent, but included as per JSON structure if needed, though prompt implies destination. Given "Party room lobby" is transactional/focused journey, SUPPRESS BottomNavBar per Semantic Shell Mandate) -->
+<!-- Suppressed BottomNav due to Linear/Transactional intent -->
+<script>
+        document.getElementById('copy-code-btn').addEventListener('click', function() {
+            const feedback = document.getElementById('copy-feedback');
+            feedback.innerText = 'Copied to clipboard!';
+            feedback.classList.add('text-primary');
+            setTimeout(() => {
+                feedback.innerText = 'Tap to copy code';
+                feedback.classList.remove('text-primary');
+            }, 2000);
+        });
+    </script>
+
+
+
+</body></html>

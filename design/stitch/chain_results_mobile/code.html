@@ -1,0 +1,312 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>TollyPlay - Match Results</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#72fe88",
+                        "outline": "#9c8f7b",
+                        "surface-container-highest": "#353343",
+                        "secondary-fixed": "#ffdadb",
+                        "on-secondary-fixed-variant": "#91002d",
+                        "on-secondary-fixed": "#40000f",
+                        "on-tertiary-fixed": "#002107",
+                        "on-primary-container": "#6a4a00",
+                        "tertiary-fixed-dim": "#53e16f",
+                        "surface-container-lowest": "#0e0c1b",
+                        "surface-container-low": "#1c1a29",
+                        "surface-container-high": "#2a2838",
+                        "outline-variant": "#504535",
+                        "secondary-container": "#a20234",
+                        "on-tertiary": "#003911",
+                        "primary-container": "#f5b942",
+                        "surface-dim": "#131121",
+                        "on-background": "#e5dff5",
+                        "inverse-surface": "#e5dff5",
+                        "primary": "#ffda9c",
+                        "on-error-container": "#ffdad6",
+                        "error": "#ffb4ab",
+                        "on-surface-variant": "#d4c4af",
+                        "tertiary": "#6efa85",
+                        "secondary": "#ffb2b9",
+                        "on-primary-fixed": "#271900",
+                        "background": "#131121",
+                        "surface-container": "#201e2d",
+                        "tertiary-container": "#4fdd6c",
+                        "on-tertiary-fixed-variant": "#00531c",
+                        "surface": "#131121",
+                        "primary-fixed": "#ffdea8",
+                        "on-tertiary-container": "#005d21",
+                        "primary-fixed-dim": "#f9bc45",
+                        "on-error": "#690005",
+                        "surface-bright": "#3a3748",
+                        "on-surface": "#e5dff5",
+                        "on-primary-fixed-variant": "#5e4200",
+                        "error-container": "#93000a",
+                        "inverse-on-surface": "#312e3f",
+                        "surface-tint": "#f9bc45",
+                        "inverse-primary": "#7c5800",
+                        "on-primary": "#422d00",
+                        "surface-variant": "#353343",
+                        "secondary-fixed-dim": "#ffb2b9",
+                        "on-secondary-container": "#ffacb4",
+                        "on-secondary": "#67001e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-padding": "20px",
+                        "card-inner": "24px",
+                        "base": "8px",
+                        "section-gap": "32px",
+                        "stack-gap": "16px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-md": ["Anton"],
+                        "display-xl": ["Anton"],
+                        "body-md": ["Hanken Grotesk"],
+                        "score-display": ["Anton"],
+                        "headline-lg": ["Anton"],
+                        "label-caps": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Anton"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", { "lineHeight": "26px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "30px", "fontWeight": "400" }],
+                        "display-xl": ["64px", { "lineHeight": "72px", "letterSpacing": "0.02em", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "score-display": ["48px", { "lineHeight": "48px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "0.04em", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Hanken+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        body {
+            background-color: #131121;
+            /* Subtle film grain effect */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+        
+        .marquee-glow {
+            box-shadow: 0 0 20px rgba(245, 185, 66, 0.3);
+        }
+        
+        .silver-glow {
+            box-shadow: 0 0 20px rgba(229, 223, 245, 0.2);
+        }
+        
+        .bronze-glow {
+            box-shadow: 0 0 20px rgba(156, 143, 123, 0.3);
+        }
+        
+        /* Hide scrollbar for horizontal scrolling area */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="text-on-background min-h-screen flex flex-col pb-24 md:pb-0" style="background-color: rgb(18, 16, 31); background-image: none;">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-surface dark:bg-surface shadow-none flex justify-between items-center px-container-padding h-16 w-full z-50">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary dark:text-primary">arrow_back</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-primary-container tracking-wider">TollyPlay</h1>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary dark:text-primary">settings</span>
+</div>
+</header>
+<main class="flex-1 w-full max-w-4xl mx-auto px-container-padding py-section-gap flex flex-col gap-section-gap">
+<!-- Header -->
+<div class="text-center">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary">MATCH RESULTS</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2">Chain Master Challenge - Room 402</p>
+</div>
+<!-- Podium Section -->
+<section class="flex justify-center items-end h-64 gap-stack-gap mt-8">
+<!-- 2nd Place (Silver) -->
+<div class="flex flex-col items-center gap-2 translate-y-4">
+<div class="relative w-16 h-16 rounded-full border-2 border-on-surface silver-glow">
+<img class="w-full h-full object-cover rounded-full" data-alt="A cinematic portrait of a young Tollywood fan looking excited in a dimly lit neon theater environment. High quality, dark indigo background, moody lighting, modern cinematic style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjhlLfAL9UtSrIVhFjhGZeDC7WRpA0Hn2MM3C8G4X9y3dmxjo-z7o7I1r1RxA0Yq22gecMNRW1MH_3gr-FZSYykTc01L8IkvKphj5uptUxvulke1KCk0OxCGR_WBiS7PH37AJ3BtAk_H4NZ_hF8iiIekUzaVsGNiM9FW69KmHIuW5uYw0xlaOpRlOzsD8k-AYQ0uVlcOx0VxYAjGrxf9cOOfHoO4O_fU1ZasohDvkfxNLkGVGs8RyegQ">
+<div class="absolute -bottom-2 -right-2 bg-surface-container-high rounded-full p-1 border border-on-surface">
+<span class="font-label-caps text-label-caps text-on-surface">2</span>
+</div>
+</div>
+<div class="text-center bg-surface-container rounded-t-lg w-20 pt-4 pb-2 mt-2 h-32 flex flex-col justify-start">
+<span class="font-body-md text-body-md text-on-background font-bold truncate w-full px-1">Raju</span>
+<span class="font-score-display text-score-display text-secondary text-2xl mt-1">420</span>
+</div>
+</div>
+<!-- 1st Place (Gold) -->
+<div class="flex flex-col items-center gap-2 z-10">
+<span class="material-symbols-outlined text-primary text-3xl mb-1 animate-pulse" style="font-variation-settings: 'FILL' 1;">military_tech</span>
+<div class="relative w-24 h-24 rounded-full border-4 border-primary marquee-glow">
+<img class="w-full h-full object-cover rounded-full" data-alt="A close up portrait of a victorious Tollywood fan wearing sunglasses indoors, bathed in warm golden cinematic lighting. High quality, dark indigo background, theatrical atmosphere, vibrant premium mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsQFZhqoEVtaxCZBkf2zOM8BdDr_T3WKyjE1Uni6bbZjPcc-CU13av6Y75FUZ8p7l-JhwkHmI4XDRHng6x66r_W6XayYeNk68lXMxOlyX2JLwFpINBK7ypvk0sSnaH89Nf0Rkwo3UH8BpYz-WuFPNUWuzOKUvZpH78JFAKmp0U-qLjPmKFlenseYqV-p_1hs738Z79718RhDJERSa-W2UHcCGsc0AfYelvKLgefTNT5g7uHss3wKzhWw">
+<div class="absolute -bottom-3 -right-1 bg-primary rounded-full px-2 py-0.5 border-2 border-surface">
+<span class="font-headline-md text-headline-md text-on-primary-container text-sm">1</span>
+</div>
+</div>
+<div class="text-center bg-primary-container rounded-t-lg w-24 pt-4 pb-2 mt-2 h-40 flex flex-col justify-start shadow-[0_-10px_20px_rgba(245,185,66,0.15)]">
+<span class="font-body-md text-body-md text-on-primary-container font-bold truncate w-full px-1">Tolly Hero</span>
+<span class="font-score-display text-score-display text-on-primary-container text-4xl mt-2">680</span>
+</div>
+</div>
+<!-- 3rd Place (Bronze) -->
+<div class="flex flex-col items-center gap-2 translate-y-8">
+<div class="relative w-16 h-16 rounded-full border-2 border-outline bronze-glow">
+<img class="w-full h-full object-cover rounded-full" data-alt="A stylized portrait of an Indian woman enjoying a movie, softly lit by screen glow in a dark room. Modern cinematic aesthetic, deep indigo shadows, subtle warm highlights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAw0aiuINI2wTrSLzhGZf4-hiZMhhqvTZZ-ALdkfGbkqsrcjffkh71380Uh3CJEeglA88xgtlBfLZdX3AqiYM_7fLVYeUzidriQnDnUkn364NLu3BHTIUd8qsewqy0YlamYxYIvFDn4ZiLn3K27g9pLcxAFyy5s2JVAOUxjkZRp0ygXEUA7DvmiWmMCHKr6H3bwCzrRHxXHJF0_6eGAJ05kj2AHY_LaBZGg6_RUmGhvVJfW1A9Ney8Qqg">
+<div class="absolute -bottom-2 -right-2 bg-surface-container-high rounded-full p-1 border border-outline">
+<span class="font-label-caps text-label-caps text-outline">3</span>
+</div>
+</div>
+<div class="text-center bg-surface-container rounded-t-lg w-20 pt-4 pb-2 mt-2 h-24 flex flex-col justify-start">
+<span class="font-body-md text-body-md text-on-background font-bold truncate w-full px-1">Priya</span>
+<span class="font-score-display text-score-display text-tertiary text-2xl mt-1">310</span>
+</div>
+</div>
+</section>
+<!-- Longest Chain Showcase -->
+<section class="bg-surface-container-low rounded-xl p-card-inner flex flex-col gap-stack-gap">
+<h3 class="font-headline-md text-headline-md text-primary flex items-center gap-2">
+<span class="material-symbols-outlined">link</span> Longest Chain
+            </h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Tolly Hero connected 6 films!</p>
+<div class="flex overflow-x-auto hide-scrollbar py-2 gap-4 items-center">
+<div class="flex-shrink-0 w-24 flex flex-col items-center gap-2">
+<div class="w-24 h-32 rounded-lg bg-surface-container-high border border-outline-variant overflow-hidden shadow-lg">
+<img class="w-full h-full object-cover" data-alt="A vertical cinematic movie poster design featuring a glowing red title on a dark textured background, evoking action movies. Deep indigo tones, high contrast, modern Tollywood style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmF4mPGHTykWYWMHcwvUbT4zJZAglYiNiT_84OHhhmonucAFliQMnXpzfxIOTM1AKET9Syj5VBjqvwrx8VyKzoObgRNPBgb6PLsCmEw73kM-cg6v4DwFIKP_eDEALJEbtBVBEaikqYfmqmX1bWirmBQTqf9WB55lTphyZ0Wzdt9KNbxlpQnkQ8lV5-0QcnD_nQxfqLFx756nFXBplolkR1ZkQfRkYhmWbcKDPUE34zGOxoiCDkieKq_A">
+</div>
+<span class="font-label-caps text-label-caps text-center w-full truncate">SALAAR</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant">arrow_forward</span>
+<div class="flex-shrink-0 w-24 flex flex-col items-center gap-2">
+<div class="w-24 h-32 rounded-lg bg-surface-container-high border border-outline-variant overflow-hidden shadow-lg">
+<img class="w-full h-full object-cover" data-alt="A vertical cinematic movie poster design featuring silhouetted figures against a golden dramatic sunset. Deep indigo framing, epic mood, modern Tollywood styling." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAM1cPjb3fhBYl8TV98b9Eju5Bz52fbc7qNAxdoAATAHM9T3s3wU_hrcD_iIcTB5Hq0sWL3yoMAAYi7GGo3HHJnMzNz7JmUlo6ZGmtoaTiyW26acCzBMZmcLEShj7RbeN4ITNt3rhLuPaRQaYwAcQEsZ5Xr2nzxUNhsJhsX1iM_8a68GpFQcP2L1zDGznzwzWBpIZTjTPe-Mn_34Oe1k4_5IevLWv0KnntbmsLvGqaYDJ1hW0pxO_trVQ">
+</div>
+<span class="font-label-caps text-label-caps text-center w-full truncate">BAAHUBALI</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant">arrow_forward</span>
+<div class="flex-shrink-0 w-24 flex flex-col items-center gap-2">
+<div class="w-24 h-32 rounded-lg bg-surface-container-high border border-outline-variant overflow-hidden shadow-lg">
+<img class="w-full h-full object-cover" data-alt="A vertical cinematic movie poster design showcasing a stylized futuristic car racing through neon lit streets. Indigo and cyan tones, dynamic angles, modern aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeYeix5tP4pJHNQHdrBBJ4c44-2StNjBfYZrl8qmEKTmynw7SDCjZSI84qjDbBwEdT1Wr6Q4h5cEqNQcUYXj2tMtZfj-zhRrRQtv4aHCo-JQZe63YeXeJMsLz1RGLi_no34czuW_nDNOEXhsO5P8e-8f2VwqtGGrOfgF7MBIGRYYP1qLV5xkyfR02Wo4udXmZO4o1vSn8NT4QdYPA1A9ywH9qRww2ctDqNGmHEJsMKddZdqsmQRRc1vA">
+</div>
+<span class="font-label-caps text-label-caps text-center w-full truncate">SAHOO</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant">arrow_forward</span>
+<div class="flex-shrink-0 w-24 flex flex-col items-center gap-2 flex opacity-50">
+<div class="w-24 h-32 rounded-lg bg-surface-container-lowest border border-surface-variant flex items-center justify-center">
+<span class="font-headline-md text-headline-md text-on-surface-variant">+3</span>
+</div>
+<span class="font-label-caps text-label-caps text-center w-full truncate">MORE</span>
+</div>
+</div>
+</section>
+<!-- Score Breakdown Cards -->
+<section class="flex flex-col gap-4">
+<!-- Player 1 Breakdown -->
+<div class="bg-surface-container rounded-xl p-4 flex flex-col gap-3 border border-primary/20">
+<div class="flex justify-between items-center pb-2 border-b border-surface-variant">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold">1</div>
+<span class="font-body-lg text-body-lg text-on-background">Tolly Hero</span>
+</div>
+<span class="font-score-display text-score-display text-2xl text-primary">680</span>
+</div>
+<div class="grid grid-cols-3 gap-2 text-center pt-2">
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-on-surface">15</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">LINKS</span>
+</div>
+<div class="flex flex-col border-x border-surface-variant">
+<span class="font-headline-md text-headline-md text-tertiary">3</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">DEEP CUTS</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-on-surface">4/5</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">CHALLENGES</span>
+</div>
+</div>
+</div>
+<!-- Player 2 Breakdown -->
+<div class="bg-surface-container rounded-xl p-4 flex flex-col gap-3">
+<div class="flex justify-between items-center pb-2 border-b border-surface-variant">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface flex items-center justify-center font-bold">2</div>
+<span class="font-body-lg text-body-lg text-on-background">Raju</span>
+</div>
+<span class="font-score-display text-score-display text-2xl text-on-surface-variant">420</span>
+</div>
+<div class="grid grid-cols-3 gap-2 text-center pt-2">
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-on-surface">9</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">LINKS</span>
+</div>
+<div class="flex flex-col border-x border-surface-variant">
+<span class="font-headline-md text-headline-md text-tertiary">1</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">DEEP CUTS</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-on-surface">2/5</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">CHALLENGES</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom Actions -->
+<section class="mt-4 mb-8 flex flex-col gap-4">
+<button class="w-full bg-primary-container text-on-primary-container rounded-full py-4 font-headline-md text-headline-md flex items-center justify-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined">replay</span> REMATCH
+            </button>
+<div class="grid grid-cols-2 gap-4">
+<button class="w-full border-2 border-outline text-on-surface rounded-full py-3 font-body-lg text-body-lg flex items-center justify-center gap-2 active:scale-95 transition-transform hover:bg-surface-container-high">
+<span class="material-symbols-outlined">share</span> Share Result
+                </button>
+<button class="w-full text-primary rounded-full py-3 font-body-lg text-body-lg flex items-center justify-center gap-2 active:scale-95 transition-transform hover:bg-surface-container-high">
+                    Back to room
+                </button>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Hidden on md and above) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center h-20 px-4 pb-2 bg-surface-container dark:bg-surface-container shadow-lg rounded-t-lg z-50">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-caps text-label-caps mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 shadow-[0_0_15px_rgba(249,188,69,0.3)] hover:text-primary transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">sports_esports</span>
+<span class="font-label-caps text-label-caps mt-1">Games</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-caps text-label-caps mt-1">Profile</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">military_tech</span>
+<span class="font-label-caps text-label-caps mt-1">Badges</span>
+</a>
+</nav>
+
+
+
+</body></html>

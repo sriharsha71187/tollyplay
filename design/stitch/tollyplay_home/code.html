@@ -1,0 +1,322 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>TollyPlay - Home</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;700&amp;family=Anton&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-high": "#2a2838",
+                      "outline-variant": "#504535",
+                      "surface-container-low": "#1c1a29",
+                      "surface-container-lowest": "#0e0c1b",
+                      "on-tertiary-fixed": "#002107",
+                      "on-primary-container": "#6a4a00",
+                      "tertiary-fixed-dim": "#53e16f",
+                      "surface-container-highest": "#353343",
+                      "secondary-fixed": "#ffdadb",
+                      "on-secondary-fixed-variant": "#91002d",
+                      "on-secondary-fixed": "#40000f",
+                      "outline": "#9c8f7b",
+                      "tertiary-fixed": "#72fe88",
+                      "on-primary-fixed": "#271900",
+                      "secondary": "#ffb2b9",
+                      "on-surface-variant": "#d4c4af",
+                      "tertiary": "#6efa85",
+                      "error": "#ffb4ab",
+                      "on-error-container": "#ffdad6",
+                      "primary": "#ffda9c",
+                      "primary-container": "#f5b942",
+                      "on-background": "#e5dff5",
+                      "inverse-surface": "#e5dff5",
+                      "surface-dim": "#131121",
+                      "secondary-container": "#a20234",
+                      "on-tertiary": "#003911",
+                      "primary-fixed-dim": "#f9bc45",
+                      "on-tertiary-container": "#005d21",
+                      "surface": "#131121",
+                      "primary-fixed": "#ffdea8",
+                      "tertiary-container": "#4fdd6c",
+                      "on-tertiary-fixed-variant": "#00531c",
+                      "background": "#131121",
+                      "surface-container": "#201e2d",
+                      "on-secondary-container": "#ffacb4",
+                      "on-secondary": "#67001e",
+                      "secondary-fixed-dim": "#ffb2b9",
+                      "on-primary": "#422d00",
+                      "surface-variant": "#353343",
+                      "inverse-on-surface": "#312e3f",
+                      "inverse-primary": "#7c5800",
+                      "surface-tint": "#f9bc45",
+                      "error-container": "#93000a",
+                      "surface-bright": "#3a3748",
+                      "on-surface": "#e5dff5",
+                      "on-primary-fixed-variant": "#5e4200",
+                      "on-error": "#690005"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "section-gap": "32px",
+                      "stack-gap": "16px",
+                      "card-inner": "24px",
+                      "container-padding": "20px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "body-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "label-caps": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-lg-mobile": [
+                              "Anton"
+                      ],
+                      "headline-lg": [
+                              "Anton"
+                      ],
+                      "score-display": [
+                              "Anton"
+                      ],
+                      "headline-md": [
+                              "Anton"
+                      ],
+                      "display-xl": [
+                              "Anton"
+                      ],
+                      "body-md": [
+                              "Hanken Grotesk"
+                      ]
+              },
+              "fontSize": {
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "26px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.1em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "34px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "0.04em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "score-display": [
+                              "48px",
+                              {
+                                      "lineHeight": "48px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "30px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-xl": [
+                              "64px",
+                              {
+                                      "lineHeight": "72px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+      </script>
+<style>
+        .film-grain {
+            position: relative;
+        }
+        .film-grain::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 50;
+        }
+        .marquee-glow {
+            box-shadow: 0 0 15px rgba(249,188,69,0.3);
+        }
+        .marquee-glow-strong {
+            box-shadow: 0 0 25px rgba(249,188,69,0.5);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md overflow-x-hidden md:pb-0 pb-[100px]" style="background-color: #12101f;">
+<!-- TopAppBar (Mobile & Web) -->
+<header class="bg-surface dark:bg-surface text-primary dark:text-primary w-full top-0 sticky bg-surface/80 backdrop-blur-xl transition-all duration-300 active:scale-95 flex justify-between items-center px-container-padding py-base w-full z-50">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden marquee-glow border-2 border-primary">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="A cinematic portrait of a young Tollywood fan, confident and stylish, bathed in warm, dramatic theater lighting against a deep indigo background. The lighting emphasizes a premium, electric movie-night atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8x4f-luReqOAoGDrktA_htwPrZujjcuLylXzBdcIi20r7VcRnd3Wc-cETnCCYteaglDDdR6HsHhggubXsoU2tf36VDTNplGoFY3z1ooDXQBUHl6GDog6oJsp4PU9-euOhgD-8JhnxeRq5iN8UXS1MH-_wbtSnSEG2LrkTuEq-JTHhN77XMUwtAzuVV1tCO9YEB8Q7gHC007rY_0fHlwkm83cxVgl9DJV_Z5QmoNs46Rlf-w4UTYNZ2w">
+</div>
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-wider uppercase">TollyPlay</span>
+</div>
+<div class="flex items-center gap-1 font-label-caps text-label-caps font-bold">
+<span class="text-on-surface-variant mr-1">STREAK</span>
+<span class="">7</span>
+<span class="text-xl">🔥</span>
+</div>
+</header>
+<main class="w-full max-w-7xl mx-auto px-container-padding py-section-gap flex flex-col gap-section-gap">
+<!-- Hero Card: Daily Katha -->
+<section class="relative w-full rounded-3xl overflow-hidden bg-surface-container-high h-[300px] flex flex-col justify-end p-card-inner group">
+<div class="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-luminosity group-hover:scale-105 transition-transform duration-700" data-alt="A blurred, dramatic movie poster background featuring epic ancient Indian kingdom architecture, reminiscent of Baahubali. The scene is bathed in golden hour cinematic lighting, creating a deep, atmospheric, and premium feel." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAeIqcLu6IJVnGzPk67xH2e6V3RlvnOgRTt4HfK651hkiNSvSjuOuUCO-1kGM-PTqCrIp8qf0tCKdughWpaK_VW2ibXEkJGwg4TS7By_46an8ZSPIaI3NwuqSLsioWNNY8O4TyZexnvH0x0HUZn7gR0VFLrAK5GO3VXmX-eZiJa23woi8PQhr4XgAdbqzJjcOVq5N0moas3J0w3As92yhFoWiHVM8YdsS34DTnFKKga_GyB2iPYt8mPNg')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-highest/50 to-transparent"></div>
+<div class="relative z-10 flex flex-col gap-stack-gap">
+<div class="flex justify-between items-start">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary drop-shadow-md">Daily Katha</h2>
+<div class="bg-surface/80 backdrop-blur-md px-3 py-1 rounded-full border border-outline-variant font-label-caps text-label-caps flex items-center gap-1">
+<span class="">STREAK 7</span>
+<span class="material-symbols-outlined text-primary text-sm" data-icon="local_fire_department" data-weight="fill" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</div>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface line-clamp-2 max-w-sm">"A king's son discovers his true legacy in a hidden kingdom."</p>
+<button class="w-full md:w-auto bg-primary text-on-primary font-headline-md text-headline-md rounded-full py-3 px-6 marquee-glow-strong hover:opacity-90 active:scale-95 transition-all mt-2 uppercase tracking-wide">
+                    Play Today's Puzzle
+                </button>
+</div>
+</section>
+<!-- Game Modes -->
+<section class="grid grid-cols-2 gap-stack-gap">
+<!-- Chain Card -->
+<div class="bg-surface-container rounded-3xl p-stack-gap flex flex-col items-center text-center gap-2 hover:bg-surface-container-high transition-colors cursor-pointer border border-transparent hover:border-outline-variant">
+<div class="w-16 h-16 rounded-full bg-surface-variant flex items-center justify-center text-primary mb-2">
+<span class="material-symbols-outlined text-4xl" data-icon="movie" data-weight="fill" style="font-variation-settings: 'FILL' 1;">movie</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Chain</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Link movies via actors.</p>
+</div>
+<!-- Katha Card -->
+<div class="bg-surface-container rounded-3xl p-stack-gap flex flex-col items-center text-center gap-2 hover:bg-surface-container-high transition-colors cursor-pointer border border-transparent hover:border-outline-variant">
+<div class="w-16 h-16 rounded-full bg-surface-variant flex items-center justify-center text-primary mb-2">
+<span class="material-symbols-outlined text-4xl" data-icon="menu_book" data-weight="fill" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Katha</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Guess the cryptic plot.</p>
+</div>
+</section>
+<!-- Primary Actions -->
+<section class="flex flex-col gap-stack-gap items-center pt-4">
+<button class="w-full max-w-md bg-primary text-on-primary font-headline-md text-headline-md rounded-full py-4 px-6 marquee-glow hover:opacity-90 active:scale-95 transition-all uppercase tracking-wide flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="celebration" data-weight="fill" style="font-variation-settings: 'FILL' 1;">celebration</span>
+                Create Party Room
+            </button>
+<button class="text-primary font-body-lg text-body-lg hover:text-primary-fixed-dim transition-colors active:scale-95 underline underline-offset-4">
+                Join with code
+            </button>
+</section>
+<!-- Leaderboard Strip -->
+<section class="bg-surface-container rounded-3xl p-card-inner mt-4">
+<div class="flex justify-between items-center mb-stack-gap">
+<h3 class="font-headline-md text-headline-md text-primary">Weekly Top Fans</h3>
+<span class="material-symbols-outlined text-primary" data-icon="emoji_events" data-weight="fill" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Rank 1 -->
+<div class="flex items-center justify-between bg-surface-variant/50 p-2 rounded-xl border border-primary/20 relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="flex items-center gap-3 pl-2">
+<span class="font-headline-md text-headline-md text-primary w-6 text-center">1</span>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant">
+<img alt="Sita Avatar" class="w-full h-full object-cover" data-alt="Cinematic portrait of a vibrant Tollywood fan named Sita, smiling enthusiastically in a dramatic, dark theater setting with soft golden backlighting highlighting her features." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbB0l4cyXcADatdy5Erj0wzuwfPHi27DiEYMZvqb7o7D6mYUKL3E3zWnWvd6TrMshMAloI1bOr2pP-qlxiVC3bSV6mIHVaMYqLXcrnE2nBlawIondRUyo6h_7oX_36dTukPXu7n8AupELaFWlv_V6ZSFRJVZ11iMTmIqtildTa8JK3VXWYqEOKzeiM8Km4e-stHk1Jf0gNC5YEJqa72ra8UQMu3IYuGsa9ms2iFtklMgPU3lxqQhtVUA">
+</div>
+<span class="font-body-lg text-body-lg text-on-surface font-bold">Sita</span>
+</div>
+<span class="font-score-display text-[24px] leading-[30px] text-primary pr-2">1200</span>
+</div>
+<!-- Rank 2 -->
+<div class="flex items-center justify-between bg-surface p-2 rounded-xl">
+<div class="flex items-center gap-3 pl-3">
+<span class="font-headline-md text-headline-md text-on-surface-variant w-6 text-center">2</span>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant">
+<img alt="Ram Avatar" class="w-full h-full object-cover" data-alt="Cinematic portrait of a dedicated Tollywood fan named Ram, looking focused in a premium, moody indigo lit room, giving a sense of intense gameplay." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_tUNkaXvgyay2XPsxTR3p3RevkpWss1mMwgaPoMBesVQX2-Z7nDnFvXrloFm43vsaCV2GkbdHDBnEOn31qZU2qSWSqucr6h264pK4okZT-5oJNFoGB_HIEdbhU_Q2nINQRacgrt3Ue-2lilAJuTeSvxbn1mtY7K_ngramPq5-P-D3eUravs2bT0i3NX4FYBgrRSVkxXKg22erek33XOPEGdJaCvb65Mndwe_ZgXCkQcIp_EInlSFxSw">
+</div>
+<span class="font-body-lg text-body-lg text-on-surface">Ram</span>
+</div>
+<span class="font-score-display text-[24px] leading-[30px] text-on-surface-variant pr-2">1150</span>
+</div>
+<!-- Rank 3 -->
+<div class="flex items-center justify-between bg-surface p-2 rounded-xl">
+<div class="flex items-center gap-3 pl-3">
+<span class="font-headline-md text-headline-md text-on-surface-variant w-6 text-center">3</span>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant">
+<img alt="Arjun Avatar" class="w-full h-full object-cover" data-alt="Cinematic portrait of a stylish Tollywood fan named Arjun, bathed in subtle neon rim lighting against a deep, dark atmospheric background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhRAtxa3nrqRRI-wRbyYXzhwJA2BMeuJw_f5ftU-48Y86fMcvRJmVCP7LJ65BhJTEd9glDkBRUMFPoVFvOOm2sh8gzEgDXLeB9e2Wz8QYXpxyIun8XGVjXMlGQOTTMuKA2RMeNEwrN6f2vR_T0Mm-5g3ZKKV1kbCHWguMos-sNHj9oXtPU0R5lr81CkRLcZu0HfIjnyVQEd5XBpGA9q0UFyZG7K651gKVEyL3xyBkmJqqVhsiUfVwuWQ">
+</div>
+<span class="font-body-lg text-body-lg text-on-surface">Arjun</span>
+</div>
+<span class="font-score-display text-[24px] leading-[30px] text-on-surface-variant pr-2">900</span>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden bg-surface-container dark:bg-surface-container text-primary dark:text-primary font-headline-md text-headline-md text-primary fixed bottom-0 w-full z-50 rounded-t-lg bg-surface-container-highest/90 backdrop-blur-md shadow-[0_-4px_20px_rgba(249,188,69,0.15)] transition-transform duration-200 active:scale-90 fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-2">
+<!-- Active: Home -->
+<a class="flex flex-col items-center justify-center text-primary fill-primary shadow-[0_0_15px_rgba(249,188,69,0.3)] bg-surface-variant/50 rounded-xl p-2 min-w-[64px]" href="#">
+<span class="material-symbols-outlined" data-icon="home" data-weight="fill" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-caps text-label-caps mt-1">Home</span>
+</a>
+<!-- Inactive: Daily -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-primary-fixed-dim min-w-[64px]" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-label-caps text-label-caps mt-1">Daily</span>
+</a>
+<!-- Inactive: Rooms -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-primary-fixed-dim min-w-[64px]" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label-caps text-label-caps mt-1">Rooms</span>
+</a>
+<!-- Inactive: Profile -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-primary-fixed-dim min-w-[64px]" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-caps text-label-caps mt-1">Profile</span>
+</a>
+</nav>
+
+
+
+</body></html>

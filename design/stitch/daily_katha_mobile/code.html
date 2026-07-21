@@ -1,0 +1,287 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Daily Puzzle - Katha Mode</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Hanken+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-primary": "#7c5800",
+                        "surface-bright": "#3a3748",
+                        "surface": "#131121",
+                        "on-primary-fixed": "#271900",
+                        "on-tertiary-container": "#005d21",
+                        "on-surface": "#e5dff5",
+                        "inverse-surface": "#e5dff5",
+                        "tertiary-fixed": "#72fe88",
+                        "on-primary": "#422d00",
+                        "on-secondary-fixed-variant": "#91002d",
+                        "on-secondary-container": "#ffacb4",
+                        "on-tertiary-fixed-variant": "#00531c",
+                        "tertiary-fixed-dim": "#53e16f",
+                        "surface-variant": "#353343",
+                        "surface-dim": "#131121",
+                        "primary-fixed-dim": "#f9bc45",
+                        "outline-variant": "#504535",
+                        "secondary": "#ffb2b9",
+                        "on-background": "#e5dff5",
+                        "error": "#ffb4ab",
+                        "tertiary": "#6efa85",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#ffdea8",
+                        "error-container": "#93000a",
+                        "inverse-on-surface": "#312e3f",
+                        "on-secondary": "#67001e",
+                        "primary": "#ffda9c",
+                        "background": "#131121",
+                        "surface-container": "#201e2d",
+                        "on-primary-container": "#6a4a00",
+                        "secondary-fixed": "#ffdadb",
+                        "secondary-fixed-dim": "#ffb2b9",
+                        "secondary-container": "#a20234",
+                        "surface-container-lowest": "#0e0c1b",
+                        "on-secondary-fixed": "#40000f",
+                        "on-tertiary-fixed": "#002107",
+                        "on-primary-fixed-variant": "#5e4200",
+                        "outline": "#9c8f7b",
+                        "on-tertiary": "#003911",
+                        "on-error": "#690005",
+                        "on-surface-variant": "#d4c4af",
+                        "tertiary-container": "#4fdd6c",
+                        "surface-container-highest": "#353343",
+                        "primary-container": "#f5b942",
+                        "surface-container-high": "#2a2838",
+                        "surface-tint": "#f9bc45",
+                        "surface-container-low": "#1c1a29"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "card-inner": "24px",
+                        "stack-gap": "16px",
+                        "base": "8px",
+                        "container-padding": "20px",
+                        "section-gap": "32px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-lg": ["Anton"],
+                        "body-md": ["Hanken Grotesk"],
+                        "label-caps": ["Hanken Grotesk"],
+                        "headline-md": ["Anton"],
+                        "display-xl": ["Anton"],
+                        "score-display": ["Anton"],
+                        "headline-lg-mobile": ["Anton"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", { "lineHeight": "26px", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "0.04em", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "30px", "fontWeight": "400" }],
+                        "display-xl": ["64px", { "lineHeight": "72px", "letterSpacing": "0.02em", "fontWeight": "400" }],
+                        "score-display": ["48px", { "lineHeight": "48px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            background-image: radial-gradient(circle at center, rgba(255, 218, 156, 0.05) 0%, transparent 70%), 
+                              url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>');
+        }
+        
+        /* Custom Scrollbar for Autocomplete */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: theme('colors.surface-container');
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: theme('colors.outline-variant');
+            border-radius: 4px;
+        }
+
+        /* Subtle Marquee Glow Animation */
+        @keyframes marqueeGlow {
+            0% { box-shadow: 0 0 10px rgba(255, 218, 156, 0.2); }
+            50% { box-shadow: 0 0 20px rgba(255, 218, 156, 0.4); }
+            100% { box-shadow: 0 0 10px rgba(255, 218, 156, 0.2); }
+        }
+        .active-glow {
+            animation: marqueeGlow 3s infinite ease-in-out;
+        }
+        
+        .hint-tile {
+            transition: all 0.3s ease;
+        }
+        .hint-tile:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 218, 156, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-body-md overflow-x-hidden pb-[90px] md:pb-0" style="background-color: rgb(18, 16, 31); background-image: none;">
+<!-- Top App Bar (Shared Component - Desktop Only, Hidden on Mobile for clean canvas if transactional, but JSON dictates otherwise, keeping as requested but with shadow-none) -->
+<header class="bg-surface dark:bg-surface shadow-none flex justify-between items-center px-container-padding h-16 w-full z-50 sticky top-0 hidden md:flex">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full border-2 border-primary active-glow overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="A stylized, glowing avatar of a user in a dark cinematic setting. The avatar features sharp, modern geometric lines with a subtle gold aura radiating from behind, fitting a premium, high-energy Tollywood premiere vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAI39kD3SNXG-9VTkkdsxLf1SyqM1XwdAl-wbXctujQCOC2hdnCx0l9QYXGH-deVnc9zGQz00-JVS5L5vmgn2fObFopq8JmnMLmfb5ywlWFG3bzC0f3-sgr0vRi3r3r-LnneXbMq3WDpCsL6cOLTqGEAmm-WraIma0dNzrUv6UhHW34eLbqxFdgUv2EPaM_OFDYZfe9KXozl3w4uTn2YF6A1qu_tNsTWbjafmLDo1LxDa0q59cIoDmo-A">
+</div>
+<span class="font-headline-md text-headline-md text-primary dark:text-primary tracking-wider uppercase">TollyPlay</span>
+</div>
+<div class="flex items-center gap-6 text-on-surface-variant dark:text-on-surface-variant font-label-caps text-label-caps">
+<a class="hover:text-primary transition-colors flex flex-col items-center gap-1" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">home</span>Home</a>
+<a class="text-primary dark:text-primary flex flex-col items-center gap-1" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">calendar_today</span>Daily</a>
+<a class="hover:text-primary transition-colors flex flex-col items-center gap-1" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">groups</span>Rooms</a>
+<a class="hover:text-primary transition-colors flex flex-col items-center gap-1" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">person</span>Profile</a>
+</div>
+<div class="flex items-center gap-2 text-primary font-headline-md text-headline-md">
+<span class="">🔥</span>
+<span class="">5</span>
+</div>
+</header>
+<!-- Mobile Top App Bar (Following JSON for layout) -->
+<header class="bg-surface dark:bg-surface shadow-none flex justify-between items-center px-container-padding h-16 w-full z-50 md:hidden sticky top-0">
+<div class="w-8 h-8 rounded-full border-2 border-primary active-glow overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="A stylized, glowing avatar of a user in a dark cinematic setting. The avatar features sharp, modern geometric lines with a subtle gold aura radiating from behind, fitting a premium, high-energy Tollywood premiere vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuArx145wiMm-vI3ZWsiBL61oCC2iAEu4E9lzjAJblyEpCAwG-Esly4UzHZPqcDdOQSfaxdlviIgWEeiTv-Z513ujuKg8C6stQXFC8OpwDxvarBkCIPlR_Y7ymsdQIsM6AnRNI2OoL2SZhEJVFPW4r2jj57eolm-f9HKPN8mGlEyX4m2xmAkXMt-u9Gec_9mDS1Mh6LVbU7BwoajB8JO0sSApbYYXxENGqSlBKH_jzRIY2Lrr1S5MzZ40g">
+</div>
+<span class="font-headline-md text-headline-md text-primary dark:text-primary tracking-wider uppercase">TollyPlay</span>
+<div class="flex items-center gap-2 text-primary font-headline-md text-headline-md">
+<span class="">🔥</span>
+<span class="">5</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 px-container-padding py-section-gap flex flex-col items-center max-w-3xl mx-auto w-full relative z-10">
+<!-- Header / Status -->
+<div class="w-full flex justify-between items-end mb-stack-gap">
+<div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface uppercase mb-1">Katha Mode</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant opacity-80 uppercase tracking-widest">Daily Puzzle #142</p>
+</div>
+<div class="bg-surface-container-high px-4 py-2 rounded-full border border-outline-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="font-body-md text-body-md font-bold text-on-surface">3 Tries Left</span>
+</div>
+</div>
+<!-- Puzzle Card (Parchment Style in Dark Theme) -->
+<div class="w-full bg-surface-container rounded-3xl p-card-inner border border-outline shadow-[0_8px_32px_rgba(249,188,69,0.05)] relative overflow-hidden mb-section-gap">
+<!-- Subtle Texture overlay for parchment feel -->
+
+<div class="relative z-10 flex flex-col items-center text-center">
+<span class="material-symbols-outlined text-primary mb-4 text-4xl opacity-80" style="font-variation-settings: 'FILL' 0;">movie_filter</span>
+<h2 class="font-body-lg text-body-lg text-on-surface leading-relaxed max-w-md mx-auto italic font-medium">
+                    "A ghost hires a body to finish his unfinished business."
+                </h2>
+<div class="w-16 h-[1px] bg-primary/30 my-6"></div>
+<!-- Input Area with Autocomplete -->
+<div class="w-full relative max-w-sm mx-auto">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-4 text-on-surface-variant pointer-events-none" style="font-variation-settings: 'FILL' 0;">search</span>
+<input class="w-full bg-surface-container-highest border border-outline-variant rounded-full py-3 pl-12 pr-4 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="Guess the movie..." type="text">
+</div>
+<!-- Autocomplete Dropdown (Hidden by default, shown for UI demonstration) -->
+<div class="absolute top-full left-0 right-0 mt-2 bg-surface-container-high border border-outline-variant rounded-xl shadow-lg overflow-hidden z-20 custom-scrollbar max-h-48 overflow-y-auto hidden">
+<ul class="py-2">
+<li class="px-4 py-2 hover:bg-surface-container-highest cursor-pointer font-body-md text-body-md text-on-surface flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">movie</span>
+</div>
+<div class="flex flex-col">
+<span class="">Eega (2012)</span>
+</div>
+</li>
+<li class="px-4 py-2 hover:bg-surface-container-highest cursor-pointer font-body-md text-body-md text-on-surface flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">movie</span>
+</div>
+<div class="flex flex-col">
+<span class="">Om Shanti Om (2007)</span>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<!-- Hints Grid -->
+<div class="w-full">
+<div class="flex justify-between items-center mb-stack-gap">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Unlock Hints</h3>
+<span class="font-label-caps text-label-caps text-primary uppercase">Costs 🔥</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<!-- Hint 1: Locked -->
+<button class="hint-tile bg-surface-container-low border border-outline-variant rounded-2xl p-4 flex flex-col items-center justify-center gap-3 h-28 relative overflow-hidden group">
+<div class="absolute inset-0 bg-surface/50 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center gap-1 group-hover:bg-surface/40 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant text-3xl" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span class="font-label-caps text-label-caps text-primary font-bold">1 🔥</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant opacity-30 text-3xl" style="font-variation-settings: 'FILL' 0;">calendar_month</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant opacity-50 uppercase">Decade</span>
+</button>
+<!-- Hint 2: Locked -->
+<button class="hint-tile bg-surface-container-low border border-outline-variant rounded-2xl p-4 flex flex-col items-center justify-center gap-3 h-28 relative overflow-hidden group">
+<div class="absolute inset-0 bg-surface/50 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center gap-1 group-hover:bg-surface/40 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant text-3xl" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span class="font-label-caps text-label-caps text-primary font-bold">2 🔥</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant opacity-30 text-3xl" style="font-variation-settings: 'FILL' 0;">movie_creation</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant opacity-50 uppercase">Director</span>
+</button>
+<!-- Hint 3: Unlocked/Revealed -->
+<div class="hint-tile bg-surface-container border border-primary/30 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 h-28 active-glow">
+<span class="font-label-caps text-label-caps text-primary uppercase mb-1">Hero</span>
+<span class="font-body-md text-body-md text-on-surface font-bold text-center">Nani</span>
+</div>
+<!-- Hint 4: Locked -->
+<button class="hint-tile bg-surface-container-low border border-outline-variant rounded-2xl p-4 flex flex-col items-center justify-center gap-3 h-28 relative overflow-hidden group">
+<div class="absolute inset-0 bg-surface/50 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center gap-1 group-hover:bg-surface/40 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant text-3xl" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span class="font-label-caps text-label-caps text-primary font-bold">3 🔥</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant opacity-30 text-3xl" style="font-variation-settings: 'FILL' 0;">record_voice_over</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant opacity-50 uppercase">Dialogue</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Shared Component - Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-surface-container dark:bg-surface-container rounded-t-lg shadow-[0_-4px_20px_rgba(249,188,69,0.15)] md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-70 hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">home</span>
+<span class="font-label-caps text-label-caps mt-1">Home</span>
+</a>
+<!-- Active State Logic Applied to 'Daily' -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1 shadow-[0_0_15px_rgba(249,188,69,0.3)] hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
+<span class="font-label-caps text-label-caps mt-1">Daily</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-70 hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">groups</span>
+<span class="font-label-caps text-label-caps mt-1">Rooms</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-70 hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">person</span>
+<span class="font-label-caps text-label-caps mt-1">Profile</span>
+</a>
+</nav>
+
+
+
+</body></html>

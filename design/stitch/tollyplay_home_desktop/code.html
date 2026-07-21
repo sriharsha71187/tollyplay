@@ -1,0 +1,420 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>TollyPlay - Home</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-primary": "#7c5800",
+                    "surface-bright": "#3a3748",
+                    "surface": "#131121",
+                    "on-primary-fixed": "#271900",
+                    "on-tertiary-container": "#005d21",
+                    "on-surface": "#e5dff5",
+                    "inverse-surface": "#e5dff5",
+                    "tertiary-fixed": "#72fe88",
+                    "on-primary": "#422d00",
+                    "on-secondary-fixed-variant": "#91002d",
+                    "on-secondary-container": "#ffacb4",
+                    "on-tertiary-fixed-variant": "#00531c",
+                    "tertiary-fixed-dim": "#53e16f",
+                    "surface-variant": "#353343",
+                    "surface-dim": "#131121",
+                    "primary-fixed-dim": "#f9bc45",
+                    "outline-variant": "#504535",
+                    "secondary": "#ffb2b9",
+                    "on-background": "#e5dff5",
+                    "error": "#ffb4ab",
+                    "tertiary": "#6efa85",
+                    "on-error-container": "#ffdad6",
+                    "primary-fixed": "#ffdea8",
+                    "error-container": "#93000a",
+                    "inverse-on-surface": "#312e3f",
+                    "on-secondary": "#67001e",
+                    "primary": "#ffda9c",
+                    "background": "#131121",
+                    "surface-container": "#201e2d",
+                    "on-primary-container": "#6a4a00",
+                    "secondary-fixed": "#ffdadb",
+                    "secondary-fixed-dim": "#ffb2b9",
+                    "secondary-container": "#a20234",
+                    "surface-container-lowest": "#0e0c1b",
+                    "on-secondary-fixed": "#40000f",
+                    "on-tertiary-fixed": "#002107",
+                    "on-primary-fixed-variant": "#5e4200",
+                    "outline": "#9c8f7b",
+                    "on-tertiary": "#003911",
+                    "on-error": "#690005",
+                    "on-surface-variant": "#d4c4af",
+                    "tertiary-container": "#4fdd6c",
+                    "surface-container-highest": "#353343",
+                    "primary-container": "#f5b942",
+                    "surface-container-high": "#2a2838",
+                    "surface-tint": "#f9bc45",
+                    "surface-container-low": "#1c1a29"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "card-inner": "24px",
+                    "stack-gap": "16px",
+                    "base": "8px",
+                    "container-padding": "20px",
+                    "section-gap": "32px"
+            },
+            "fontFamily": {
+                    "body-lg": [
+                            "Hanken Grotesk"
+                    ],
+                    "headline-lg": [
+                            "Anton"
+                    ],
+                    "body-md": [
+                            "Hanken Grotesk"
+                    ],
+                    "label-caps": [
+                            "Hanken Grotesk"
+                    ],
+                    "headline-md": [
+                            "Anton"
+                    ],
+                    "display-xl": [
+                            "Anton"
+                    ],
+                    "score-display": [
+                            "Anton"
+                    ],
+                    "headline-lg-mobile": [
+                            "Anton"
+                    ]
+            },
+            "fontSize": {
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "26px",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "letterSpacing": "0.04em",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-caps": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.1em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "30px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-xl": [
+                            "64px",
+                            {
+                                    "lineHeight": "72px",
+                                    "letterSpacing": "0.02em",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "score-display": [
+                            "48px",
+                            {
+                                    "lineHeight": "48px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-lg-mobile": [
+                            "28px",
+                            {
+                                    "lineHeight": "34px",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+          },
+        },
+      }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Hanken+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            position: relative;
+        }
+        /* Film grain overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 50;
+        }
+        .marquee-glow {
+            box-shadow: 0 0 15px rgba(249, 188, 69, 0.3);
+        }
+        .glass-panel {
+            background: rgba(32, 30, 45, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .text-glow {
+            text-shadow: 0 0 10px rgba(249, 188, 69, 0.5);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col md:flex-row bg-surface-container-lowest" style="background-color: rgb(18, 16, 31); background-image: none;">
+<!-- Desktop Side Navigation (Hidden on Mobile) -->
+<nav class="hidden md:flex flex-col h-screen w-64 left-0 sticky bg-surface-container dark:bg-surface-container-low py-section-gap z-40 border-r border-surface-container-high">
+<div class="px-card-inner mb-section-gap">
+<h1 class="font-headline-lg text-headline-lg text-primary dark:text-primary tracking-tighter">TOLLYPLAY</h1>
+<p class="font-label-caps text-label-caps text-primary-fixed-dim uppercase tracking-[0.2em] mt-2 opacity-80">Premiere Night</p>
+</div>
+<div class="flex-1 flex flex-col gap-2 px-container-padding">
+<!-- Active Tab: Home -->
+<a class="flex items-center gap-stack-gap bg-primary-container dark:bg-primary-container text-on-primary-container dark:text-on-primary-container rounded-lg px-card-inner py-3 marquee-glow font-body-md text-body-md transition-transform duration-200 active:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="home" data-weight="fill" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-bold">Home</span>
+</a>
+<a class="flex items-center gap-stack-gap text-on-surface-variant dark:text-on-surface-variant px-card-inner py-3 rounded-lg hover:bg-surface-variant dark:hover:bg-surface-variant transition-all duration-200 font-body-md text-body-md active:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="">Daily</span>
+</a>
+<a class="flex items-center gap-stack-gap text-on-surface-variant dark:text-on-surface-variant px-card-inner py-3 rounded-lg hover:bg-surface-variant dark:hover:bg-surface-variant transition-all duration-200 font-body-md text-body-md active:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="">Rooms</span>
+</a>
+<a class="flex items-center gap-stack-gap text-on-surface-variant dark:text-on-surface-variant px-card-inner py-3 rounded-lg hover:bg-surface-variant dark:hover:bg-surface-variant transition-all duration-200 font-body-md text-body-md active:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="">Profile</span>
+</a>
+</div>
+<div class="px-container-padding mt-auto mb-section-gap">
+<button class="w-full bg-primary hover:bg-primary-container text-on-primary font-headline-md text-headline-md rounded-full py-3 px-6 transition-all active:scale-95 flex items-center justify-center gap-2 shadow-[0_4px_14px_0_rgba(249,188,69,0.39)]">
+<span class="material-symbols-outlined">add_circle</span>
+                Create Room
+            </button>
+</div>
+<div class="flex flex-col gap-2 px-container-padding">
+<a class="flex items-center gap-stack-gap text-on-surface-variant dark:text-on-surface-variant px-card-inner py-3 rounded-lg hover:bg-surface-variant transition-all duration-200 font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="">Help</span>
+</a>
+<a class="flex items-center gap-stack-gap text-on-surface-variant dark:text-on-surface-variant px-card-inner py-3 rounded-lg hover:bg-surface-variant transition-all duration-200 font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="">Logout</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-screen overflow-y-auto overflow-x-hidden pb-24 md:pb-0 relative">
+<!-- Mobile Top App Bar -->
+<header class="md:hidden w-full top-0 sticky z-30 bg-surface shadow-md flex justify-between items-center px-container-padding py-base">
+<h1 class="font-display-xl text-[40px] leading-tight text-primary tracking-tighter">TollyPlay</h1>
+<div class="flex gap-4 items-center">
+<button class="text-on-surface-variant hover:text-primary-container transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<img alt="User Profile" class="w-10 h-10 rounded-full object-cover border-2 border-surface-variant" data-alt="A small, stylized circular avatar of a Tollywood star looking energetic against a dark background with gold highlights. Close up, high contrast, cinematic lighting, 48x48 pixels." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKBQSpvao-dgP-XyTAujnfMRtHqQQ9SPpMAsMdzePSL4QAOhgCuT7XZMDgjGbscsfayMWmCiDckcG19S4iNr1Bft-kF8IoyCXwlogXIREkzc6GMbyryTUFH5nEl-T_IUOIthiJAFUCdBlTv_LqeuxwFQsKqnxTiluJjltWy_OGwhX2ErxW9ioGyDsj7REJR795G7DvQ55yNtI-ULJ0OTJmC_HVI55hbPP5_pjXcakXp-PHth-SSn39OQ">
+</div>
+</header>
+<div class="p-container-padding md:p-section-gap flex-1 flex flex-col xl:flex-row gap-section-gap max-w-[1600px] mx-auto w-full">
+<!-- Left Column: Hero & Modes -->
+<div class="flex-1 flex flex-col gap-section-gap min-w-0">
+<!-- Hero Section: Daily Katha -->
+<section class="relative rounded-3xl overflow-hidden h-[400px] md:h-[450px] group cursor-pointer shadow-lg">
+<!-- Background Image -->
+<div class="absolute inset-0 bg-cover bg-center w-full h-full transition-transform duration-700 group-hover:scale-105" data-alt="A cinematic, wide-angle poster for a fictional Tollywood action movie. Dark indigo shadows, vibrant gold explosions in the background, a silhouette of a hero walking towards the light. Atmospheric, moody, film grain effect. High resolution." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBya6Sy_Y9H9tNLevApHasK58Ga1CxQVSqX1TgWYgl-e3tA4zm7jwd0zypB7LmaKIKT0JHn4LTnI9rj53XclqIlzuYlP2jP9BxGLx5nUKqm-AIfzzlCQS8ZXEYW0B9GO8gCKki47OgxR78F4FV_yEIISXU7XVINJwGY0LdL06KKaCVxzSPYyeLcyTESLdmNiZqxExmwOiHFnBwcekEKblsfqvmJjfdH8pr3faeL1_n3alpJIf-ZhrGfsg')"></div>
+<!-- Glassmorphism Blur Overlay -->
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent"></div>
+<div class="absolute inset-0 bg-surface/20 backdrop-blur-[2px]"></div>
+<!-- Content -->
+<div class="absolute inset-0 p-8 flex flex-col justify-end">
+<div class="inline-flex items-center gap-2 bg-primary/20 border border-primary/50 rounded-full px-4 py-1.5 w-max mb-4 backdrop-blur-md">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="local_fire_department" data-weight="fill" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<span class="font-label-caps text-label-caps text-primary tracking-widest uppercase">Today's Featured</span>
+</div>
+<h2 class="font-display-xl text-display-xl md:text-[80px] leading-none text-white mb-2 drop-shadow-lg font-bold">Daily Katha</h2>
+<p class="font-body-lg text-body-lg text-inverse-surface/80 max-w-lg mb-8 line-clamp-2">Guess the movie from the cryptic storyline before time runs out. New challenge drops every midnight.</p>
+<div class="flex flex-wrap gap-4 items-center">
+<button class="bg-primary hover:bg-primary-container text-on-primary font-headline-md text-headline-md rounded-full py-4 px-8 transition-all active:scale-95 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(249,188,69,0.5)] z-10 hover:shadow-[0_0_30px_rgba(249,188,69,0.7)]">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                                Play Today's Puzzle
+                            </button>
+<div class="flex items-center gap-2 text-on-surface-variant font-body-md text-body-md bg-surface-container/50 px-4 py-2 rounded-full backdrop-blur-sm border border-surface-container-highest">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="">Resets in 04:21:59</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Game Modes -->
+<section>
+<div class="flex items-center justify-between mb-stack-gap">
+<h3 class="font-headline-lg text-headline-lg text-on-surface">Game Modes</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-gap">
+<!-- Mode Card 1 -->
+<div class="bg-surface-container rounded-[2rem] p-card-inner relative overflow-hidden group hover:bg-surface-container-high transition-colors cursor-pointer border border-transparent hover:border-surface-variant h-[280px] flex flex-col justify-end">
+<div class="absolute inset-0 bg-cover bg-center opacity-30 group-hover:opacity-50 transition-opacity mix-blend-screen" data-alt="Abstract, energetic background featuring interlocking glowing gold and neon pink chains against a deep midnight blue void. Subtle motion blur effect, cinematic lighting." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuArASEeed1T7Qx59ZIy_xLNNxhxSmeDHwmdTVT8GysqikdBWyMoNyPvNCyHKZyr9d4iZ6oHWzB8ORP53dScUQ1m4hwcrelCNSQHhOZls7Ou75yZsJsV2zd9hndm5zBurSC1qetRZy0w_sR9kQYukuZjq9--x1DfJh54td-c_UdKlbGPH6G1PEiiSnyvFWIKUw9HVuyJzKmRMf18i6TnWdefAawOuS5J_sShYwn-WKy2LN6A-F6Myca5HQ')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container via-surface-container/90 to-transparent"></div>
+<div class="relative z-10">
+<div class="w-12 h-12 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center mb-4 text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined">link</span>
+</div>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-2">Tolly Chain</h4>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mb-6">Connect actors to movies in this fast-paced association game. Build the longest chain.</p>
+<div class="flex justify-between items-center border-t border-surface-variant pt-4">
+<span class="font-label-caps text-label-caps text-tertiary-fixed-dim">SOLO &amp; MULTIPLAYER</span>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Mode Card 2 -->
+<div class="bg-surface-container rounded-[2rem] p-card-inner relative overflow-hidden group hover:bg-surface-container-high transition-colors cursor-pointer border border-transparent hover:border-surface-variant h-[280px] flex flex-col justify-end">
+<div class="absolute inset-0 bg-cover bg-center opacity-30 group-hover:opacity-50 transition-opacity mix-blend-screen" data-alt="Abstract background depicting a glowing, stylized open script or book with glowing particles rising from it. Deep indigo and magenta hues, cinematic, magical realist style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAjBBgwQgRhYOIfgIH3K8AhqN71jSONlP50YAPRKeaHssg6qNt_uib0l_yqLRe7m_jpWggEY-fGSqbNV3-v5G3PjrYgvv1w_yWz7pkEz3YJK7o4360PCZznYvhGKbJoPFjw8huUxLgQ-8YlSD38lJV0tO7va9qMqCa3qCA4WZJLWA89bSY-Tdv4T3Erv-FD7eztgu9tFgFcc_mVsaU0a0dmXeYAPjV9QYXst56hwXEb-XUEy8ikwWcd9g')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container via-surface-container/90 to-transparent"></div>
+<div class="relative z-10">
+<div class="w-12 h-12 rounded-full bg-secondary-container border border-secondary/30 flex items-center justify-center mb-4 text-on-secondary-container group-hover:bg-secondary group-hover:text-on-secondary transition-colors">
+<span class="material-symbols-outlined">menu_book</span>
+</div>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-2">Katha Battle</h4>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mb-6">Go head-to-head in real-time story guessing. Fastest fingers win the round.</p>
+<div class="flex justify-between items-center border-t border-surface-variant pt-4">
+<span class="font-label-caps text-label-caps text-secondary-fixed-dim">MULTIPLAYER ONLY</span>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-secondary transition-colors">arrow_forward</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Quick Actions & Leaderboard (Sidebar) -->
+<aside class="w-full xl:w-[380px] flex flex-col gap-section-gap flex-shrink-0">
+<!-- Quick Party Actions -->
+<div class="bg-surface-container rounded-3xl p-card-inner border border-surface-variant">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">groups</span>
+                        Party Mode
+                    </h3>
+<div class="flex flex-col gap-4">
+<button class="w-full bg-surface-container-high hover:bg-surface-variant text-on-surface font-body-lg text-body-lg rounded-2xl py-4 px-6 border border-surface-container-highest flex items-center justify-between transition-colors group active:scale-[0.98]">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary group-hover:text-primary-container">add</span>
+<span class="">Create Private Room</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all">chevron_right</span>
+</button>
+<div class="relative">
+<input class="w-full bg-surface-container-lowest border border-outline-variant text-on-surface font-headline-md text-headline-md rounded-2xl py-4 pl-6 pr-16 focus:ring-2 focus:ring-primary focus:border-transparent placeholder:text-on-surface-variant/50 placeholder:font-body-lg uppercase tracking-wider text-center" placeholder="Enter Room Code" type="text">
+<button class="absolute right-2 top-2 bottom-2 bg-primary text-on-primary rounded-xl px-4 flex items-center justify-center hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined">login</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Global Leaderboard Mini -->
+<div class="glass-panel rounded-3xl p-card-inner border border-surface-variant flex-1 flex flex-col min-h-[400px]">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed-dim" data-icon="emoji_events" data-weight="fill" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
+                            Top Box Office
+                        </h3>
+<button class="text-primary font-label-caps text-label-caps hover:underline">VIEW ALL</button>
+</div>
+<div class="flex flex-col gap-4 flex-1">
+<!-- Rank 1 -->
+<div class="flex items-center gap-4 bg-surface-container-highest/50 p-3 rounded-2xl border border-primary/20 relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="font-headline-lg text-headline-lg text-primary w-8 text-center">1</div>
+<img class="w-12 h-12 rounded-full border-2 border-primary object-cover marquee-glow" data-alt="A small circular avatar showing a stylish young man wearing sunglasses, glowing gold rim around the image. Dark background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5hTisAl7xju7vWuIflhLv5qa8aRi9r8-S4JAiRNqPULbVAhOb-ZBFYnuu_BjWgxgZ7nxKyQEvdipYFyAW0gVVX80SRL2XU69w3zIooDSjxtLWxwQLVkTLgJXu2RSfK1z77jA2Ai33RUnajTItA3IKtRW5QEaXr_5JKN1gLsVp-t3XfRtDDNWQo6dNVyw9wZ0Z5hVT-_96U9uu6gHK5zzbG_Qi1XllrHHfvxdaiYLET8Njnu5fKPd_5Q">
+<div class="flex-1">
+<div class="font-body-lg text-body-lg text-on-surface">Cinephile_99</div>
+<div class="font-label-caps text-label-caps text-primary-fixed-dim">42,500 PTS</div>
+</div>
+<span class="material-symbols-outlined text-tertiary-fixed-dim">trending_up</span>
+</div>
+<!-- Rank 2 -->
+<div class="flex items-center gap-4 p-3 rounded-2xl hover:bg-surface-container-high transition-colors">
+<div class="font-headline-lg text-headline-lg text-on-surface-variant w-8 text-center opacity-70">2</div>
+<img class="w-12 h-12 rounded-full border border-outline-variant object-cover" data-alt="A small circular avatar showing a woman with bright pink highlights in her hair, looking intense. Neon lighting, dark background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsUzW7YC_slbA14CpJgFMa9fBU51TXskpPGm-SgFra0W8a0j1IAAdrMMAld2MEDdNf9cTxQQpFLDnIC5V9_RdThJ753XS7MGP30YJezJh2WcSSLUPnrUru-FWJ1Q_aAM8cEKb-Lb_YRURvTArftbhwF8DjjdH1GJgwFdu1F7YOokW3qgEYrPXAWL2nP3Dj-7szXVnLUCKKyr6m5kvgz7j5jZMda7mFpKpmbtPuWQ-i0Df4qiV5Wu4zow">
+<div class="flex-1">
+<div class="font-body-lg text-body-lg text-on-surface">TollywoodQueen</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant">38,200 PTS</div>
+</div>
+</div>
+<!-- Rank 3 -->
+<div class="flex items-center gap-4 p-3 rounded-2xl hover:bg-surface-container-high transition-colors">
+<div class="font-headline-lg text-headline-lg text-on-surface-variant w-8 text-center opacity-70">3</div>
+<img class="w-12 h-12 rounded-full border border-outline-variant object-cover" data-alt="A small circular avatar showing a mysterious figure in a dark hoodie illuminated by a glowing phone screen. Cinematic moody lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsepemZHoaKqAqRf5VMmqQ3ByXCFlNUw_OJf53QfFHWNoKzTjC-gPY2zwbn7T7_nsGuNHs7MaP7swh-tHUto9QXLl8almj4zn9Ri01ZL0Ps0QEc0Pn2OcJ9PiFQD3vSQM1FX8-D10LkcHxIT8nr2X0Pv-ol9l-Y0zpbjmzWvd3U82RKjt7I7OpxDprgRanVOQ8q_WGvyrPXMx621iowYa3gDtBxHtbRtnNJWvXiHsnmaw43w6KgFvU0w">
+<div class="flex-1">
+<div class="font-body-lg text-body-lg text-on-surface">MasalaMaster</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant">37,950 PTS</div>
+</div>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Mobile Bottom Navigation Shell (Hidden on md and up) -->
+<nav class="md:hidden fixed bottom-0 w-full z-40 bg-surface-container border-t border-surface-container-high pb-safe pt-2 px-4 shadow-[0_-4px_20px_rgba(0,0,0,0.5)]">
+<div class="flex justify-around items-center h-16">
+<!-- Active Tab -->
+<a class="flex flex-col items-center justify-center w-16 gap-1 text-primary active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined text-3xl" data-icon="home" data-weight="fill" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-caps text-[10px] tracking-wider">HOME</span>
+</a>
+<a class="flex flex-col items-center justify-center w-16 gap-1 text-on-surface-variant hover:text-on-surface transition-colors active:scale-95" href="#">
+<span class="material-symbols-outlined text-3xl" data-icon="calendar_today">calendar_today</span>
+<span class="font-label-caps text-[10px] tracking-wider">DAILY</span>
+</a>
+<!-- Center FAB equivalent for mobile nav -->
+<div class="-mt-8">
+<button class="bg-primary text-on-primary w-14 h-14 rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(249,188,69,0.4)] border-4 border-surface-container active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</div>
+<a class="flex flex-col items-center justify-center w-16 gap-1 text-on-surface-variant hover:text-on-surface transition-colors active:scale-95" href="#">
+<span class="material-symbols-outlined text-3xl" data-icon="groups">groups</span>
+<span class="font-label-caps text-[10px] tracking-wider">ROOMS</span>
+</a>
+<a class="flex flex-col items-center justify-center w-16 gap-1 text-on-surface-variant hover:text-on-surface transition-colors active:scale-95" href="#">
+<span class="material-symbols-outlined text-3xl" data-icon="person">person</span>
+<span class="font-label-caps text-[10px] tracking-wider">PROFILE</span>
+</a>
+</div>
+</nav>
+
+
+
+</body></html>
