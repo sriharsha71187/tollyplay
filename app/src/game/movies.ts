@@ -14,7 +14,7 @@ let cache: Movie[] | null = null
 
 export async function loadMovies(): Promise<Movie[]> {
   if (cache) return cache
-  const res = await fetch('/movies.json')
+  const res = await fetch(import.meta.env.BASE_URL + 'movies.json')
   cache = (await res.json()) as Movie[]
   return cache
 }
