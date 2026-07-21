@@ -26,8 +26,14 @@ export default function Rooms() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <h1 className="font-display text-3xl">PARTY ROOMS</h1>
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-6">
+      <div className="hero-backdrop relative overflow-hidden rounded-3xl p-6 md:p-8">
+        <h1 className="font-display text-4xl text-gold-bright">PARTY ROOMS</h1>
+        <p className="mt-2 max-w-sm text-sm text-on-variant">
+          One room code, everyone plays live — Chain or Story, host&apos;s
+          pick.
+        </p>
+      </div>
 
       <div className="rounded-3xl bg-surface-container p-5">
         <p className="text-xs font-bold tracking-[0.1em] text-on-variant">

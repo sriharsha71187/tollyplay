@@ -24,7 +24,7 @@ export default function Daily() {
 
   if (record) {
     return (
-      <div className="flex flex-col gap-6">
+      <div className="mx-auto flex w-full max-w-2xl flex-col gap-6">
         <Head day={day} streak={record.streak} />
         <div className="rounded-3xl border border-gold/30 bg-surface-container p-6 text-center">
           <p className="font-display text-5xl text-gold-bright">
@@ -79,7 +79,7 @@ export default function Daily() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-6">
       <Head day={day} />
       <div className="flex items-center justify-between">
         <p className="text-xs font-bold tracking-[0.1em] text-on-variant">

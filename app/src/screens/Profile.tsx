@@ -17,7 +17,7 @@ export default function Profile() {
   }, [])
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-6">
       <h1 className="font-display text-3xl">PROFILE</h1>
 
       <div className="flex items-center gap-4 rounded-3xl bg-surface-container p-6">

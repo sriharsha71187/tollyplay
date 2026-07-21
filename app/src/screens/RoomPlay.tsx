@@ -17,6 +17,7 @@ import {
   type Movie,
 } from '../game/movies'
 import { supabase } from '../lib/supabase'
+import Icon from '../components/Icon'
 
 const roleLabels: Record<LinkRole, string> = {
   hero: 'Hero',
@@ -38,6 +39,7 @@ export default function RoomPlay() {
   const [query, setQuery] = useState('')
   const [now, setNow] = useState(Date.now())
   const [copied, setCopied] = useState(false)
+  const [storyDraft, setStoryDraft] = useState('')
   /** Set once we've listened long enough to know no host is already running the room. */
   const [claimHost, setClaimHost] = useState(false)
 
@@ -64,19 +66,96 @@ export default function RoomPlay() {
     return () => clearInterval(t)
   }, [])
 
-  // ---- host: broadcast state and (re)arm the turn timer
+  // ---- host: broadcast state and (re)arm the phase timer
   function push(s: RoomState) {
     hostState.current = s
     stateRef.current = s
     setState(s)
     chRef.current?.send({ type: 'broadcast', event: 'state', payload: s })
     if (timerRef.current) clearTimeout(timerRef.current)
-    if (s.phase === 'turn' && s.deadline) {
+    if (s.deadline) {
       timerRef.current = setTimeout(
-        () => strikeOut(),
+        () => expireRef.current(),
         Math.max(0, s.deadline - Date.now()),
       )
     }
+  }
+
+  function expire() {
+    const s = hostState.current
+    if (!s) return
+    if (s.phase === 'turn') strikeOut()
+    else if (s.phase === 'story-write' || s.phase === 'story-guess')
+      revealStory(s)
+    else if (s.phase === 'story-reveal') nextStoryRound(s)
+  }
+  const expireRef = useRef(expire)
+  expireRef.current = expire
+
+  // ---- story mode (host referee)
+  function pickSecret(): Movie | null {
+    const pool = (movies ?? []).filter((m) => m.linked && m.cast.length >= 2)
+    if (!pool.length) return null
+    return pool[Math.floor(Math.random() * pool.length)]
+  }
+
+  function startStoryRound(s: RoomState, roundNo: number) {
+    const writer = s.players[roundNo - 1]
+    const secret = pickSecret()
+    if (!writer || !secret) {
+      push({ ...s, phase: 'over', deadline: null })
+      return
+    }
+    push({
+      ...s,
+      phase: 'story-write',
+      story: {
+        writerId: writer.id,
+        secretTitle: secret.title,
+        secretYear: secret.year,
+        secretId: secret.id,
+        story: null,
+        tries: {},
+        correct: [],
+        roundNo,
+      },
+      storyAwards: null,
+      deadline: Date.now() + 90_000,
+    })
+  }
+
+  function revealStory(s: RoomState) {
+    const st = s.story
+    if (!st) return
+    const guessers = s.players.filter((p) => p.id !== st.writerId)
+    const c = st.correct.length
+    const awards: Record<string, number> = {}
+    if (st.story) {
+      awards[st.writerId] = c > 0 ? (guessers.length - c) * 2 + 2 : 0
+      st.correct.forEach((id, i) => {
+        awards[id] = i === 0 ? 3 : 2
+      })
+    }
+    const scores = { ...s.scores }
+    for (const [id, pts] of Object.entries(awards)) {
+      scores[id] = (scores[id] ?? 0) + pts
+    }
+    push({
+      ...s,
+      phase: 'story-reveal',
+      scores,
+      storyAwards: awards,
+      deadline: Date.now() + 8_000,
+    })
+  }
+
+  function nextStoryRound(s: RoomState) {
+    const n = s.story?.roundNo ?? 0
+    if (n >= s.players.length) {
+      push({ ...s, phase: 'over', deadline: null, story: null })
+      return
+    }
+    startStoryRound(s, n + 1)
   }
 
   function alive(s: RoomState) {
@@ -116,7 +195,50 @@ export default function RoomPlay() {
 
   function handleAction(a: RoomAction) {
     const s = hostState.current
-    if (!s || s.phase !== 'turn' || a.playerId !== s.turnPlayerId) return
+    if (!s) return
+    if (a.type === 'story-submit') {
+      if (s.phase !== 'story-write' || !s.story || a.playerId !== s.story.writerId)
+        return
+      if (!a.text.trim()) return
+      push({
+        ...s,
+        phase: 'story-guess',
+        story: { ...s.story, story: a.text.trim().slice(0, 300) },
+        deadline: Date.now() + 75_000,
+      })
+      return
+    }
+    if (a.type === 'story-guess') {
+      const st = s.story
+      if (s.phase !== 'story-guess' || !st || a.playerId === st.writerId) return
+      if (st.correct.includes(a.playerId) || (st.tries[a.playerId] ?? 0) >= 2)
+        return
+      const right = a.movieId === st.secretId
+      const tries = { ...st.tries, [a.playerId]: (st.tries[a.playerId] ?? 0) + 1 }
+      const correct = right ? [...st.correct, a.playerId] : st.correct
+      const guessers = s.players.filter((p) => p.id !== st.writerId)
+      const done = guessers.every(
+        (p) => correct.includes(p.id) || (tries[p.id] ?? 0) >= 2,
+      )
+      if (!right) {
+        chRef.current?.send({
+          type: 'broadcast',
+          event: 'reject',
+          payload: {
+            playerId: a.playerId,
+            reason:
+              (tries[a.playerId] ?? 0) >= 2
+                ? 'Not it — out of tries!'
+                : 'Not it — one try left.',
+          },
+        })
+      }
+      const ns = { ...s, story: { ...st, tries, correct } }
+      if (done) revealStory(ns)
+      else push(ns)
+      return
+    }
+    if (s.phase !== 'turn' || a.playerId !== s.turnPlayerId) return
     if (a.type === 'play') {
       const movie = moviesById.get(a.movieId)
       if (!movie) return
@@ -243,6 +365,7 @@ export default function RoomPlay() {
       return
     push({
       phase: 'lobby',
+      mode: 'chain',
       hostId: me,
       players: present,
       scores: {},
@@ -253,6 +376,8 @@ export default function RoomPlay() {
       deadline: null,
       settings: defaultSettings,
       hint: null,
+      story: null,
+      storyAwards: null,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [claimHost, present])
@@ -349,6 +474,41 @@ export default function RoomPlay() {
           <>
             <div className="rounded-3xl bg-surface-container p-5">
               <p className="text-xs font-bold tracking-[0.1em] text-on-variant">
+                GAME
+              </p>
+              <div className="mt-3 flex gap-2">
+                {(
+                  [
+                    ['chain', 'link', 'Chain'],
+                    ['story', 'auto_stories', 'Story'],
+                  ] as const
+                ).map(([m, icon, label]) => (
+                  <button
+                    key={m}
+                    onClick={() => push({ ...state, mode: m })}
+                    className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold ${
+                      state.mode === m
+                        ? 'bg-gold text-on-gold'
+                        : 'bg-surface-high text-on-variant'
+                    }`}
+                  >
+                    <Icon name={icon} className="text-base" />
+                    {label}
+                  </button>
+                ))}
+              </div>
+              <p className="mt-2 text-xs text-on-variant">
+                {state.mode === 'chain'
+                  ? 'Take turns linking movies through shared stars & directors.'
+                  : 'Each round one player disguises a movie as a story — fewer correct guesses, more points for the writer.'}
+              </p>
+            </div>
+            <div
+              className={`rounded-3xl bg-surface-container p-5 ${
+                state.mode === 'story' ? 'hidden' : ''
+              }`}
+            >
+              <p className="text-xs font-bold tracking-[0.1em] text-on-variant">
                 VALID LINKS
               </p>
               <div className="mt-3 flex gap-2">
@@ -385,22 +545,34 @@ export default function RoomPlay() {
                 usedMovies.current.clear()
                 personUse.current.clear()
                 chainMovies.current = []
-                const first = s.players[0].id
-                push({
+                const reset = {
                   ...s,
-                  phase: 'turn',
                   scores: {},
                   strikes: {},
                   lifelines: {},
                   chain: [],
-                  turnPlayerId: first,
-                  deadline: Date.now() + s.settings.turnSeconds * 1000,
                   hint: null,
-                })
+                  storyAwards: null,
+                }
+                if (s.mode === 'story') {
+                  startStoryRound({ ...reset, story: null }, 1)
+                } else {
+                  push({
+                    ...reset,
+                    phase: 'turn',
+                    story: null,
+                    turnPlayerId: s.players[0].id,
+                    deadline: Date.now() + s.settings.turnSeconds * 1000,
+                  })
+                }
               }}
               className="marquee-glow rounded-full bg-gold py-4 font-display text-lg tracking-wider text-on-gold active:scale-95 disabled:opacity-40"
             >
-              {s.players.length < 2 ? 'WAITING FOR PLAYERS…' : 'START CHAIN'}
+              {s.players.length < 2
+                ? 'WAITING FOR PLAYERS…'
+                : s.mode === 'story'
+                  ? 'START STORY'
+                  : 'START CHAIN'}
             </button>
           </>
         ) : (
@@ -448,6 +620,207 @@ export default function RoomPlay() {
           >
             BACK TO LOBBY
           </button>
+        )}
+      </Screen>
+    )
+  }
+
+  // ---------- story mode ----------
+  if (
+    state.phase === 'story-write' ||
+    state.phase === 'story-guess' ||
+    state.phase === 'story-reveal'
+  ) {
+    const s = state
+    const st = s.story!
+    const writer = s.players.find((p) => p.id === st.writerId)
+    const iAmWriter = st.writerId === me
+    const secs = s.deadline
+      ? Math.max(0, Math.ceil((s.deadline - now) / 1000))
+      : 0
+    const myTries = st.tries[me] ?? 0
+    const iGotIt = st.correct.includes(me)
+
+    return (
+      <Screen code={code}>
+        <div className="flex items-center justify-between">
+          <p className="text-xs font-bold tracking-[0.15em] text-on-variant">
+            STORY · ROUND {st.roundNo}/{s.players.length}
+          </p>
+          <p
+            className={`font-display text-3xl ${
+              secs <= 10 && s.phase !== 'story-reveal'
+                ? 'animate-pulse text-urgent'
+                : 'text-gold'
+            }`}
+          >
+            {String(secs).padStart(2, '0')}s
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {s.players.map((p) => (
+            <span
+              key={p.id}
+              className={`flex items-center gap-1 rounded-full px-3 py-1 text-xs ${
+                p.id === st.writerId
+                  ? 'marquee-glow bg-gold font-bold text-on-gold'
+                  : 'bg-surface-container text-on-variant'
+              }`}
+            >
+              {p.id === st.writerId && <Icon name="edit" className="text-sm" />}
+              {st.correct.includes(p.id) && (
+                <Icon name="check_circle" fill className="text-sm text-success-bright" />
+              )}
+              {p.name} · {s.scores[p.id] ?? 0}
+            </span>
+          ))}
+        </div>
+
+        {s.phase === 'story-write' &&
+          (iAmWriter ? (
+            <div className="flex flex-col gap-4">
+              <div className="rounded-3xl border border-gold/40 bg-surface-container p-5 text-center">
+                <p className="text-xs font-bold tracking-[0.15em] text-on-variant">
+                  YOUR SECRET MOVIE
+                </p>
+                <p className="mt-2 font-display text-3xl text-gold-bright">
+                  {st.secretTitle.toUpperCase()}
+                </p>
+                <p className="mt-1 text-sm text-on-variant">{st.secretYear}</p>
+              </div>
+              <textarea
+                autoFocus
+                value={storyDraft}
+                onChange={(e) => setStoryDraft(e.target.value)}
+                maxLength={300}
+                rows={4}
+                placeholder="Disguise it as a story… no names, no songs, be sneaky."
+                className="w-full rounded-3xl bg-surface-high px-5 py-4 leading-relaxed placeholder:text-on-variant/50 focus:outline-2 focus:outline-gold"
+              />
+              <button
+                disabled={!storyDraft.trim()}
+                onClick={() => {
+                  send({ type: 'story-submit', playerId: me, text: storyDraft })
+                  setStoryDraft('')
+                }}
+                className="marquee-glow rounded-full bg-gold py-4 font-display text-lg tracking-wider text-on-gold active:scale-95 disabled:opacity-40"
+              >
+                SEND IT
+              </button>
+            </div>
+          ) : (
+            <div className="m-auto flex flex-col items-center gap-3 text-center">
+              <Icon name="edit_note" className="animate-pulse !text-6xl text-gold" />
+              <p className="font-display text-2xl">
+                {writer?.name.toUpperCase()} IS DISGUISING A MOVIE…
+              </p>
+              <p className="text-sm text-on-variant">
+                Get ready to see through the trick.
+              </p>
+            </div>
+          ))}
+
+        {s.phase === 'story-guess' && (
+          <>
+            <div className="rounded-3xl border border-gold/30 bg-surface-container p-6 text-center">
+              <Icon name="auto_stories" className="text-gold" />
+              <p className="mt-3 text-lg italic leading-relaxed">
+                “{st.story}”
+              </p>
+              <p className="mt-3 text-xs text-on-variant">
+                — as told by {writer?.name}
+              </p>
+            </div>
+            {iAmWriter ? (
+              <p className="text-center text-on-variant">
+                {st.correct.length} of {s.players.length - 1} cracked it.
+                Fewer is better for you…
+              </p>
+            ) : iGotIt ? (
+              <p className="text-center font-bold text-success-bright">
+                ✓ You got it! Waiting for the others…
+              </p>
+            ) : myTries >= 2 ? (
+              <p className="text-center text-on-variant">
+                Out of tries — wait for the reveal.
+              </p>
+            ) : (
+              <div>
+                {reject && (
+                  <div className="mb-2 rounded-2xl bg-urgent-deep/60 px-4 py-3 text-sm text-urgent-soft">
+                    ✕ {reject}
+                  </div>
+                )}
+                <input
+                  autoFocus
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder={`Which movie is it? (${2 - myTries} ${2 - myTries === 1 ? 'try' : 'tries'} left)`}
+                  className="w-full rounded-2xl bg-surface-high px-5 py-3.5 placeholder:text-on-variant/60 focus:outline-2 focus:outline-gold"
+                />
+                <div className="mt-2 flex flex-col gap-1">
+                  {results.map((m) => (
+                    <button
+                      key={m.id}
+                      onClick={() =>
+                        send({ type: 'story-guess', playerId: me, movieId: m.id })
+                      }
+                      className="flex items-baseline justify-between rounded-2xl bg-surface-container px-4 py-3 text-left active:scale-[0.98]"
+                    >
+                      <span className="font-bold">{m.title}</span>
+                      <span className="text-sm text-on-variant">{m.year}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {s.phase === 'story-reveal' && (
+          <div className="flex flex-col gap-4">
+            <div className="marquee-glow rounded-3xl border border-gold/40 bg-surface-container p-6 text-center">
+              <p className="text-xs font-bold tracking-[0.15em] text-on-variant">
+                IT WAS
+              </p>
+              <p className="mt-2 font-display text-4xl text-gold-bright">
+                {st.secretTitle.toUpperCase()}
+              </p>
+              <p className="mt-1 text-sm text-on-variant">{st.secretYear}</p>
+              {!st.story && (
+                <p className="mt-3 text-sm text-urgent-soft">
+                  {writer?.name} ran out of time — no points this round.
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col gap-2">
+              {s.players.map((p) => {
+                const pts = s.storyAwards?.[p.id] ?? 0
+                return (
+                  <div
+                    key={p.id}
+                    className="flex items-center justify-between rounded-2xl bg-surface-container px-4 py-3"
+                  >
+                    <span className="font-bold">
+                      {p.id === st.writerId ? '✍️ ' : ''}
+                      {p.name}
+                    </span>
+                    <span
+                      className={`font-display text-xl ${
+                        pts > 0 ? 'text-success-bright' : 'text-on-variant/50'
+                      }`}
+                    >
+                      {pts > 0 ? `+${pts}` : '—'}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+            <p className="text-center text-xs text-on-variant">
+              Next round in {secs}s…
+            </p>
+          </div>
         )}
       </Screen>
     )

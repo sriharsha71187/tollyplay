@@ -13,8 +13,31 @@ export interface NetLink {
   points: number
 }
 
+export type RoomMode = 'chain' | 'story'
+
+export interface StoryRound {
+  writerId: string
+  /** Visible to everyone; the writer's own client hides nothing — family game. */
+  secretTitle: string
+  secretYear: number
+  secretId: string
+  story: string | null
+  /** playerId -> tries used */
+  tries: Record<string, number>
+  /** playerIds in the order they guessed correctly */
+  correct: string[]
+  roundNo: number
+}
+
 export interface RoomState {
-  phase: 'lobby' | 'turn' | 'over'
+  phase:
+    | 'lobby'
+    | 'turn'
+    | 'over'
+    | 'story-write'
+    | 'story-guess'
+    | 'story-reveal'
+  mode: RoomMode
   hostId: string
   players: RoomPlayer[]
   scores: Record<string, number>
@@ -28,11 +51,16 @@ export interface RoomState {
   settings: ChainSettings
   /** Active lifeline clue for one player. */
   hint: { playerId: string; clue: string } | null
+  story: StoryRound | null
+  /** Points awarded in the last story round, shown on reveal. */
+  storyAwards: Record<string, number> | null
 }
 
 export type RoomAction =
   | { type: 'play'; playerId: string; movieId: string }
   | { type: 'lifeline'; playerId: string }
+  | { type: 'story-submit'; playerId: string; text: string }
+  | { type: 'story-guess'; playerId: string; movieId: string }
 
 export function playerId(): string {
   let id = localStorage.getItem('tollyplay-pid')

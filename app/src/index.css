@@ -3,6 +3,7 @@
 @import '@fontsource/hanken-grotesk/400.css';
 @import '@fontsource/hanken-grotesk/500.css';
 @import '@fontsource/hanken-grotesk/700.css';
+@import 'material-symbols/outlined.css';
 
 @theme {
   /* Night-Show palette — design/DESIGN.md */
@@ -51,4 +52,31 @@ html {
 /* Marquee glow for active elements */
 .marquee-glow {
   box-shadow: 0 0 18px 2px rgb(245 185 66 / 0.3);
+}
+.marquee-glow-strong {
+  box-shadow: 0 0 25px rgb(245 185 66 / 0.5);
+}
+
+/* Cinematic hero backdrop — pure CSS, no assets */
+.hero-backdrop {
+  background:
+    radial-gradient(ellipse 80% 60% at 75% 0%, rgb(245 185 66 / 0.22), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 10% 100%, rgb(162 2 52 / 0.35), transparent 65%),
+    linear-gradient(160deg, #2a2838 0%, #1c1a29 55%, #0e0c1b 100%);
+}
+
+/* Tilted decorative poster cards */
+.poster-tilt {
+  transform: rotate(6deg);
+  transition: transform 0.5s;
+}
+.poster-tilt-l {
+  transform: rotate(-8deg);
+  transition: transform 0.5s;
+}
+.group:hover .poster-tilt {
+  transform: rotate(3deg) translateY(-4px);
+}
+.group:hover .poster-tilt-l {
+  transform: rotate(-5deg) translateY(-4px);
 }
