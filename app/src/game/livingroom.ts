@@ -1,38 +1,45 @@
 import type { Movie } from './movies'
+import { dialogues } from '../content/dialogues'
+import { trivia } from '../content/trivia'
 
-export type ChallengeKind = 'describe' | 'sing' | 'act' | 'trivia'
+export type ChallengeKind = 'describe' | 'sing' | 'act' | 'trivia' | 'dialogue'
 
 export interface Card {
   kind: ChallengeKind
-  movie: Movie
+  /** The answer the team must shout (movie title, or trivia answer). */
+  title: string
+  year?: number
   /** Words the clue-giver may not say (describe cards). */
   banned: string[]
-  /** Pre-built clue text (trivia cards). */
+  /** Read-aloud text: trivia question or famous dialogue. */
   clue?: string
 }
 
 export type Era = 'all' | '70s' | '80s' | '90s' | '2000s' | 'modern'
 
 const eraRange: Record<Exclude<Era, 'all'>, [number, number]> = {
-  '70s': [1960, 1979],
+  '70s': [1900, 1979],
   '80s': [1980, 1989],
   '90s': [1990, 1999],
   '2000s': [2000, 2012],
   modern: [2013, 2100],
 }
 
-/** Famous-biased pool: films with their own Wikipedia article and real credits. */
-export function cardPool(movies: Movie[], era: Era): Movie[] {
-  return movies.filter((m) => {
-    if (!m.linked || m.cast.length < 2 || !m.director) return false
-    if (era === 'all') return true
-    const [lo, hi] = eraRange[era]
-    return m.year >= lo && m.year <= hi
-  })
+function inEra(year: number, era: Era): boolean {
+  if (era === 'all') return true
+  const [lo, hi] = eraRange[era]
+  return year >= lo && year <= hi
 }
 
-const kinds: ChallengeKind[] = [
-  'describe', 'describe', 'describe', 'sing', 'sing', 'act', 'act', 'trivia', 'trivia',
+/** Famous-biased pool: films with their own Wikipedia article and real credits. */
+export function cardPool(movies: Movie[], era: Era): Movie[] {
+  return movies.filter(
+    (m) => m.linked && m.cast.length >= 2 && m.director && inEra(m.year, era),
+  )
+}
+
+const movieKinds: ChallengeKind[] = [
+  'describe', 'describe', 'describe', 'sing', 'sing', 'act', 'act', 'trivia',
 ]
 
 function bannedWords(m: Movie): string[] {
@@ -47,28 +54,69 @@ function bannedWords(m: Movie): string[] {
   return [...words].slice(0, 6)
 }
 
-function triviaClue(m: Movie): string {
-  const parts = [`${m.year}`, `directed by ${m.director}`]
-  if (m.cast[0]) parts.push(`starring ${m.cast.slice(0, 2).join(' & ')}`)
-  return parts.join(' · ')
+function movieCard(m: Movie, rand: () => number): Card {
+  const kind = movieKinds[Math.floor(rand() * movieKinds.length)]
+  return {
+    kind,
+    title: m.title,
+    year: m.year,
+    banned: kind === 'describe' ? bannedWords(m) : [],
+    clue:
+      kind === 'trivia'
+        ? [`${m.year}`, `directed by ${m.director}`,
+           m.cast[0] && `starring ${m.cast.slice(0, 2).join(' & ')}`]
+            .filter(Boolean)
+            .join(' · ')
+        : undefined,
+  }
 }
 
-/** Deterministic-ish shuffle seeded by an external random source. */
-export function buildDeck(pool: Movie[], count: number, rand: () => number): Card[] {
-  const picked = [...pool]
-  for (let i = picked.length - 1; i > 0; i--) {
+function shuffle<T>(arr: T[], rand: () => number): T[] {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(rand() * (i + 1))
-    ;[picked[i], picked[j]] = [picked[j], picked[i]]
+    ;[a[i], a[j]] = [a[j], a[i]]
   }
-  return picked.slice(0, count).map((movie) => {
-    const kind = kinds[Math.floor(rand() * kinds.length)]
-    return {
-      kind,
-      movie,
-      banned: kind === 'describe' ? bannedWords(movie) : [],
-      clue: kind === 'trivia' ? triviaClue(movie) : undefined,
-    }
-  })
+  return a
+}
+
+export const cardKey = (c: Card) => `${c.kind}|${c.title}|${c.clue ?? ''}`
+
+/**
+ * Deck = movie cards (describe/sing/act/auto-trivia) with curated dialogue and
+ * trivia cards sprinkled in roughly every 4th card. `used` keys are excluded.
+ */
+export function buildDeck(
+  pool: Movie[],
+  count: number,
+  era: Era,
+  rand: () => number,
+  used?: Set<string>,
+): Card[] {
+  const movieCards = shuffle(pool, rand)
+    .slice(0, count)
+    .map((m) => movieCard(m, rand))
+    .filter((c) => !used?.has(cardKey(c)))
+  const curated: Card[] = shuffle(
+    [
+      ...dialogues
+        .filter((d) => inEra(d.year, era))
+        .map<Card>((d) => ({
+          kind: 'dialogue', title: d.movie, year: d.year, banned: [], clue: d.text,
+        })),
+      ...trivia.map<Card>((t) => ({
+        kind: 'trivia', title: t.answer, banned: [], clue: t.q,
+      })),
+    ].filter((c) => !used?.has(cardKey(c))),
+    rand,
+  )
+  const deck: Card[] = []
+  let c = 0
+  for (const card of movieCards) {
+    deck.push(card)
+    if (deck.length % 4 === 3 && c < curated.length) deck.push(curated[c++])
+  }
+  return deck.slice(0, count)
 }
 
 export const kindMeta: Record<
@@ -93,6 +141,11 @@ export const kindMeta: Record<
   trivia: {
     label: 'TRIVIA',
     icon: '🧠',
-    help: 'Read the clue aloud — team names the movie.',
+    help: 'Read the clue aloud — team shouts the answer.',
+  },
+  dialogue: {
+    label: 'DIALOGUE',
+    icon: '💬',
+    help: 'Deliver the dialogue with full feeling — team names the movie!',
   },
 }

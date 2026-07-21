@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   buildDeck,
+  cardKey,
   cardPool,
   kindMeta,
   type Card,
@@ -42,7 +43,8 @@ export default function LivingRoom() {
   const [cardIdx, setCardIdx] = useState(0)
   const [roundScore, setRoundScore] = useState(0)
   const [passes, setPasses] = useState(0)
-  const usedIds = useRef(new Set<string>())
+  const usedMovies = useRef(new Set<string>())
+  const usedCards = useRef(new Set<string>())
 
   useEffect(() => {
     loadMovies().then(setMovies)
@@ -65,8 +67,10 @@ export default function LivingRoom() {
   }, [phase, timeLeft])
 
   function startRound() {
-    const fresh = pool.filter((m) => !usedIds.current.has(m.id))
-    const cards = buildDeck(fresh, 40, Math.random)
+    const fresh = pool.filter(
+      (m) => !usedMovies.current.has(`${m.title}|${m.year}`),
+    )
+    const cards = buildDeck(fresh, 40, era, Math.random, usedCards.current)
     setDeck(cards)
     setCardIdx(0)
     setRoundScore(0)
@@ -77,7 +81,10 @@ export default function LivingRoom() {
 
   function nextCard(scored: boolean) {
     const card = deck[cardIdx]
-    if (card) usedIds.current.add(card.movie.id)
+    if (card) {
+      usedCards.current.add(cardKey(card))
+      usedMovies.current.add(`${card.title}|${card.year ?? ''}`)
+    }
     if (scored) setRoundScore((s) => s + 1)
     else setPasses((p) => p + 1)
     if (cardIdx + 1 >= deck.length) {
@@ -247,19 +254,25 @@ export default function LivingRoom() {
             {meta.icon} {meta.label}
           </span>
           <div className="flex flex-1 flex-col items-center justify-center gap-4 text-center">
-            {card.kind === 'trivia' ? (
+            {card.kind === 'trivia' || card.kind === 'dialogue' ? (
               <>
-                <p className="text-lg text-on-variant">{card.clue}</p>
+                <p
+                  className={`text-lg text-on-variant ${
+                    card.kind === 'dialogue' ? 'italic' : ''
+                  }`}
+                >
+                  {card.kind === 'dialogue' ? `“${card.clue}”` : card.clue}
+                </p>
                 <p className="font-display text-2xl text-gold-bright">
-                  {card.movie.title.toUpperCase()}
+                  {card.title.toUpperCase()}
                 </p>
               </>
             ) : (
               <>
                 <p className="font-display text-3xl leading-snug">
-                  {card.movie.title.toUpperCase()}
+                  {card.title.toUpperCase()}
                 </p>
-                <p className="text-sm text-on-variant">{card.movie.year}</p>
+                <p className="text-sm text-on-variant">{card.year}</p>
               </>
             )}
             {card.kind === 'describe' && card.banned.length > 0 && (
