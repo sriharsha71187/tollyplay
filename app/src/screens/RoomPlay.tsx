@@ -5,9 +5,11 @@ import { defaultSettings, judgeMove, recordMove } from '../game/chain'
 import {
   playerId,
   savedName,
+  storyEraBounds,
   type RoomAction,
   type RoomPlayer,
   type RoomState,
+  type StoryEra,
 } from '../game/room'
 import {
   linkPeople,
@@ -43,6 +45,8 @@ export default function RoomPlay() {
   const [now, setNow] = useState(Date.now())
   const [copied, setCopied] = useState(false)
   const [storyDraft, setStoryDraft] = useState('')
+  /** Chain: a movie the player has selected but not yet locked in. */
+  const [pending, setPending] = useState<Movie | null>(null)
   /** Set once we've listened long enough to know no host is already running the room. */
   const [claimHost, setClaimHost] = useState(false)
 
@@ -68,6 +72,12 @@ export default function RoomPlay() {
     const t = setInterval(() => setNow(Date.now()), 500)
     return () => clearInterval(t)
   }, [])
+
+  // A fresh turn clears any half-made selection from the previous one.
+  useEffect(() => {
+    setPending(null)
+    setQuery('')
+  }, [state?.turnPlayerId])
 
   // ---- host: broadcast state and (re)arm the phase timer
   function push(s: RoomState) {
@@ -96,8 +106,14 @@ export default function RoomPlay() {
   expireRef.current = expire
 
   // ---- story mode (host referee)
-  function pickSecret(): Movie | null {
-    const pool = (movies ?? []).filter((m) => m.linked && m.cast.length >= 2)
+  function pickSecret(s: RoomState): Movie | null {
+    const [lo, hi] = storyEraBounds(s.storyEra ?? 'all')
+    let pool = (movies ?? []).filter(
+      (m) => m.linked && m.cast.length >= 2 && m.year >= lo && m.year <= hi,
+    )
+    // Never leave the room empty if the chosen era is too thin.
+    if (pool.length < 4)
+      pool = (movies ?? []).filter((m) => m.linked && m.cast.length >= 2)
     if (!pool.length) return null
     return pool[Math.floor(Math.random() * pool.length)]
   }
@@ -115,7 +131,7 @@ export default function RoomPlay() {
     if (wantReal) {
       // App deals a real plot — no writer, straight to guessing.
       for (let attempt = 0; attempt < 6; attempt++) {
-        const secret = pickSecret()
+        const secret = pickSecret(s)
         if (!secret) break
         const plot = await realPlotSnippet(secret)
         if (!plot) continue
@@ -142,7 +158,7 @@ export default function RoomPlay() {
       // fetch failed repeatedly — fall through to a player round
     }
 
-    const secret = pickSecret()
+    const secret = pickSecret(s)
     if (!secret) {
       push({ ...s, phase: 'over', deadline: null })
       return
@@ -293,11 +309,24 @@ export default function RoomPlay() {
       if (prev) {
         const v = judgeMove(prev, movie, usedMovies.current, personUse.current, s.settings)
         if (!v.ok) {
+          // Locked a wrong movie — no retry. It's a strike; under sudden
+          // death that eliminates the player. Their turn ends either way.
+          const strikes = {
+            ...s.strikes,
+            [a.playerId]: (s.strikes[a.playerId] ?? 0) + 1,
+          }
+          const out = strikes[a.playerId] >= s.settings.strikesToEliminate
           chRef.current?.send({
             type: 'broadcast',
             event: 'reject',
-            payload: { playerId: a.playerId, reason: v.reason },
+            payload: {
+              playerId: a.playerId,
+              reason: out
+                ? `${movie.title} doesn't link.`
+                : `${movie.title} doesn't link — one life left.`,
+            },
           })
+          advance({ ...s, strikes, hint: null }, a.playerId)
           return
         }
         recordMove(v, movie, usedMovies.current, personUse.current)
@@ -426,6 +455,7 @@ export default function RoomPlay() {
       story: null,
       storyAwards: null,
       storySource: 'mix',
+      storyEra: 'all',
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [claimHost, present])
@@ -628,6 +658,36 @@ export default function RoomPlay() {
                   <p className="mt-2 text-xs text-on-variant">
                     Real plots come straight from the films — names blacked
                     out, everyone guesses.
+                  </p>
+                  <p className="mt-4 text-xs font-bold tracking-[0.1em] text-on-variant">
+                    FROM THE ERA
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {(
+                      [
+                        ['all', 'Any year'],
+                        ['classic', '≤ 70s'],
+                        ['80s', '80s'],
+                        ['90s', '90s'],
+                        ['2000s', '2000s'],
+                        ['modern', 'Now'],
+                      ] as [StoryEra, string][]
+                    ).map(([k, label]) => (
+                      <button
+                        key={k}
+                        onClick={() => push({ ...state, storyEra: k })}
+                        className={`rounded-full px-4 py-2 text-sm font-bold ${
+                          (state.storyEra ?? 'all') === k
+                            ? 'bg-gold text-on-gold'
+                            : 'bg-surface-high text-on-variant'
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="mt-2 text-xs text-on-variant">
+                    Deals movies only from the chosen decade.
                   </p>
                 </>
               )}
@@ -1002,6 +1062,9 @@ export default function RoomPlay() {
   const secsLeft = s.deadline ? Math.max(0, Math.ceil((s.deadline - now) / 1000)) : 0
   const last = s.chain[s.chain.length - 1]
   const myHint = s.hint?.playerId === me ? s.hint : null
+  const iAmOut =
+    s.players.some((p) => p.id === me) &&
+    (s.strikes[me] ?? 0) >= s.settings.strikesToEliminate
 
   return (
     <Screen code={code}>
@@ -1069,7 +1132,13 @@ export default function RoomPlay() {
         </div>
       )}
 
-      {reject && myTurn && (
+      {iAmOut && (
+        <div className="mt-3 rounded-2xl bg-urgent-deep/60 px-4 py-3 text-sm text-urgent-soft">
+          ☠️ You&apos;re out — {reject ?? 'no valid link.'} Watching the rest
+          play out.
+        </div>
+      )}
+      {reject && myTurn && !iAmOut && (
         <div className="mt-3 rounded-2xl bg-urgent-deep/60 px-4 py-3 text-sm text-urgent-soft">
           ✕ {reject}
         </div>
@@ -1080,7 +1149,41 @@ export default function RoomPlay() {
         </div>
       )}
 
-      {myTurn ? (
+      {myTurn && pending ? (
+        // Confirm & lock — no take-backs. A wrong lock ends your run.
+        <div className="mt-3 rounded-3xl border border-gold/40 bg-surface-container p-5 text-center">
+          <p className="text-xs font-bold tracking-[0.12em] text-on-variant">
+            LOCK IN YOUR ANSWER
+          </p>
+          <p className="mt-2 font-display text-2xl text-gold-bright">
+            {pending.title}
+          </p>
+          <p className="text-sm text-on-variant">{pending.year}</p>
+          <p className="mt-3 text-xs text-urgent-soft">
+            {last
+              ? `Must link to ${last.title}. If it doesn’t, you’re out.`
+              : 'This kicks off the chain.'}
+          </p>
+          <div className="mt-4 flex gap-2">
+            <button
+              onClick={() => setPending(null)}
+              className="flex-1 rounded-full bg-surface-high py-3 text-sm font-bold text-on-variant active:scale-95"
+            >
+              BACK
+            </button>
+            <button
+              onClick={() => {
+                send({ type: 'play', playerId: me, movieId: pending.id })
+                setPending(null)
+                setQuery('')
+              }}
+              className="flex-[2] rounded-full bg-gold py-3 font-display tracking-wider text-on-gold active:scale-95"
+            >
+              🔒 LOCK IT IN
+            </button>
+          </div>
+        </div>
+      ) : myTurn ? (
         <div className="mt-3">
           <input
             autoFocus
@@ -1093,7 +1196,7 @@ export default function RoomPlay() {
             {results.map((m) => (
               <button
                 key={m.id}
-                onClick={() => send({ type: 'play', playerId: me, movieId: m.id })}
+                onClick={() => setPending(m)}
                 className="flex items-baseline justify-between rounded-2xl bg-surface-container px-4 py-3 text-left active:scale-[0.98]"
               >
                 <span className="font-bold">{m.title}</span>

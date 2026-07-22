@@ -17,6 +17,9 @@ export interface NetLink {
 
 export type RoomMode = 'chain' | 'story'
 
+/** Room-level year filter for the movies Story mode deals. */
+export type StoryEra = 'all' | 'classic' | '80s' | '90s' | '2000s' | 'modern'
+
 export type StoryRoundKind = 'player' | 'real'
 
 export interface StoryRound {
@@ -63,6 +66,26 @@ export interface RoomState {
   storyAwards: Record<string, number> | null
   /** Story mode round source: players write / real plots / mix. */
   storySource: 'players' | 'real' | 'mix'
+  /** Story mode: which era the dealt movies come from. */
+  storyEra: StoryEra
+}
+
+/** Inclusive [lo, hi] release-year bounds for a story era ('all' = no filter). */
+export function storyEraBounds(era: StoryEra): [number, number] {
+  switch (era) {
+    case 'classic':
+      return [0, 1979]
+    case '80s':
+      return [1980, 1989]
+    case '90s':
+      return [1990, 1999]
+    case '2000s':
+      return [2000, 2012]
+    case 'modern':
+      return [2013, 9999]
+    default:
+      return [0, 9999]
+  }
 }
 
 export type RoomAction =
