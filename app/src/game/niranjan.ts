@@ -150,9 +150,11 @@ export function nextQuestion(
       ].filter((c) => !used.has(c.tag)),
       rand,
     )
-    // Prefer a curated question the player hasn't seen recently; only replay a
-    // recent one once every fresh curated card is exhausted.
-    const c = remaining.find((x) => !avoid.has(x.tag)) ?? remaining[0]
+    // Serve a curated warm-up the player hasn't seen recently. The curated
+    // pool is small (~80), so once every fresh one is spent we DON'T replay a
+    // stale one — we fall through to the endless generated questions below.
+    // (Old curated cards resurface naturally as they age out of `avoid`.)
+    const c = remaining.find((x) => !avoid.has(x.tag))
     if (c) {
       used.add(c.tag)
       const wrong = c.wrong.length
