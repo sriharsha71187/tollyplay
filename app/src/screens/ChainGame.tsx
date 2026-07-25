@@ -320,19 +320,30 @@ export default function ChainGame() {
         {chain.length === 0 && (
           <p className="text-sm text-on-variant">The chain starts with you.</p>
         )}
-        {chain.map((l, i) => (
-          <div key={i} className="flex shrink-0 items-center gap-2">
-            {l.via && (
-              <span className="rounded-full bg-surface-highest px-2.5 py-1 text-xs text-on-variant">
-                {l.via}
-              </span>
-            )}
-            <span className="rounded-2xl bg-surface-container px-3 py-2 text-sm font-bold">
+        {/* Newest first — the movie to chain onto stays visible at the start
+            instead of scrolling off the far end as the chain grows. */}
+        {[...chain].reverse().map((l, i) => (
+          <div
+            key={chain.length - 1 - i}
+            className="flex shrink-0 items-center gap-2"
+          >
+            <span
+              className={`rounded-2xl px-3 py-2 text-sm font-bold ${
+                i === 0
+                  ? 'border border-gold/60 bg-surface-high'
+                  : 'bg-surface-container'
+              }`}
+            >
               {l.movie.title}
               <span className="ml-1 font-normal text-on-variant">
                 {l.movie.year}
               </span>
             </span>
+            {l.via && (
+              <span className="rounded-full bg-surface-highest px-2.5 py-1 text-xs text-on-variant">
+                {l.via}
+              </span>
+            )}
           </div>
         ))}
       </div>

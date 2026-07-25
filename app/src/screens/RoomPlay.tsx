@@ -12,8 +12,10 @@ import {
   type StoryEra,
 } from '../game/room'
 import {
+  isPopular,
   linkPeople,
   loadMovies,
+  marqueeStars,
   personKey,
   searchMovies,
   type LinkRole,
@@ -108,12 +110,16 @@ export default function RoomPlay() {
   // ---- story mode (host referee)
   function pickSecret(s: RoomState): Movie | null {
     const [lo, hi] = storyEraBounds(s.storyEra ?? 'all')
-    let pool = (movies ?? []).filter(
-      (m) => m.linked && m.cast.length >= 2 && m.year >= lo && m.year <= hi,
+    // Plots are only fun when the movie is guessable — deal popular films
+    // (marquee star in top billing), not deep cuts nobody has heard of.
+    const stars = marqueeStars(movies ?? [])
+    const base = (movies ?? []).filter((m) => m.cast.length >= 2)
+    let pool = base.filter(
+      (m) => isPopular(m, stars) && m.year >= lo && m.year <= hi,
     )
     // Never leave the room empty if the chosen era is too thin.
-    if (pool.length < 4)
-      pool = (movies ?? []).filter((m) => m.linked && m.cast.length >= 2)
+    if (pool.length < 4) pool = base.filter((m) => isPopular(m, stars))
+    if (pool.length < 4) pool = base.filter((m) => m.linked)
     if (!pool.length) return null
     return pool[Math.floor(Math.random() * pool.length)]
   }
@@ -1072,14 +1078,20 @@ export default function RoomPlay() {
         {s.chain.length === 0 && (
           <p className="text-sm text-on-variant">Open the chain with any movie.</p>
         )}
-        {s.chain.map((l, i) => (
-          <div key={i} className="flex shrink-0 items-center gap-2">
-            {l.via && (
-              <span className="rounded-full bg-surface-highest px-2.5 py-1 text-xs text-on-variant">
-                {l.via}
-              </span>
-            )}
-            <span className="flex items-center gap-2 rounded-2xl bg-surface-container py-1.5 pl-1.5 pr-3 text-sm font-bold">
+        {/* Newest first — the movie to chain onto stays visible at the start
+            instead of scrolling off the far end as the chain grows. */}
+        {[...s.chain].reverse().map((l, i) => (
+          <div
+            key={s.chain.length - 1 - i}
+            className="flex shrink-0 items-center gap-2"
+          >
+            <span
+              className={`flex items-center gap-2 rounded-2xl py-1.5 pl-1.5 pr-3 text-sm font-bold ${
+                i === 0
+                  ? 'border border-gold/60 bg-surface-high'
+                  : 'bg-surface-container'
+              }`}
+            >
               {l.w && (
                 <Thumb
                   article={l.w}
@@ -1091,6 +1103,11 @@ export default function RoomPlay() {
               {l.title}
               <span className="font-normal text-on-variant">{l.year}</span>
             </span>
+            {l.via && (
+              <span className="rounded-full bg-surface-highest px-2.5 py-1 text-xs text-on-variant">
+                {l.via}
+              </span>
+            )}
           </div>
         ))}
       </div>
