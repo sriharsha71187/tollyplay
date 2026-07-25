@@ -20,6 +20,59 @@ function redact(text: string, movie: Movie): string {
   return out
 }
 
+/** 60-day Wikipedia pageview totals per article, one batched request.
+ *  The fame signal for dealing movies people have actually heard of.
+ *  Failures resolve to 0 (uncached), so callers degrade to unranked order. */
+const viewsCache = new Map<string, number>()
+
+export async function articleViews(
+  articles: string[],
+): Promise<Map<string, number>> {
+  const out = new Map<string, number>()
+  const need: string[] = []
+  for (const a of articles) {
+    const hit = viewsCache.get(a)
+    if (hit !== undefined) out.set(a, hit)
+    else need.push(a)
+  }
+  if (!need.length) return out
+  try {
+    const res = await fetch(
+      'https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageviews&redirects=1&titles=' +
+        encodeURIComponent(need.join('|')),
+    )
+    const d = await res.json()
+    const q = d?.query ?? {}
+    // Requested titles can be renamed (normalization, then a redirect)
+    // before they match a page — follow the chain forward.
+    const step = new Map<string, string>()
+    for (const r of [...(q.normalized ?? []), ...(q.redirects ?? [])] as {
+      from: string
+      to: string
+    }[])
+      step.set(r.from, r.to)
+    const byTitle = new Map<string, number>()
+    for (const page of Object.values(q.pages ?? {}) as {
+      title?: string
+      pageviews?: Record<string, number | null>
+    }[]) {
+      let sum = 0
+      for (const v of Object.values(page.pageviews ?? {})) sum += v ?? 0
+      if (page.title) byTitle.set(page.title, sum)
+    }
+    for (const a of need) {
+      let t = a
+      for (let i = 0; i < 3 && step.has(t); i++) t = step.get(t)!
+      const v = byTitle.get(t) ?? 0
+      viewsCache.set(a, v)
+      out.set(a, v)
+    }
+  } catch {
+    for (const a of need) out.set(a, 0) // transient — don't cache
+  }
+  return out
+}
+
 export async function realPlotSnippet(movie: Movie): Promise<string | null> {
   const article = movie.w
   if (!article) return null

@@ -327,15 +327,18 @@ export default function LivingRoom() {
                 </p>
               </>
             ) : (
-              // Describe / sing / act — the movie IS the thing to perform.
+              // Describe / sing / act — the ASK dominates; the movie is what
+              // the clue-giver reads, not what the card celebrates.
               <>
-                <p className="font-display text-lg uppercase tracking-wider text-gold-bright">
+                <p className="font-display text-4xl uppercase leading-tight tracking-wide text-gold-bright">
                   {meta.ask}
                 </p>
-                <p className="font-display text-4xl leading-snug">
-                  {card.title.toUpperCase()}
+                <p className="text-2xl font-bold leading-snug">
+                  {card.title}
+                  <span className="ml-2 text-base font-normal text-on-variant">
+                    {card.year}
+                  </span>
                 </p>
-                <p className="text-sm text-on-variant">{card.year}</p>
                 {card.kind === 'describe' && card.banned.length > 0 && (
                   <div className="mt-1">
                     <p className="text-xs font-bold tracking-[0.1em] text-urgent-soft">

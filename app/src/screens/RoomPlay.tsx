@@ -22,7 +22,7 @@ import {
   type Movie,
 } from '../game/movies'
 import { supabase } from '../lib/supabase'
-import { realPlotSnippet } from '../lib/plots'
+import { articleViews, realPlotSnippet } from '../lib/plots'
 import Icon from '../components/Icon'
 import Thumb from '../components/Thumb'
 
@@ -108,7 +108,7 @@ export default function RoomPlay() {
   expireRef.current = expire
 
   // ---- story mode (host referee)
-  function pickSecret(s: RoomState): Movie | null {
+  async function pickSecret(s: RoomState): Promise<Movie | null> {
     const [lo, hi] = storyEraBounds(s.storyEra ?? 'all')
     // Plots are only fun when the movie is guessable — deal popular films
     // (marquee star in top billing), not deep cuts nobody has heard of.
@@ -121,7 +121,22 @@ export default function RoomPlay() {
     if (pool.length < 4) pool = base.filter((m) => isPopular(m, stars))
     if (pool.length < 4) pool = base.filter((m) => m.linked)
     if (!pool.length) return null
-    return pool[Math.floor(Math.random() * pool.length)]
+    // A star lead isn't enough — big stars made filler too. Deal the most
+    // famous of a random dozen, refereed by Wikipedia pageviews; a failed
+    // lookup leaves all counts at 0 and the pick stays random.
+    const sample = [...pool]
+    for (let i = sample.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[sample[i], sample[j]] = [sample[j], sample[i]]
+    }
+    const dozen = sample.slice(0, 12)
+    const views = await articleViews(
+      dozen.map((m) => m.w).filter((w): w is string => !!w),
+    )
+    dozen.sort(
+      (a, b) => (views.get(b.w ?? '') ?? 0) - (views.get(a.w ?? '') ?? 0),
+    )
+    return dozen[0]
   }
 
   async function startStoryRound(s: RoomState, roundNo: number) {
@@ -137,7 +152,7 @@ export default function RoomPlay() {
     if (wantReal) {
       // App deals a real plot — no writer, straight to guessing.
       for (let attempt = 0; attempt < 6; attempt++) {
-        const secret = pickSecret(s)
+        const secret = await pickSecret(s)
         if (!secret) break
         const plot = await realPlotSnippet(secret)
         if (!plot) continue
@@ -164,7 +179,7 @@ export default function RoomPlay() {
       // fetch failed repeatedly — fall through to a player round
     }
 
-    const secret = pickSecret(s)
+    const secret = await pickSecret(s)
     if (!secret) {
       push({ ...s, phase: 'over', deadline: null })
       return
