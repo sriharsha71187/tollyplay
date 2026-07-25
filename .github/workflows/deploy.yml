@@ -1,0 +1,57 @@
+name: Deploy to GitHub Pages
+
+# Builds app/ and force-pushes the bundle to the gh-pages branch, which
+# GitHub Pages serves at https://sriharsha71187.github.io/tollyplay/.
+# Runs on every push to main, so merging a PR is the whole publish step.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gh-pages-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install
+        working-directory: app
+        run: npm ci
+
+      - name: Build
+        working-directory: app
+        env:
+          DEPLOY_BASE: /tollyplay/
+          # sb_publishable_* keys are client-side by design (shipped in the
+          # bundle). Set a VITE_SUPABASE_ANON_KEY repo secret to override.
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'sb_publishable_AzfYkvZeI7gLpFB8ff0i5w_wFXxQVg9' }}
+        run: npm run build
+
+      - name: Add SPA fallback
+        run: |
+          cp app/dist/index.html app/dist/404.html
+          touch app/dist/.nojekyll
+
+      - name: Push to gh-pages
+        run: |
+          cd app/dist
+          git init -b gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Deploy ${GITHUB_SHA::7}"
+          git push --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" gh-pages
