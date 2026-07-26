@@ -40,6 +40,9 @@ export interface StoryRound {
 }
 
 export interface RoomState {
+  /** Monotonic version, bumped by the host on every push — receivers drop
+   *  stale, duplicate, or out-of-order broadcasts. */
+  v: number
   phase:
     | 'lobby'
     | 'turn'
@@ -88,11 +91,16 @@ export function storyEraBounds(era: StoryEra): [number, number] {
   }
 }
 
-export type RoomAction =
+export type RoomAction = (
   | { type: 'play'; playerId: string; movieId: string }
   | { type: 'lifeline'; playerId: string }
   | { type: 'story-submit'; playerId: string; text: string }
   | { type: 'story-guess'; playerId: string; movieId: string }
+) & {
+  /** Dedupe token — clients fire each action more than once in case a
+   *  broadcast drops; the host referee processes a nonce only once. */
+  nonce?: string
+}
 
 export function playerId(): string {
   let id = localStorage.getItem('tollyplay-pid')

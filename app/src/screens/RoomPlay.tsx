@@ -60,6 +60,7 @@ export default function RoomPlay() {
   const personUse = useRef(new Map<string, number>())
   const chainMovies = useRef<Movie[]>([])
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const seenNonces = useRef(new Set<string>())
 
   const moviesById = useMemo(
     () => new Map((movies ?? []).map((m) => [m.id, m])),
@@ -83,15 +84,21 @@ export default function RoomPlay() {
 
   // ---- host: broadcast state and (re)arm the phase timer
   function push(s: RoomState) {
-    hostState.current = s
-    stateRef.current = s
-    setState(s)
-    chRef.current?.send({ type: 'broadcast', event: 'state', payload: s })
+    const vs: RoomState = {
+      ...s,
+      v: (hostState.current?.v ?? stateRef.current?.v ?? 0) + 1,
+    }
+    hostState.current = vs
+    stateRef.current = vs
+    setState(vs)
+    chRef.current?.send({ type: 'broadcast', event: 'state', payload: vs })
     if (timerRef.current) clearTimeout(timerRef.current)
-    if (s.deadline) {
+    if (vs.deadline) {
+      // 1.2s grace before the referee acts on a missed deadline — an answer
+      // sent just before the buzzer shouldn't be eaten by network latency.
       timerRef.current = setTimeout(
         () => expireRef.current(),
-        Math.max(0, s.deadline - Date.now()),
+        Math.max(0, vs.deadline - Date.now() + 1200),
       )
     }
   }
@@ -247,9 +254,16 @@ export default function RoomPlay() {
   }
 
   function nextTurn(s: RoomState, from: string | null): string {
-    const a = alive(s)
-    const i = a.findIndex((p) => p.id === from)
-    return a[(i + 1) % a.length].id
+    // Scan seating order from the player who just moved. Scanning the alive
+    // list instead skipped players: a just-eliminated mover isn't in it, so
+    // the old lookup fell back to index 0 and jumped over everyone between.
+    const ps = s.players
+    const i = ps.findIndex((p) => p.id === from)
+    for (let k = 1; k <= ps.length; k++) {
+      const p = ps[(i + k + ps.length) % ps.length]
+      if ((s.strikes[p.id] ?? 0) < s.settings.strikesToEliminate) return p.id
+    }
+    return alive(s)[0]?.id ?? ps[0].id
   }
 
   function strikeOut() {
@@ -278,6 +292,13 @@ export default function RoomPlay() {
   function handleAction(a: RoomAction) {
     const s = hostState.current
     if (!s) return
+    // Clients fire each action several times in case a broadcast drops —
+    // process a nonce only once so the retries are harmless.
+    if (a.nonce) {
+      if (seenNonces.current.has(a.nonce)) return
+      seenNonces.current.add(a.nonce)
+      if (seenNonces.current.size > 800) seenNonces.current.clear()
+    }
     if (a.type === 'story-submit') {
       if (s.phase !== 'story-write' || !s.story || a.playerId !== s.story.writerId)
         return
@@ -424,6 +445,10 @@ export default function RoomPlay() {
           return
         }
       }
+      // Drop stale or duplicate copies from the same host (heartbeats,
+      // out-of-order delivery) — an old state must never clobber a newer one.
+      const cur = stateRef.current
+      if (cur && p.hostId === cur.hostId && (p.v ?? 0) <= (cur.v ?? 0)) return
       stateRef.current = p
       setState(p)
     })
@@ -448,7 +473,16 @@ export default function RoomPlay() {
         setTimeout(() => setClaimHost(true), wantsHost ? 1200 : 3000)
       }
     })
+    // Heartbeat: the host re-broadcasts its state every few seconds so a
+    // client that missed a push (dropped broadcast, brief disconnect, late
+    // join) converges on the latest scores and turn within one beat.
+    const heartbeat = setInterval(() => {
+      if (hostState.current) {
+        ch.send({ type: 'broadcast', event: 'state', payload: hostState.current })
+      }
+    }, 4000)
     return () => {
+      clearInterval(heartbeat)
       if (timerRef.current) clearTimeout(timerRef.current)
       supabase?.removeChannel(ch)
       chRef.current = null
@@ -461,6 +495,7 @@ export default function RoomPlay() {
     if (!claimHost || stateRef.current || hostState.current || present.length === 0)
       return
     push({
+      v: 0,
       phase: 'lobby',
       mode: 'chain',
       hostId: me,
@@ -544,7 +579,17 @@ export default function RoomPlay() {
   }, [present])
 
   function send(action: RoomAction) {
-    chRef.current?.send({ type: 'broadcast', event: 'action', payload: action })
+    // Broadcasts are best-effort: fire the action three times under one
+    // nonce — the host dedupes, and a dropped copy no longer eats a move.
+    const a: RoomAction = {
+      ...action,
+      nonce: Math.random().toString(36).slice(2),
+    }
+    const fire = () =>
+      chRef.current?.send({ type: 'broadcast', event: 'action', payload: a })
+    fire()
+    setTimeout(fire, 1200)
+    setTimeout(fire, 2800)
     setQuery('')
     setReject(null)
   }
