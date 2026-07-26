@@ -102,6 +102,23 @@ export type RoomAction = (
   nonce?: string
 }
 
+/** Next player in seating order after `from`, skipping eliminated players.
+ *  Scans the full roster (not the alive list) so a just-eliminated mover —
+ *  who is absent from the alive list — still anchors the rotation. */
+export function nextAlivePlayer(
+  players: RoomPlayer[],
+  strikes: Record<string, number>,
+  strikesToEliminate: number,
+  from: string | null,
+): string {
+  const i = players.findIndex((p) => p.id === from)
+  for (let k = 1; k <= players.length; k++) {
+    const p = players[(i + k + players.length) % players.length]
+    if ((strikes[p.id] ?? 0) < strikesToEliminate) return p.id
+  }
+  return players[0].id
+}
+
 export function playerId(): string {
   let id = localStorage.getItem('tollyplay-pid')
   if (!id) {

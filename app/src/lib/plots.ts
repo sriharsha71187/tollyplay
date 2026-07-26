@@ -10,6 +10,10 @@ const cache = new Map<string, string | null>()
 function redact(text: string, movie: Movie): string {
   const words = new Set<string>()
   for (const w of movie.title.split(/\s+/)) if (w.length > 3) words.add(w)
+  // Dubbed films: the source article's title (e.g. Padayappa for Narasimha)
+  // shows up in the plot as the protagonist's name — blank it too.
+  for (const w of (movie.w ?? '').replace(/\(.*?\)/g, '').split(/\s+/))
+    if (w.length > 3) words.add(w)
   for (const p of [...movie.cast, ...movie.director.split(',')]) {
     for (const w of p.trim().split(/\s+/)) if (w.length > 2) words.add(w)
   }

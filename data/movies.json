@@ -21177,6 +21177,19 @@
   "id": "maharshi-1987"
  },
  {
+  "title": "Nayakudu",
+  "year": 1987,
+  "director": "Mani Ratnam",
+  "cast": [
+   "Kamal Haasan",
+   "Saranya"
+  ],
+  "linked": true,
+  "w": "Nayakan",
+  "id": "nayakudu-1987",
+  "dub": true
+ },
+ {
   "title": "Aahuthi",
   "year": 1988,
   "director": "Kodi Ramakrishna",
@@ -21938,6 +21951,20 @@
   "linked": true,
   "w": "Yuddha Bhoomi",
   "id": "yuddha-bhoomi-1988"
+ },
+ {
+  "title": "Gharshana",
+  "year": 1988,
+  "director": "Mani Ratnam",
+  "cast": [
+   "Karthik",
+   "Amala",
+   "Prabhu"
+  ],
+  "linked": true,
+  "w": "Agni Natchathiram",
+  "id": "gharshana-1988",
+  "dub": true
  },
  {
   "title": "Agni",
@@ -23388,6 +23415,20 @@
   "id": "samrajyam-1990"
  },
  {
+  "title": "Michael Madana Kama Raju",
+  "year": 1990,
+  "director": "Singeetam Srinivasa Rao",
+  "cast": [
+   "Kamal Haasan",
+   "Khushbu",
+   "Urvashi"
+  ],
+  "linked": true,
+  "w": "Michael Madana Kama Rajan",
+  "id": "michael-madana-kama-raju-1990",
+  "dub": true
+ },
+ {
   "title": "Aada Pilla",
   "year": 1991,
   "director": "K. Vasu",
@@ -24181,6 +24222,20 @@
   "linked": false,
   "w": null,
   "id": "yugantam-1991"
+ },
+ {
+  "title": "Dalapathi",
+  "year": 1991,
+  "director": "Mani Ratnam",
+  "cast": [
+   "Rajinikanth",
+   "Shobana",
+   "Mammootty"
+  ],
+  "linked": true,
+  "w": "Thalapathi",
+  "id": "dalapathi-1991",
+  "dub": true
  },
  {
   "title": "Aa Okkati Adakku",
@@ -25183,6 +25238,19 @@
   "linked": true,
   "w": "Yagnam (1992 film)",
   "id": "yagnam-1992"
+ },
+ {
+  "title": "Roja",
+  "year": 1992,
+  "director": "Mani Ratnam",
+  "cast": [
+   "Arvind Swamy",
+   "Madhoo"
+  ],
+  "linked": true,
+  "w": "Roja",
+  "id": "roja-1992",
+  "dub": true
  },
  {
   "title": "Aagraham",
@@ -26301,6 +26369,19 @@
   "id": "yamaleela-1994"
  },
  {
+  "title": "Premikudu",
+  "year": 1994,
+  "director": "S. Shankar",
+  "cast": [
+   "Prabhu Deva",
+   "Nagma"
+  ],
+  "linked": true,
+  "w": "Kadhalan",
+  "id": "premikudu-1994",
+  "dub": true
+ },
+ {
   "title": "Aadaalla Majaka",
   "year": 1995,
   "director": "Muthyala Subbaiah",
@@ -26776,6 +26857,45 @@
   "id": "vajram-1995"
  },
  {
+  "title": "Baasha",
+  "year": 1995,
+  "director": "Suresh Krissna",
+  "cast": [
+   "Rajinikanth",
+   "Nagma"
+  ],
+  "linked": true,
+  "w": "Baashha",
+  "id": "baasha-1995",
+  "dub": true
+ },
+ {
+  "title": "Muthu",
+  "year": 1995,
+  "director": "K. S. Ravikumar",
+  "cast": [
+   "Rajinikanth",
+   "Meena"
+  ],
+  "linked": true,
+  "w": "Muthu (film)",
+  "id": "muthu-1995",
+  "dub": true
+ },
+ {
+  "title": "Bombay",
+  "year": 1995,
+  "director": "Mani Ratnam",
+  "cast": [
+   "Arvind Swamy",
+   "Manisha Koirala"
+  ],
+  "linked": true,
+  "w": "Bombay (film)",
+  "id": "bombay-1995",
+  "dub": true
+ },
+ {
   "title": "Adirindi Alludu",
   "year": 1996,
   "director": "E. V. V. Satyanarayana",
@@ -27226,6 +27346,33 @@
   "linked": true,
   "w": "Vinodam",
   "id": "vinodam-1996"
+ },
+ {
+  "title": "Bharateeyudu",
+  "year": 1996,
+  "director": "S. Shankar",
+  "cast": [
+   "Kamal Haasan",
+   "Manisha Koirala",
+   "Urmila Matondkar"
+  ],
+  "linked": true,
+  "w": "Indian (1996 film)",
+  "id": "bharateeyudu-1996",
+  "dub": true
+ },
+ {
+  "title": "Bhamane Satyabhamane",
+  "year": 1996,
+  "director": "K. S. Ravikumar",
+  "cast": [
+   "Kamal Haasan",
+   "Meena"
+  ],
+  "linked": true,
+  "w": "Avvai Shanmughi",
+  "id": "bhamane-satyabhamane-1996",
+  "dub": true
  },
  {
   "title": "Aahvaanam",
@@ -27753,6 +27900,32 @@
   "linked": true,
   "w": "Ugadi (1997 film)",
   "id": "ugadi-1997"
+ },
+ {
+  "title": "Arunachalam",
+  "year": 1997,
+  "director": "Sundar C",
+  "cast": [
+   "Rajinikanth",
+   "Soundarya"
+  ],
+  "linked": true,
+  "w": "Arunachalam (film)",
+  "id": "arunachalam-1997",
+  "dub": true
+ },
+ {
+  "title": "Rakshakudu",
+  "year": 1997,
+  "director": "Praveen Gandhi",
+  "cast": [
+   "Nagarjuna",
+   "Sushmita Sen"
+  ],
+  "linked": true,
+  "w": "Ratchagan",
+  "id": "rakshakudu-1997",
+  "dub": true
  },
  {
   "title": "Aahaa..!",
@@ -28435,6 +28608,19 @@
   "linked": true,
   "w": "W/o V. Vara Prasad",
   "id": "w-o-v-vara-prasad-1998"
+ },
+ {
+  "title": "Jeans",
+  "year": 1998,
+  "director": "S. Shankar",
+  "cast": [
+   "Prashanth",
+   "Aishwarya Rai"
+  ],
+  "linked": true,
+  "w": "Jeans (film)",
+  "id": "jeans-1998",
+  "dub": true
  },
  {
   "title": "A. K. 47",
@@ -29144,6 +29330,33 @@
   "linked": true,
   "w": "Maya (1999 film)",
   "id": "gurupoornima-1999"
+ },
+ {
+  "title": "Narasimha",
+  "year": 1999,
+  "director": "K. S. Ravikumar",
+  "cast": [
+   "Rajinikanth",
+   "Soundarya",
+   "Ramya Krishnan"
+  ],
+  "linked": true,
+  "w": "Padayappa",
+  "id": "narasimha-1999",
+  "dub": true
+ },
+ {
+  "title": "Oke Okkadu",
+  "year": 1999,
+  "director": "S. Shankar",
+  "cast": [
+   "Arjun Sarja",
+   "Manisha Koirala"
+  ],
+  "linked": true,
+  "w": "Mudhalvan",
+  "id": "oke-okkadu-1999",
+  "dub": true
  },
  {
   "title": "Kodanda Ramudu",
@@ -30133,6 +30346,33 @@
   "linked": false,
   "w": null,
   "id": "rojuko-roja-2000"
+ },
+ {
+  "title": "Sakhi",
+  "year": 2000,
+  "director": "Mani Ratnam",
+  "cast": [
+   "Madhavan",
+   "Shalini"
+  ],
+  "linked": true,
+  "w": "Alaipayuthey",
+  "id": "sakhi-2000",
+  "dub": true
+ },
+ {
+  "title": "Priyuralu Pilichindi",
+  "year": 2000,
+  "director": "Rajiv Menon",
+  "cast": [
+   "Ajith Kumar",
+   "Tabu",
+   "Aishwarya Rai"
+  ],
+  "linked": true,
+  "w": "Kandukondain Kandukondain",
+  "id": "priyuralu-pilichindi-2000",
+  "dub": true
  },
  {
   "title": "Mrugaraju",
@@ -32408,6 +32648,19 @@
   "id": "rifles-2002"
  },
  {
+  "title": "Amrutha",
+  "year": 2002,
+  "director": "Mani Ratnam",
+  "cast": [
+   "Madhavan",
+   "Simran"
+  ],
+  "linked": true,
+  "w": "Kannathil Muthamittal",
+  "id": "amrutha-2002",
+  "dub": true
+ },
+ {
   "title": "Naaga",
   "year": 2003,
   "director": "D. K. Suresh",
@@ -33427,6 +33680,19 @@
   "linked": true,
   "w": "Satyam (2003 film)",
   "id": "satyam-2003"
+ },
+ {
+  "title": "Boys",
+  "year": 2003,
+  "director": "S. Shankar",
+  "cast": [
+   "Siddharth",
+   "Genelia D'Souza"
+  ],
+  "linked": true,
+  "w": "Boys (2003 film)",
+  "id": "boys-2003",
+  "dub": true
  },
  {
   "title": "Andhrawala",
@@ -34702,6 +34968,19 @@
   "id": "mass-2004"
  },
  {
+  "title": "Manmadha",
+  "year": 2004,
+  "director": "A. J. Murugan",
+  "cast": [
+   "Silambarasan",
+   "Jyothika"
+  ],
+  "linked": true,
+  "w": "Manmadhan (film)",
+  "id": "manmadha-2004",
+  "dub": true
+ },
+ {
   "title": "Pelli Kaani Pellam Avuthundi",
   "year": 2005,
   "director": "Venkata Ganesh",
@@ -35872,6 +36151,47 @@
   "linked": false,
   "w": null,
   "id": "maha-simham-2005"
+ },
+ {
+  "title": "Ghajini",
+  "year": 2005,
+  "director": "A. R. Murugadoss",
+  "cast": [
+   "Suriya",
+   "Asin",
+   "Nayanthara"
+  ],
+  "linked": true,
+  "w": "Ghajini (2005 film)",
+  "id": "ghajini-2005",
+  "dub": true
+ },
+ {
+  "title": "Aparichitudu",
+  "year": 2005,
+  "director": "S. Shankar",
+  "cast": [
+   "Vikram",
+   "Sadha"
+  ],
+  "linked": true,
+  "w": "Anniyan",
+  "id": "aparichitudu-2005",
+  "dub": true
+ },
+ {
+  "title": "Chandramukhi",
+  "year": 2005,
+  "director": "P. Vasu",
+  "cast": [
+   "Rajinikanth",
+   "Jyothika",
+   "Nayanthara"
+  ],
+  "linked": true,
+  "w": "Chandramukhi",
+  "id": "chandramukhi-2005",
+  "dub": true
  },
  {
   "title": "Devadasu",
@@ -37611,6 +37931,19 @@
   "id": "bangaru-konda-2007"
  },
  {
+  "title": "Shivaji",
+  "year": 2007,
+  "director": "S. Shankar",
+  "cast": [
+   "Rajinikanth",
+   "Shriya Saran"
+  ],
+  "linked": true,
+  "w": "Sivaji (film)",
+  "id": "shivaji-2007",
+  "dub": true
+ },
+ {
   "title": "Aapada Mokkulavaadu",
   "year": 2008,
   "director": "Posani Krishna Murali",
@@ -38783,6 +39116,19 @@
   "linked": true,
   "w": "Veedu Mamoolodu Kadu",
   "id": "veedu-mamoolodu-kadu-2008"
+ },
+ {
+  "title": "Dasavatharam",
+  "year": 2008,
+  "director": "K. S. Ravikumar",
+  "cast": [
+   "Kamal Haasan",
+   "Asin"
+  ],
+  "linked": true,
+  "w": "Dasavatharam",
+  "id": "dasavatharam-2008",
+  "dub": true
  },
  {
   "title": "Sasirekha Parinayam",
@@ -40598,6 +40944,19 @@
   "linked": true,
   "w": "Broker (2010 film)",
   "id": "broker-2010"
+ },
+ {
+  "title": "Robo",
+  "year": 2010,
+  "director": "S. Shankar",
+  "cast": [
+   "Rajinikanth",
+   "Aishwarya Rai"
+  ],
+  "linked": true,
+  "w": "Enthiran",
+  "id": "robo-2010",
+  "dub": true
  },
  {
   "title": "Graduate",
@@ -42825,6 +43184,19 @@
   "linked": true,
   "w": "Genius (2012 film)",
   "id": "genius-2012"
+ },
+ {
+  "title": "Tupaki",
+  "year": 2012,
+  "director": "A. R. Murugadoss",
+  "cast": [
+   "Vijay",
+   "Kajal Aggarwal"
+  ],
+  "linked": true,
+  "w": "Thuppakki",
+  "id": "tupaki-2012",
+  "dub": true
  },
  {
   "title": "Sevakudu",
@@ -45817,6 +46189,33 @@
   "id": "chinnadana-nee-kosam-2014"
  },
  {
+  "title": "Jilla",
+  "year": 2014,
+  "director": "R. T. Neason",
+  "cast": [
+   "Vijay",
+   "Kajal Aggarwal",
+   "Mohanlal"
+  ],
+  "linked": true,
+  "w": "Jilla",
+  "id": "jilla-2014",
+  "dub": true
+ },
+ {
+  "title": "Kaththi",
+  "year": 2014,
+  "director": "A. R. Murugadoss",
+  "cast": [
+   "Vijay",
+   "Samantha"
+  ],
+  "linked": true,
+  "w": "Kaththi",
+  "id": "kaththi-2014",
+  "dub": true
+ },
+ {
   "title": "A Shyam Gopal Varma Film",
   "year": 2015,
   "director": "Rakesh Srinivas",
@@ -47130,6 +47529,19 @@
   "linked": true,
   "w": "Jatha Kalise",
   "id": "jatha-kalise-2015"
+ },
+ {
+  "title": "Manoharudu",
+  "year": 2015,
+  "director": "S. Shankar",
+  "cast": [
+   "Vikram",
+   "Amy Jackson"
+  ],
+  "linked": true,
+  "w": "I (film)",
+  "id": "manoharudu-2015",
+  "dub": true
  },
  {
   "title": "Chitram Bhalare Vichitram",
@@ -48615,6 +49027,32 @@
   "linked": false,
   "w": null,
   "id": "nenosta-2016"
+ },
+ {
+  "title": "Kabali",
+  "year": 2016,
+  "director": "Pa. Ranjith",
+  "cast": [
+   "Rajinikanth",
+   "Radhika Apte"
+  ],
+  "linked": true,
+  "w": "Kabali (film)",
+  "id": "kabali-2016",
+  "dub": true
+ },
+ {
+  "title": "Policeodu",
+  "year": 2016,
+  "director": "Atlee",
+  "cast": [
+   "Vijay",
+   "Samantha"
+  ],
+  "linked": true,
+  "w": "Theri (film)",
+  "id": "policeodu-2016",
+  "dub": true
  },
  {
   "title": "Evaro Tanevaro",
@@ -50688,6 +51126,20 @@
   "id": "2-countries-2017"
  },
  {
+  "title": "Adirindhi",
+  "year": 2017,
+  "director": "Atlee",
+  "cast": [
+   "Vijay",
+   "Samantha",
+   "Kajal Aggarwal"
+  ],
+  "linked": true,
+  "w": "Mersal (film)",
+  "id": "adirindhi-2017",
+  "dub": true
+ },
+ {
   "title": "Chilkur Balaji",
   "year": 2018,
   "director": "Allani Sridhar",
@@ -52533,6 +52985,45 @@
   "linked": false,
   "w": null,
   "id": "my-dear-marthandam-2018"
+ },
+ {
+  "title": "Robo 2.0",
+  "year": 2018,
+  "director": "S. Shankar",
+  "cast": [
+   "Rajinikanth",
+   "Amy Jackson"
+  ],
+  "linked": true,
+  "w": "2.0 (film)",
+  "id": "robo-2-0-2018",
+  "dub": true
+ },
+ {
+  "title": "Kaala",
+  "year": 2018,
+  "director": "Pa. Ranjith",
+  "cast": [
+   "Rajinikanth",
+   "Huma Qureshi"
+  ],
+  "linked": true,
+  "w": "Kaala (film)",
+  "id": "kaala-2018",
+  "dub": true
+ },
+ {
+  "title": "Sarkar",
+  "year": 2018,
+  "director": "A. R. Murugadoss",
+  "cast": [
+   "Vijay",
+   "Keerthy Suresh"
+  ],
+  "linked": true,
+  "w": "Sarkar (2018 film)",
+  "id": "sarkar-2018",
+  "dub": true
  },
  {
   "title": "Ajay Passayyad",
@@ -54483,6 +54974,32 @@
   "id": "software-sudheer-2019"
  },
  {
+  "title": "Petta",
+  "year": 2019,
+  "director": "Karthik Subbaraj",
+  "cast": [
+   "Rajinikanth",
+   "Trisha"
+  ],
+  "linked": true,
+  "w": "Petta (film)",
+  "id": "petta-2019",
+  "dub": true
+ },
+ {
+  "title": "Whistle",
+  "year": 2019,
+  "director": "Atlee",
+  "cast": [
+   "Vijay",
+   "Nayanthara"
+  ],
+  "linked": true,
+  "w": "Bigil",
+  "id": "whistle-2019",
+  "dub": true
+ },
+ {
   "title": "Beautiful",
   "year": 2020,
   "director": "Agasthya Manju",
@@ -55307,6 +55824,19 @@
   "linked": false,
   "w": null,
   "id": "oka-yodhudu-2020"
+ },
+ {
+  "title": "Darbar",
+  "year": 2020,
+  "director": "A. R. Murugadoss",
+  "cast": [
+   "Rajinikanth",
+   "Nayanthara"
+  ],
+  "linked": true,
+  "w": "Darbar (film)",
+  "id": "darbar-2020",
+  "dub": true
  },
  {
   "title": "Krack",
@@ -56912,6 +57442,20 @@
   "id": "senapathi-2021"
  },
  {
+  "title": "Master",
+  "year": 2021,
+  "director": "Lokesh Kanagaraj",
+  "cast": [
+   "Vijay",
+   "Malavika Mohanan",
+   "Vijay Sethupathi"
+  ],
+  "linked": true,
+  "w": "Master (2021 film)",
+  "id": "master-2021",
+  "dub": true
+ },
+ {
   "title": "Aasha Encounter",
   "year": 2022,
   "director": "Anand Chandra",
@@ -58233,6 +58777,33 @@
   "linked": true,
   "w": "S5 No Exit",
   "id": "s5-no-exit-2022"
+ },
+ {
+  "title": "Vikram",
+  "year": 2022,
+  "director": "Lokesh Kanagaraj",
+  "cast": [
+   "Kamal Haasan",
+   "Vijay Sethupathi",
+   "Fahadh Faasil"
+  ],
+  "linked": true,
+  "w": "Vikram (2022 film)",
+  "id": "vikram-2022",
+  "dub": true
+ },
+ {
+  "title": "Beast",
+  "year": 2022,
+  "director": "Nelson Dilipkumar",
+  "cast": [
+   "Vijay",
+   "Pooja Hegde"
+  ],
+  "linked": true,
+  "w": "Beast (2022 Indian film)",
+  "id": "beast-2022",
+  "dub": true
  },
  {
   "title": "Prathyardhi",
@@ -60404,6 +60975,32 @@
   "linked": true,
   "w": "Umapathi",
   "id": "umapathi-2023"
+ },
+ {
+  "title": "Jailer",
+  "year": 2023,
+  "director": "Nelson Dilipkumar",
+  "cast": [
+   "Rajinikanth",
+   "Ramya Krishnan"
+  ],
+  "linked": true,
+  "w": "Jailer (2023 Tamil film)",
+  "id": "jailer-2023",
+  "dub": true
+ },
+ {
+  "title": "Leo",
+  "year": 2023,
+  "director": "Lokesh Kanagaraj",
+  "cast": [
+   "Vijay",
+   "Trisha"
+  ],
+  "linked": true,
+  "w": "Leo (2023 Indian film)",
+  "id": "leo-2023",
+  "dub": true
  },
  {
   "title": "Sarkaaru Noukari",

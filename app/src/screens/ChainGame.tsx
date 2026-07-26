@@ -8,7 +8,13 @@ import {
   type ChainSettings,
   type Verdict,
 } from '../game/chain'
-import { loadMovies, searchMovies, type LinkRole, type Movie } from '../game/movies'
+import {
+  loadMovies,
+  marqueeStars,
+  searchMovies,
+  type LinkRole,
+  type Movie,
+} from '../game/movies'
 
 interface Player {
   name: string
@@ -106,6 +112,7 @@ export default function ChainGame() {
       usedMovies.current,
       personUse.current,
       settings,
+      marqueeStars(movies!),
     )
     setVerdict(v)
     if (!v.ok) {
@@ -320,19 +327,22 @@ export default function ChainGame() {
         {chain.length === 0 && (
           <p className="text-sm text-on-variant">The chain starts with you.</p>
         )}
-        {/* Newest first — the movie to chain onto stays visible at the start
-            instead of scrolling off the far end as the chain grows. */}
+        {/* Newest first, and the last three picks stay prominent: the anchor
+            is a big gold card, the next two read normally, everything older
+            shrinks and dims so the strip stays scannable. */}
         {[...chain].reverse().map((l, i) => (
           <div
             key={chain.length - 1 - i}
             className="flex shrink-0 items-center gap-2"
           >
             <span
-              className={`rounded-2xl px-3 py-2 text-sm font-bold ${
+              className={
                 i === 0
-                  ? 'border border-gold/60 bg-surface-high'
-                  : 'bg-surface-container'
-              }`}
+                  ? 'rounded-2xl border border-gold/60 bg-surface-high px-4 py-2.5 text-base font-bold'
+                  : i <= 2
+                    ? 'rounded-2xl bg-surface-container px-3 py-2 text-sm font-bold'
+                    : 'rounded-xl bg-surface-container px-2.5 py-1.5 text-xs font-bold opacity-50'
+              }
             >
               {l.movie.title}
               <span className="ml-1 font-normal text-on-variant">
@@ -340,7 +350,11 @@ export default function ChainGame() {
               </span>
             </span>
             {l.via && (
-              <span className="rounded-full bg-surface-highest px-2.5 py-1 text-xs text-on-variant">
+              <span
+                className={`rounded-full bg-surface-highest text-on-variant ${
+                  i <= 2 ? 'px-2.5 py-1 text-xs' : 'px-2 py-0.5 text-[10px] opacity-50'
+                }`}
+              >
                 {l.via}
               </span>
             )}
@@ -379,6 +393,10 @@ export default function ChainGame() {
           {results.map((m) => (
             <button
               key={m.id}
+              // Keep the search input focused: without this, the tap first
+              // blurs the input, the phone keyboard collapses and the page
+              // reflows before `click` fires — and the selection is lost.
+              onMouseDown={(e) => e.preventDefault()}
               onClick={() => play(m)}
               className="flex items-baseline justify-between rounded-2xl bg-surface-container px-4 py-3 text-left active:scale-[0.98]"
             >

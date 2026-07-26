@@ -3,6 +3,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 import type { RealtimeChannel } from '@supabase/supabase-js'
 import { defaultSettings, judgeMove, recordMove } from '../game/chain'
 import {
+  nextAlivePlayer,
   playerId,
   savedName,
   storyEraBounds,
@@ -254,16 +255,12 @@ export default function RoomPlay() {
   }
 
   function nextTurn(s: RoomState, from: string | null): string {
-    // Scan seating order from the player who just moved. Scanning the alive
-    // list instead skipped players: a just-eliminated mover isn't in it, so
-    // the old lookup fell back to index 0 and jumped over everyone between.
-    const ps = s.players
-    const i = ps.findIndex((p) => p.id === from)
-    for (let k = 1; k <= ps.length; k++) {
-      const p = ps[(i + k + ps.length) % ps.length]
-      if ((s.strikes[p.id] ?? 0) < s.settings.strikesToEliminate) return p.id
-    }
-    return alive(s)[0]?.id ?? ps[0].id
+    return nextAlivePlayer(
+      s.players,
+      s.strikes,
+      s.settings.strikesToEliminate,
+      from,
+    )
   }
 
   function strikeOut() {
@@ -349,7 +346,14 @@ export default function RoomPlay() {
       let via: string | null = null
       let points = 1
       if (prev) {
-        const v = judgeMove(prev, movie, usedMovies.current, personUse.current, s.settings)
+        const v = judgeMove(
+          prev,
+          movie,
+          usedMovies.current,
+          personUse.current,
+          s.settings,
+          marqueeStars(movies ?? []),
+        )
         if (!v.ok) {
           // Locked a wrong movie — no retry. It's a strike; under sudden
           // death that eliminates the player. Their turn ends either way.
@@ -390,10 +394,12 @@ export default function RoomPlay() {
     if (a.type === 'lifeline') {
       if (s.lifelines[a.playerId] || s.chain.length === 0) return
       const prev = chainMovies.current[chainMovies.current.length - 1]
+      const stars = marqueeStars(movies ?? [])
+      const prevPeople = linkPeople(prev, s.settings.roles, stars)
       const candidates = (movies ?? []).filter((m) => {
         if (usedMovies.current.has(m.id) || !m.linked) return false
-        const shared = [...linkPeople(m, s.settings.roles).keys()].find((k) =>
-          linkPeople(prev, s.settings.roles).has(k),
+        const shared = [...linkPeople(m, s.settings.roles, stars).keys()].find(
+          (k) => prevPeople.has(k),
         )
         return !!shared && (personUse.current.get(shared) ?? 0) < s.settings.personLimit
       })
@@ -1050,6 +1056,9 @@ export default function RoomPlay() {
                   {results.map((m) => (
                     <button
                       key={m.id}
+                      // Prevent input blur so the tap can't be lost to the
+                      // keyboard-collapse reflow (see chain suggestions).
+                      onMouseDown={(e) => e.preventDefault()}
                       onClick={() =>
                         send({ type: 'story-guess', playerId: me, movieId: m.id })
                       }
@@ -1138,33 +1147,40 @@ export default function RoomPlay() {
         {s.chain.length === 0 && (
           <p className="text-sm text-on-variant">Open the chain with any movie.</p>
         )}
-        {/* Newest first — the movie to chain onto stays visible at the start
-            instead of scrolling off the far end as the chain grows. */}
+        {/* Newest first, and the last three picks stay prominent: the anchor
+            is a big gold card with poster, the next two read normally,
+            everything older shrinks, dims, and drops its poster. */}
         {[...s.chain].reverse().map((l, i) => (
           <div
             key={s.chain.length - 1 - i}
             className="flex shrink-0 items-center gap-2"
           >
             <span
-              className={`flex items-center gap-2 rounded-2xl py-1.5 pl-1.5 pr-3 text-sm font-bold ${
+              className={
                 i === 0
-                  ? 'border border-gold/60 bg-surface-high'
-                  : 'bg-surface-container'
-              }`}
+                  ? 'flex items-center gap-2 rounded-2xl border border-gold/60 bg-surface-high py-2 pl-2 pr-4 text-base font-bold'
+                  : i <= 2
+                    ? 'flex items-center gap-2 rounded-2xl bg-surface-container py-1.5 pl-1.5 pr-3 text-sm font-bold'
+                    : 'flex items-center gap-2 rounded-xl bg-surface-container px-2.5 py-1.5 text-xs font-bold opacity-50'
+              }
             >
-              {l.w && (
+              {l.w && i <= 2 && (
                 <Thumb
                   article={l.w}
                   label={l.title}
                   fallback={false}
-                  className="h-10 w-7 rounded-md"
+                  className={i === 0 ? 'h-12 w-8 rounded-md' : 'h-10 w-7 rounded-md'}
                 />
               )}
               {l.title}
               <span className="font-normal text-on-variant">{l.year}</span>
             </span>
             {l.via && (
-              <span className="rounded-full bg-surface-highest px-2.5 py-1 text-xs text-on-variant">
+              <span
+                className={`rounded-full bg-surface-highest text-on-variant ${
+                  i <= 2 ? 'px-2.5 py-1 text-xs' : 'px-2 py-0.5 text-[10px] opacity-50'
+                }`}
+              >
                 {l.via}
               </span>
             )}
@@ -1273,6 +1289,10 @@ export default function RoomPlay() {
             {results.map((m) => (
               <button
                 key={m.id}
+                // Keep the search input focused: without this, the tap first
+                // blurs the input, the phone keyboard collapses and the page
+                // reflows before `click` fires — and the selection is lost.
+                onMouseDown={(e) => e.preventDefault()}
                 onClick={() => setPending(m)}
                 className="flex items-baseline justify-between rounded-2xl bg-surface-container px-4 py-3 text-left active:scale-[0.98]"
               >
