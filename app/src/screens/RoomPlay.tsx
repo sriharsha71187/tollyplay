@@ -518,6 +518,7 @@ export default function RoomPlay() {
       storyAwards: null,
       storySource: 'mix',
       storyEra: 'all',
+      starterId: null,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [claimHost, present])
@@ -827,6 +828,35 @@ export default function RoomPlay() {
                   )
                 })}
               </div>
+              <p className="mt-4 text-xs font-bold tracking-[0.1em] text-on-variant">
+                WHO STARTS
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button
+                  onClick={() => push({ ...state, starterId: null })}
+                  className={`rounded-full px-4 py-2 text-sm font-bold ${
+                    !state.starterId
+                      ? 'bg-gold text-on-gold'
+                      : 'bg-surface-high text-on-variant'
+                  }`}
+                >
+                  🎲 Random
+                </button>
+                {s.players.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => push({ ...state, starterId: p.id })}
+                    className={`rounded-full px-4 py-2 text-sm font-bold ${
+                      state.starterId === p.id
+                        ? 'bg-gold text-on-gold'
+                        : 'bg-surface-high text-on-variant'
+                    }`}
+                  >
+                    {p.name}
+                    {p.id === me ? ' (you)' : ''}
+                  </button>
+                ))}
+              </div>
             </div>
             <button
               disabled={s.players.length < 2}
@@ -846,11 +876,15 @@ export default function RoomPlay() {
                 if (s.mode === 'story') {
                   startStoryRound({ ...reset, story: null }, 1)
                 } else {
+                  // Host-picked opener; random when unset or the pick left.
+                  const starter =
+                    s.players.find((p) => p.id === s.starterId)?.id ??
+                    s.players[Math.floor(Math.random() * s.players.length)].id
                   push({
                     ...reset,
                     phase: 'turn',
                     story: null,
-                    turnPlayerId: s.players[0].id,
+                    turnPlayerId: starter,
                     deadline: Date.now() + s.settings.turnSeconds * 1000,
                   })
                 }

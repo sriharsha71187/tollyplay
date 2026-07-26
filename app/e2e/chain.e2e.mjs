@@ -172,6 +172,20 @@ async function main() {
         break
       }
     }
+
+    // Last-one-standing: with 3 players alive, two more timeouts must be
+    // needed before GAME OVER — the game may not end while 2 remain.
+    console.log('letting the next player time out (3 → 2 alive)…')
+    await readyBtn.waitFor({ timeout: 20000 })
+    if (await page.getByText('GAME OVER').count()) {
+      failures.push('PREMATURE END: game over with 2 players still alive')
+    } else {
+      console.log('✓ game continues with 2 players alive')
+      await readyBtn.click()
+      console.log('letting the final opponent time out (2 → 1 alive)…')
+      await page.getByText('GAME OVER').waitFor({ timeout: 20000 })
+      console.log('✓ game ends exactly when one player remains')
+    }
   } finally {
     await browser.close()
     server.kill()

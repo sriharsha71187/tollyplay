@@ -71,6 +71,8 @@ export interface RoomState {
   storySource: 'players' | 'real' | 'mix'
   /** Story mode: which era the dealt movies come from. */
   storyEra: StoryEra
+  /** Chain: host-picked opener; null/absent = random each game. */
+  starterId?: string | null
 }
 
 /** Inclusive [lo, hi] release-year bounds for a story era ('all' = no filter). */
