@@ -33,9 +33,19 @@ const norm = (s: string) =>
  *  'Vijayabhaskar' and 'Vijaya Bhaskar' count as the same link. */
 export const personKey = (s: string) => norm(s).replace(/[^a-z0-9]/g, '')
 
+import genders from '../data/genders.json'
+const GENDER = genders as Record<string, 'm' | 'f'>
+
 /** People a movie exposes for linking, per enabled roles.
- *  Table convention: cast[0] ≈ hero, cast[1] ≈ heroine. */
-export function linkPeople(m: Movie, roles: LinkRole[]): Map<string, string> {
+ *  Table convention: cast[0] ≈ hero, cast[1] ≈ heroine — EXCEPT multi-star
+ *  films: when `stars` is given and the top two billings are marquee stars
+ *  of the same gender (RRR, Seethamma Vakitlo…), both are leads of that
+ *  role and the next cast member fills the other role. */
+export function linkPeople(
+  m: Movie,
+  roles: LinkRole[],
+  stars?: Set<string>,
+): Map<string, string> {
   const out = new Map<string, string>() // person key -> display name
   if (roles.includes('director')) {
     for (const d of m.director.split(',')) {
@@ -43,10 +53,23 @@ export function linkPeople(m: Movie, roles: LinkRole[]): Map<string, string> {
       if (t) out.set(personKey(t), t)
     }
   }
-  if (roles.includes('hero') && m.cast[0])
-    out.set(personKey(m.cast[0]), m.cast[0])
-  if (roles.includes('heroine') && m.cast[1])
-    out.set(personKey(m.cast[1]), m.cast[1])
+  const [a, b] = m.cast
+  const starDuo =
+    !!stars &&
+    !!a &&
+    !!b &&
+    stars.has(personKey(a)) &&
+    stars.has(personKey(b)) &&
+    !!GENDER[a] &&
+    GENDER[a] === GENDER[b]
+  const duoRole: LinkRole = starDuo && GENDER[a] === 'f' ? 'heroine' : 'hero'
+  const heroes = starDuo ? [a, b] : [a]
+  const other = starDuo ? m.cast[2] : b
+  const otherRole: LinkRole = duoRole === 'hero' ? 'heroine' : 'hero'
+  if (roles.includes(duoRole)) {
+    for (const p of heroes) if (p) out.set(personKey(p), p)
+  }
+  if (roles.includes(otherRole) && other) out.set(personKey(other), other)
   return out
 }
 

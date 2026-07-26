@@ -37,12 +37,14 @@ export function judgeMove(
   usedMovies: Set<string>,
   personUse: Map<string, number>,
   s: ChainSettings,
+  /** Marquee stars — lets multi-star films expose both leads for linking. */
+  stars?: Set<string>,
 ): Verdict {
   if (usedMovies.has(next.id)) {
     return { ok: false, reason: `${next.title} is already in the chain` }
   }
-  const a = linkPeople(prev, s.roles)
-  const b = linkPeople(next, s.roles)
+  const a = linkPeople(prev, s.roles, stars)
+  const b = linkPeople(next, s.roles, stars)
   let via: string | undefined
   let exhausted: string | undefined
   for (const [key, display] of b) {
