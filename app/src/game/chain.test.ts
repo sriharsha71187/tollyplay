@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { defaultSettings, judgeMove, recordMove } from './chain'
+import { defaultSettings, judgeMove } from './chain'
 import { linkPeople, personKey, type Movie } from './movies'
 
 const movie = (
@@ -15,48 +15,42 @@ describe('judgeMove', () => {
   it('links movies sharing a hero', () => {
     const a = movie('a', ['Chiranjeevi', 'Vijaya Shanthi'], 'D1')
     const b = movie('b', ['Chiranjeevi', 'Radha'], 'D2')
-    const v = judgeMove(a, b, new Set(), new Map(), s)
+    const v = judgeMove(a, b, new Set(), s)
     expect(v.ok).toBe(true)
     expect(v.via).toBe('Chiranjeevi')
   })
 
   it('rejects a movie already in the chain', () => {
     const a = movie('a', ['Chiranjeevi', 'Radha'])
-    const v = judgeMove(a, a, new Set(['a']), new Map(), s)
+    const v = judgeMove(a, a, new Set(['a']), s)
     expect(v.ok).toBe(false)
   })
 
   it('rejects when nothing is shared', () => {
     const a = movie('a', ['Chiranjeevi', 'Radha'], 'D1')
     const b = movie('b', ['Nagarjuna', 'Amala'], 'D2')
-    expect(judgeMove(a, b, new Set(), new Map(), s).ok).toBe(false)
+    expect(judgeMove(a, b, new Set(), s).ok).toBe(false)
   })
 
-  it('exhausts a person after the limit and says so', () => {
-    const a = movie('a', ['Chiranjeevi', 'Radha'], 'D1')
-    const b = movie('b', ['Chiranjeevi', 'Vijaya Shanthi'], 'D2')
-    const use = new Map([[personKey('Chiranjeevi'), s.personLimit]])
-    const v = judgeMove(a, b, new Set(), use, s)
-    expect(v.ok).toBe(false)
-    expect(v.reason).toContain('exhausted')
+  it('has NO per-person link limit — one star can carry the whole chain', () => {
+    const films = Array.from({ length: 6 }, (_, i) =>
+      movie(`m${i}`, ['Chiranjeevi', `Heroine ${i}`], `D${i}`),
+    )
+    const used = new Set<string>([films[0].id])
+    for (let i = 1; i < films.length; i++) {
+      const v = judgeMove(films[i - 1], films[i], used, s)
+      expect(v.ok).toBe(true)
+      expect(v.via).toBe('Chiranjeevi')
+      used.add(films[i].id)
+    }
   })
 
   it('treats spacing/punctuation variants as the same person', () => {
     const a = movie('a', ['N. T. Rama Rao', 'Savitri'], 'D1')
     const b = movie('b', ['N.T. Rama Rao', 'Jamuna'], 'D2')
-    expect(judgeMove(a, b, new Set(), new Map(), s).ok).toBe(true)
+    expect(judgeMove(a, b, new Set(), s).ok).toBe(true)
   })
 
-  it('recordMove counts the link against the via person', () => {
-    const a = movie('a', ['Chiranjeevi', 'Radha'], 'D1')
-    const b = movie('b', ['Chiranjeevi', 'Vijaya Shanthi'], 'D2')
-    const used = new Set<string>()
-    const use = new Map<string, number>()
-    const v = judgeMove(a, b, used, use, s)
-    recordMove(v, b, used, use)
-    expect(used.has('b')).toBe(true)
-    expect(use.get(personKey('Chiranjeevi'))).toBe(1)
-  })
 })
 
 describe('multi-star leads (two A-level stars in one film)', () => {
@@ -83,7 +77,7 @@ describe('multi-star leads (two A-level stars in one film)', () => {
 
   it('chains through the second-billed star', () => {
     const pokiri = movie('pokiri', ['Mahesh Babu', 'Ileana'], 'Puri Jagannadh')
-    const v = judgeMove(svsc, pokiri, new Set(), new Map(), { ...s, roles: ['hero'] }, stars)
+    const v = judgeMove(svsc, pokiri, new Set(), { ...s, roles: ['hero'] }, stars)
     expect(v.ok).toBe(true)
     expect(v.via).toBe('Mahesh Babu')
   })
