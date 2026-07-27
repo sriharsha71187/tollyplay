@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import type { RealtimeChannel } from '@supabase/supabase-js'
-import { defaultSettings, judgeMove, recordMove } from '../game/chain'
+import { defaultSettings } from '../game/chain'
+import { refereePlay, refereeTimeout } from '../game/referee'
 import {
-  nextAlivePlayer,
   playerId,
   savedName,
   storyEraBounds,
@@ -248,42 +248,10 @@ export default function RoomPlay() {
     startStoryRound(s, n + 1)
   }
 
-  function alive(s: RoomState) {
-    return s.players.filter(
-      (p) => (s.strikes[p.id] ?? 0) < s.settings.strikesToEliminate,
-    )
-  }
-
-  function nextTurn(s: RoomState, from: string | null): string {
-    return nextAlivePlayer(
-      s.players,
-      s.strikes,
-      s.settings.strikesToEliminate,
-      from,
-    )
-  }
-
   function strikeOut() {
     const s = hostState.current
     if (!s || s.phase !== 'turn' || !s.turnPlayerId) return
-    const strikes = {
-      ...s.strikes,
-      [s.turnPlayerId]: (s.strikes[s.turnPlayerId] ?? 0) + 1,
-    }
-    const ns = { ...s, strikes, hint: null }
-    advance(ns, s.turnPlayerId)
-  }
-
-  function advance(s: RoomState, from: string | null) {
-    if (alive(s).length <= 1 && s.players.length > 1) {
-      push({ ...s, phase: 'over', turnPlayerId: null, deadline: null })
-      return
-    }
-    push({
-      ...s,
-      turnPlayerId: nextTurn(s, from),
-      deadline: Date.now() + s.settings.turnSeconds * 1000,
-    })
+    push(refereeTimeout(s))
   }
 
   function handleAction(a: RoomAction) {
@@ -342,54 +310,24 @@ export default function RoomPlay() {
     if (a.type === 'play') {
       const movie = moviesById.get(a.movieId)
       if (!movie) return
-      const prev = chainMovies.current[chainMovies.current.length - 1]
-      let via: string | null = null
-      let points = 1
-      if (prev) {
-        const v = judgeMove(
-          prev,
-          movie,
-          usedMovies.current,
-          personUse.current,
-          s.settings,
-          marqueeStars(movies ?? []),
-        )
-        if (!v.ok) {
-          // Locked a wrong movie — no retry. It's a strike; under sudden
-          // death that eliminates the player. Their turn ends either way.
-          const strikes = {
-            ...s.strikes,
-            [a.playerId]: (s.strikes[a.playerId] ?? 0) + 1,
-          }
-          const out = strikes[a.playerId] >= s.settings.strikesToEliminate
-          chRef.current?.send({
-            type: 'broadcast',
-            event: 'reject',
-            payload: {
-              playerId: a.playerId,
-              reason: out
-                ? `${movie.title} doesn't link.`
-                : `${movie.title} doesn't link — one life left.`,
-            },
-          })
-          advance({ ...s, strikes, hint: null }, a.playerId)
-          return
-        }
-        recordMove(v, movie, usedMovies.current, personUse.current)
-        via = v.via!
-        points = s.hint?.playerId === a.playerId ? 1 : v.points!
-      } else {
-        usedMovies.current.add(movie.id)
-        points = 0
+      // Locked a wrong movie — no retry. It's a strike; under sudden death
+      // that eliminates the player. The reject carries the judge's REAL
+      // reason (exhausted person, already played, no shared link).
+      const { next, reject: rej } = refereePlay(
+        s,
+        {
+          usedMovies: usedMovies.current,
+          personUse: personUse.current,
+          chainMovies: chainMovies.current,
+        },
+        a.playerId,
+        movie,
+        marqueeStars(movies ?? []),
+      )
+      if (rej) {
+        chRef.current?.send({ type: 'broadcast', event: 'reject', payload: rej })
       }
-      chainMovies.current.push(movie)
-      const ns: RoomState = {
-        ...s,
-        chain: [...s.chain, { title: movie.title, year: movie.year, via, playerId: a.playerId, points, w: movie.w }],
-        scores: { ...s.scores, [a.playerId]: (s.scores[a.playerId] ?? 0) + points },
-        hint: null,
-      }
-      advance(ns, a.playerId)
+      push(next)
     }
     if (a.type === 'lifeline') {
       if (s.lifelines[a.playerId] || s.chain.length === 0) return
@@ -872,6 +810,7 @@ export default function RoomPlay() {
                   chain: [],
                   hint: null,
                   storyAwards: null,
+                  outs: {},
                 }
                 if (s.mode === 'story') {
                   startStoryRound({ ...reset, story: null }, 1)
@@ -909,8 +848,15 @@ export default function RoomPlay() {
 
   // ---------- game over ----------
   if (state.phase === 'over') {
+    // Survivors outrank the eliminated (last one standing wins a chain
+    // game); score then fewer strikes break ties. Story games have no
+    // strikes, so this stays a pure score ranking there.
+    const isAlive = (id: string) =>
+      (state.strikes[id] ?? 0) < state.settings.strikesToEliminate
+    const anyOut = state.players.some((p) => !isAlive(p.id))
     const ranked = [...state.players].sort(
       (a, b) =>
+        Number(isAlive(b.id)) - Number(isAlive(a.id)) ||
         (state.scores[b.id] ?? 0) - (state.scores[a.id] ?? 0) ||
         (state.strikes[a.id] ?? 0) - (state.strikes[b.id] ?? 0),
     )
@@ -926,10 +872,19 @@ export default function RoomPlay() {
               i === 0 ? 'marquee-glow bg-surface-high' : 'bg-surface-container'
             }`}
           >
-            <p className="font-bold">
-              {i === 0 ? '👑 ' : ''}
-              {p.name}
-            </p>
+            <div className="min-w-0">
+              <p className="font-bold">
+                {i === 0 ? '👑 ' : ''}
+                {p.name}
+              </p>
+              <p className="mt-0.5 truncate text-xs text-on-variant">
+                {isAlive(p.id)
+                  ? anyOut
+                    ? '🏆 Last one standing'
+                    : ''
+                  : `☠️ ${state.outs?.[p.id] ?? 'eliminated'}`}
+              </p>
+            </div>
             <p className="font-display text-2xl text-gold">
               {state.scores[p.id] ?? 0}
             </p>
@@ -1171,6 +1126,21 @@ export default function RoomPlay() {
   const secsLeft = s.deadline ? Math.max(0, Math.ceil((s.deadline - now) / 1000)) : 0
   const last = s.chain[s.chain.length - 1]
   const myHint = s.hint?.playerId === me ? s.hint : null
+  // Everyone can see how spent the anchor's link people are — the 3-link
+  // limit shouldn't be an invisible trap (RIP Sarrainodu via Allu Arjun).
+  const lastMovie = last
+    ? (movies ?? []).find((m) => m.title === last.title && m.year === last.year)
+    : undefined
+  const linkUse = lastMovie
+    ? [...linkPeople(lastMovie, s.settings.roles, marqueeStars(movies ?? [])).values()]
+        .map((name) => ({
+          name,
+          used: s.chain.filter(
+            (l) => l.via && personKey(l.via) === personKey(name),
+          ).length,
+        }))
+        .filter((x) => x.used > 0)
+    : []
   const iAmOut =
     s.players.some((p) => p.id === me) &&
     (s.strikes[me] ?? 0) >= s.settings.strikesToEliminate
@@ -1221,6 +1191,26 @@ export default function RoomPlay() {
           </div>
         ))}
       </div>
+
+      {linkUse.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-[11px] font-bold tracking-[0.1em] text-on-variant">
+            LINKS USED
+          </span>
+          {linkUse.map((x) => (
+            <span
+              key={x.name}
+              className={`rounded-full px-3 py-1 text-xs ${
+                x.used >= s.settings.personLimit
+                  ? 'bg-urgent-deep/60 text-urgent-soft line-through'
+                  : 'bg-surface-container text-on-variant'
+              }`}
+            >
+              {x.name} {x.used}/{s.settings.personLimit}
+            </span>
+          ))}
+        </div>
+      )}
 
       <div className="mt-2 flex items-center justify-between">
         <p className="font-bold">

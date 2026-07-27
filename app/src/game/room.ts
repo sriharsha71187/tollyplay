@@ -73,6 +73,9 @@ export interface RoomState {
   storyEra: StoryEra
   /** Chain: host-picked opener; null/absent = random each game. */
   starterId?: string | null
+  /** Chain: why each eliminated player went out — shown in-game and on the
+   *  final board so endings never feel arbitrary. */
+  outs?: Record<string, string>
 }
 
 /** Inclusive [lo, hi] release-year bounds for a story era ('all' = no filter). */
