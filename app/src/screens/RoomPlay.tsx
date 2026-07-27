@@ -58,7 +58,6 @@ export default function RoomPlay() {
   // Host-only referee state
   const hostState = useRef<RoomState | null>(null)
   const usedMovies = useRef(new Set<string>())
-  const personUse = useRef(new Map<string, number>())
   const chainMovies = useRef<Movie[]>([])
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const seenNonces = useRef(new Set<string>())
@@ -315,11 +314,7 @@ export default function RoomPlay() {
       // reason (exhausted person, already played, no shared link).
       const { next, reject: rej } = refereePlay(
         s,
-        {
-          usedMovies: usedMovies.current,
-          personUse: personUse.current,
-          chainMovies: chainMovies.current,
-        },
+        { usedMovies: usedMovies.current, chainMovies: chainMovies.current },
         a.playerId,
         movie,
         marqueeStars(movies ?? []),
@@ -339,7 +334,7 @@ export default function RoomPlay() {
         const shared = [...linkPeople(m, s.settings.roles, stars).keys()].find(
           (k) => prevPeople.has(k),
         )
-        return !!shared && (personUse.current.get(shared) ?? 0) < s.settings.personLimit
+        return !!shared
       })
       if (!candidates.length) return
       const m = candidates[Math.floor(Math.random() * candidates.length)]
@@ -482,7 +477,6 @@ export default function RoomPlay() {
       if (present.some((p) => p.id === cur.hostId)) return
       if (present[0]?.id !== me) return // lowest id adopts
       usedMovies.current.clear()
-      personUse.current.clear()
       chainMovies.current = []
       for (const l of cur.chain) {
         const m = movies.find(
@@ -491,10 +485,6 @@ export default function RoomPlay() {
         if (m) {
           chainMovies.current.push(m)
           usedMovies.current.add(m.id)
-        }
-        if (l.via) {
-          const k = personKey(l.via)
-          personUse.current.set(k, (personUse.current.get(k) ?? 0) + 1)
         }
       }
       push({
@@ -800,7 +790,6 @@ export default function RoomPlay() {
               disabled={s.players.length < 2}
               onClick={() => {
                 usedMovies.current.clear()
-                personUse.current.clear()
                 chainMovies.current = []
                 const reset = {
                   ...s,
@@ -1200,13 +1189,9 @@ export default function RoomPlay() {
           {linkUse.map((x) => (
             <span
               key={x.name}
-              className={`rounded-full px-3 py-1 text-xs ${
-                x.used >= s.settings.personLimit
-                  ? 'bg-urgent-deep/60 text-urgent-soft line-through'
-                  : 'bg-surface-container text-on-variant'
-              }`}
+              className="rounded-full bg-surface-container px-3 py-1 text-xs text-on-variant"
             >
-              {x.name} {x.used}/{s.settings.personLimit}
+              {x.name} ×{x.used}
             </span>
           ))}
         </div>

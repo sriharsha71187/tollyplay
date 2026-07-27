@@ -1,4 +1,4 @@
-import { judgeMove, recordMove } from './chain'
+import { judgeMove } from './chain'
 import type { Movie } from './movies'
 import { nextAlivePlayer, type RoomState } from './room'
 
@@ -10,7 +10,6 @@ import { nextAlivePlayer, type RoomState } from './room'
 
 export interface ChainRefs {
   usedMovies: Set<string>
-  personUse: Map<string, number>
   chainMovies: Movie[]
 }
 
@@ -76,14 +75,7 @@ export function refereePlay(
   let via: string | null = null
   let points = 1
   if (prev) {
-    const v = judgeMove(
-      prev,
-      movie,
-      refs.usedMovies,
-      refs.personUse,
-      s.settings,
-      stars,
-    )
+    const v = judgeMove(prev, movie, refs.usedMovies, s.settings, stars)
     if (!v.ok) {
       const reason = v.reason ?? `${movie.title} doesn't link`
       const { next, out } = strike(s, playerId, reason)
@@ -95,7 +87,7 @@ export function refereePlay(
         },
       }
     }
-    recordMove(v, movie, refs.usedMovies, refs.personUse)
+    refs.usedMovies.add(movie.id)
     via = v.via!
     points = s.hint?.playerId === playerId ? 1 : v.points!
   } else {

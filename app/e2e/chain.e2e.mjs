@@ -48,13 +48,11 @@ function linkPeople(m) {
   return out
 }
 
-function judge(prev, next, used, personUse, limit = 3) {
+function judge(prev, next, used) {
   if (used.has(next.id)) return null
   const a = linkPeople(prev)
   for (const [key] of linkPeople(next)) {
-    if (!a.has(key)) continue
-    if ((personUse.get(key) ?? 0) >= limit) continue
-    return key
+    if (a.has(key)) return key
   }
   return null
 }
@@ -72,13 +70,10 @@ function buildChain(len) {
   const seed = movies.find((m) => m.id === 'athadu-2005') ?? movies.find(usable)
   const chain = [seed]
   const used = new Set([seed.id])
-  const personUse = new Map()
   while (chain.length < len) {
     const prev = chain[chain.length - 1]
-    const next = movies.find((m) => usable(m) && !used.has(m.id) && judge(prev, m, used, personUse))
+    const next = movies.find((m) => usable(m) && !used.has(m.id) && judge(prev, m, used))
     if (!next) throw new Error(`chain stuck after ${chain.length} moves`)
-    const via = judge(prev, next, used, personUse)
-    personUse.set(via, (personUse.get(via) ?? 0) + 1)
     used.add(next.id)
     chain.push(next)
   }

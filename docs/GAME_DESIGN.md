@@ -10,7 +10,8 @@ Realtime rooms (Supabase), room code shared on WhatsApp. Two games:
 - Players take turns naming a movie sharing a **hero / heroine / director** with
   the previous one. Valid link roles are configurable per room (any combination,
   at least one enabled).
-- **Link exhaustion**: one person can be the link at most 3× per game.
+- **No link exhaustion** (cap removed 2026-07-27): the same star or director
+  can carry the chain any number of times.
 - **Deep cut bonus**: movies without their own Wikipedia article score 3 vs 1.
 - **Katha lifeline — once per player per game**: when stuck, the app picks a
   valid chainable movie and shows a cryptic story clue for it. Guess it within

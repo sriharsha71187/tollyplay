@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { defaultSettings } from './chain'
 import type { Movie } from './movies'
-import { personKey } from './movies'
 import { alivePlayers, refereePlay, refereeTimeout, type ChainRefs } from './referee'
 import type { RoomState } from './room'
 
@@ -20,7 +19,6 @@ const movie = (id: string, cast: string[], director = 'Some Director'): Movie =>
 
 const freshRefs = (): ChainRefs => ({
   usedMovies: new Set(),
-  personUse: new Map(),
   chainMovies: [],
 })
 
@@ -54,21 +52,22 @@ const ala = aa('AlaVaikunthapurramuloo', 'Pooja H')
 const sarrainodu = aa('Sarrainodu', 'Rakul')
 
 describe('referee: the Sarrainodu scenario', () => {
-  it('rejects with the REAL reason when the link person is exhausted', () => {
+  it('lets one star carry the chain with NO link limit', () => {
     const refs = freshRefs()
     let s = room(['A', 'B', 'C', 'D'])
-    // A opens; B, C, D each chain through Allu Arjun — 3 links, his max.
+    // A opens; B, C, D each chain through Allu Arjun — no cap on a person.
     s = refereePlay(s, refs, 'A', pushpa).next
     s = refereePlay(s, refs, 'B', dj).next
     s = refereePlay(s, refs, 'C', race).next
     s = refereePlay(s, refs, 'D', ala).next
     expect(s.phase).toBe('turn')
     expect(s.turnPlayerId).toBe('A')
-    // A locks Sarrainodu — a legal-looking link, but Allu Arjun is spent.
+    // A locks Sarrainodu — Allu Arjun's FOURTH link is perfectly fine now.
     const { next, reject } = refereePlay(s, refs, 'A', sarrainodu)
-    expect(reject?.reason).toContain('Allu Arjun is exhausted')
-    expect(next.outs?.A).toContain('exhausted')
-    expect(next.strikes.A).toBe(1)
+    expect(reject).toBeUndefined()
+    expect(next.chain.map((l) => l.title)).toContain('Sarrainodu')
+    expect(next.chain[next.chain.length - 1].via).toBe('Allu Arjun')
+    expect(next.strikes.A ?? 0).toBe(0)
   })
 })
 
@@ -162,14 +161,13 @@ describe('referee: full game to last-one-standing', () => {
     expect(r.reject).toBeUndefined()
   })
 
-  it('records deep-cut points and via person use', () => {
+  it('records deep-cut points and the chain order', () => {
     const refs = freshRefs()
     let s = room(['A', 'B'])
     s = refereePlay(s, refs, 'A', movie('M1', ['H', 'X'], 'D1')).next
     const deep: Movie = { ...movie('M2', ['H', 'Y'], 'D2'), linked: false }
     s = refereePlay(s, refs, 'B', deep).next
     expect(s.scores.B).toBe(3)
-    expect(refs.personUse.get(personKey('H'))).toBe(1)
     expect(s.chain.map((l) => l.title)).toEqual(['M1', 'M2'])
   })
 })

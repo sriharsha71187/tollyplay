@@ -1,16 +1,13 @@
-import { linkPeople, personKey, type LinkRole, type Movie } from './movies'
+import { linkPeople, type LinkRole, type Movie } from './movies'
 
 export interface ChainSettings {
   roles: LinkRole[]
-  /** Max times one person can be the link in a game. */
-  personLimit: number
   turnSeconds: number
   strikesToEliminate: number
 }
 
 export const defaultSettings: ChainSettings = {
   roles: ['hero', 'heroine', 'director'],
-  personLimit: 3,
   turnSeconds: 30,
   strikesToEliminate: 1, // sudden death — miss once and you're out
 }
@@ -35,7 +32,6 @@ export function judgeMove(
   prev: Movie,
   next: Movie,
   usedMovies: Set<string>,
-  personUse: Map<string, number>,
   s: ChainSettings,
   /** Marquee stars — lets multi-star films expose both leads for linking. */
   stars?: Set<string>,
@@ -46,35 +42,15 @@ export function judgeMove(
   const a = linkPeople(prev, s.roles, stars)
   const b = linkPeople(next, s.roles, stars)
   let via: string | undefined
-  let exhausted: string | undefined
   for (const [key, display] of b) {
-    if (!a.has(key)) continue
-    if ((personUse.get(key) ?? 0) >= s.personLimit) {
-      exhausted = display
-      continue
+    if (a.has(key)) {
+      via = display
+      break
     }
-    via = display
-    break
   }
   if (!via) {
-    if (exhausted) {
-      return { ok: false, reason: `${exhausted} is exhausted (${s.personLimit} links max)` }
-    }
     return { ok: false, reason: `No shared ${s.roles.join('/')} with ${prev.title}` }
   }
   const deepCut = !next.linked
   return { ok: true, via, points: deepCut ? 3 : 1, deepCut }
-}
-
-export function recordMove(
-  verdict: Verdict,
-  next: Movie,
-  usedMovies: Set<string>,
-  personUse: Map<string, number>,
-) {
-  usedMovies.add(next.id)
-  if (verdict.via) {
-    const key = personKey(verdict.via)
-    personUse.set(key, (personUse.get(key) ?? 0) + 1)
-  }
 }

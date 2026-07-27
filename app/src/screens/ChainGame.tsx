@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import {
   defaultSettings,
   judgeMove,
-  recordMove,
   type ChainLink,
   type ChainSettings,
   type Verdict,
@@ -44,7 +43,6 @@ export default function ChainGame() {
   const [query, setQuery] = useState('')
   const [verdict, setVerdict] = useState<Verdict | null>(null)
   const usedMovies = useRef(new Set<string>())
-  const personUse = useRef(new Map<string, number>())
 
   useEffect(() => {
     loadMovies().then(setMovies)
@@ -110,7 +108,6 @@ export default function ChainGame() {
       lastLink.movie,
       movie,
       usedMovies.current,
-      personUse.current,
       settings,
       marqueeStars(movies!),
     )
@@ -119,7 +116,7 @@ export default function ChainGame() {
       setQuery('')
       return // keep trying until the clock runs out
     }
-    recordMove(v, movie, usedMovies.current, personUse.current)
+    usedMovies.current.add(movie.id)
     setChain((c) => [
       ...c,
       { movie, via: v.via!, playerIdx: turn, points: v.points! },
