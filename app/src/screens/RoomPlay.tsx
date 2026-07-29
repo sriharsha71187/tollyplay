@@ -147,7 +147,8 @@ export default function RoomPlay() {
   }
 
   async function startStoryRound(s: RoomState, roundNo: number) {
-    const writer = s.players[roundNo - 1]
+    // Writers rotate forever — the game runs until the host ends it.
+    const writer = s.players[(roundNo - 1) % s.players.length]
     if (!writer) {
       push({ ...s, phase: 'over', deadline: null })
       return
@@ -239,12 +240,8 @@ export default function RoomPlay() {
   }
 
   function nextStoryRound(s: RoomState) {
-    const n = s.story?.roundNo ?? 0
-    if (n >= s.players.length) {
-      push({ ...s, phase: 'over', deadline: null, story: null })
-      return
-    }
-    startStoryRound(s, n + 1)
+    // Open-ended: rounds keep coming until the host taps END GAME.
+    startStoryRound(s, (s.story?.roundNo ?? 0) + 1)
   }
 
   function strikeOut() {
@@ -914,7 +911,7 @@ export default function RoomPlay() {
       <Screen code={code}>
         <div className="flex items-center justify-between">
           <p className="text-xs font-bold tracking-[0.15em] text-on-variant">
-            STORY · ROUND {st.roundNo}/{s.players.length}
+            STORY · ROUND {st.roundNo}
           </p>
           <p
             className={`font-display text-3xl ${
@@ -1103,6 +1100,17 @@ export default function RoomPlay() {
               Next round in {secs}s…
             </p>
           </div>
+        )}
+
+        {s.hostId === me && (
+          <button
+            onClick={() =>
+              push({ ...s, phase: 'over', deadline: null, story: null })
+            }
+            className="mx-auto mt-auto pt-4 text-xs font-bold tracking-[0.12em] text-on-variant/70 underline underline-offset-4 active:scale-95"
+          >
+            🏁 END GAME — SHOW FINAL SCORES
+          </button>
         )}
       </Screen>
     )
