@@ -4,7 +4,9 @@ import type { RealtimeChannel } from '@supabase/supabase-js'
 import { defaultSettings } from '../game/chain'
 import { refereePlay, refereeTimeout } from '../game/referee'
 import {
+  loadRecentSecrets,
   playerId,
+  rememberSecret,
   savedName,
   storyEraBounds,
   type RoomAction,
@@ -128,10 +130,18 @@ export default function RoomPlay() {
     if (pool.length < 4) pool = base.filter((m) => isPopular(m, stars))
     if (pool.length < 4) pool = base.filter((m) => m.linked)
     if (!pool.length) return null
-    // A star lead isn't enough — big stars made filler too. Deal the most
-    // famous of a random dozen, refereed by Wikipedia pageviews; a failed
-    // lookup leaves all counts at 0 and the pick stays random.
-    const sample = [...pool]
+    // Freshness: never repeat within a game, and avoid the last ~60 movies
+    // this device dealt — otherwise pageview magnets headline every night.
+    const dealtSet = new Set(s.dealt ?? [])
+    const recent = new Set(loadRecentSecrets())
+    let fresh = pool.filter((m) => !dealtSet.has(m.id) && !recent.has(m.id))
+    if (fresh.length < 4) fresh = pool.filter((m) => !dealtSet.has(m.id))
+    if (!fresh.length) fresh = pool
+    // A star lead isn't enough — big stars made filler too. Rank a random
+    // dozen by Wikipedia pageviews and deal one of the top THREE at random:
+    // famous, but not the same argmax every time. A failed lookup leaves
+    // all counts at 0 and the pick stays random.
+    const sample = [...fresh]
     for (let i = sample.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1))
       ;[sample[i], sample[j]] = [sample[j], sample[i]]
@@ -143,7 +153,7 @@ export default function RoomPlay() {
     dozen.sort(
       (a, b) => (views.get(b.w ?? '') ?? 0) - (views.get(a.w ?? '') ?? 0),
     )
-    return dozen[0]
+    return dozen[Math.floor(Math.random() * Math.min(3, dozen.length))]
   }
 
   async function startStoryRound(s: RoomState, roundNo: number) {
@@ -164,8 +174,10 @@ export default function RoomPlay() {
         if (!secret) break
         const plot = await realPlotSnippet(secret)
         if (!plot) continue
+        rememberSecret(secret.id)
         push({
           ...s,
+          dealt: [...(s.dealt ?? []), secret.id],
           phase: 'story-guess',
           story: {
             kind: 'real',
@@ -192,8 +204,10 @@ export default function RoomPlay() {
       push({ ...s, phase: 'over', deadline: null })
       return
     }
+    rememberSecret(secret.id)
     push({
       ...s,
+      dealt: [...(s.dealt ?? []), secret.id],
       phase: 'story-write',
       story: {
         kind: 'player',
@@ -797,6 +811,7 @@ export default function RoomPlay() {
                   hint: null,
                   storyAwards: null,
                   outs: {},
+                  dealt: [],
                 }
                 if (s.mode === 'story') {
                   startStoryRound({ ...reset, story: null }, 1)
