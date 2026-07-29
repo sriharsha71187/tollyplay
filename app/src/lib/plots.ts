@@ -7,21 +7,53 @@ import type { Movie } from '../game/movies'
 
 const cache = new Map<string, string | null>()
 
-function redact(text: string, movie: Movie): string {
-  const words = new Set<string>()
-  for (const w of movie.title.split(/\s+/)) if (w.length > 3) words.add(w)
-  // Dubbed films: the source article's title (e.g. Padayappa for Narasimha)
-  // shows up in the plot as the protagonist's name — blank it too.
-  for (const w of (movie.w ?? '').replace(/\(.*?\)/g, '').split(/\s+/))
-    if (w.length > 3) words.add(w)
+const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+const LETTERS = ['X', 'Y', 'Z', 'P', 'Q', 'R', 'S', 'T', 'U', 'V']
+
+/**
+ * Replace every giveaway (title, character/actor names, director, and — for
+ * dubs — the source article title) with consistent quiz-style letters:
+ * "X is released from prison … goes in search of his friend Y" instead of a
+ * wall of ▮▮▮ bars. One entity = one letter, so the story stays readable.
+ * Returns the redaction count — a specificity signal: a passage with no
+ * names in it could be any of a hundred movies.
+ */
+export function redactPlot(
+  text: string,
+  movie: Movie,
+): { out: string; hits: number } {
+  // Entity groups: the film itself (title words double as the protagonist's
+  // name in half of Telugu cinema), then each cast member, each director.
+  const entities: { full: string; words: string[] }[] = []
+  const titleWords = [
+    ...movie.title.split(/\s+/),
+    ...(movie.w ?? '').replace(/\(.*?\)/g, '').split(/\s+/),
+  ].filter((w) => w.length > 3)
+  if (titleWords.length) entities.push({ full: movie.title, words: titleWords })
   for (const p of [...movie.cast, ...movie.director.split(',')]) {
-    for (const w of p.trim().split(/\s+/)) if (w.length > 2) words.add(w)
+    const full = p.trim()
+    const words = full.split(/\s+/).filter((w) => w.length > 2)
+    if (words.length) entities.push({ full, words })
   }
   let out = text
-  for (const w of words) {
-    out = out.replace(new RegExp(`\\b${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi'), '▮▮▮')
+  let hits = 0
+  let li = 0
+  for (const e of entities) {
+    const letter = LETTERS[Math.min(li, LETTERS.length - 1)]
+    let matched = false
+    // Full name first so "Siddharth Roy" collapses to ONE letter, then the
+    // stray single-word mentions.
+    for (const pat of [e.full, ...e.words].sort((a, b) => b.length - a.length)) {
+      if (pat.length < 3) continue
+      out = out.replace(new RegExp(`\\b${esc(pat)}\\b`, 'gi'), () => {
+        matched = true
+        hits++
+        return letter
+      })
+    }
+    if (matched) li++
   }
-  return out
+  return { out, hits }
 }
 
 /** 60-day Wikipedia pageview totals per article, one batched request.
@@ -94,10 +126,15 @@ export async function realPlotSnippet(movie: Movie): Promise<string | null> {
     const m = full.match(/==\s*(Plot|Plot summary|Synopsis|Story|Storyline)\s*==\n+([\s\S]*?)(\n==|$)/i)
     if (m) {
       const plot = m[2].trim()
-      // first few sentences, capped
-      const sentences = plot.split(/(?<=[.!?])\s+/).slice(0, 3).join(' ')
-      if (sentences.split(/\s+/).length >= 20) {
-        snippet = redact(sentences.slice(0, 420), movie)
+      // Pick the first 3–4 sentence window (within the early plot) that
+      // actually names people — a passage with ≥2 redactions is specific to
+      // THIS movie; a nameless cold open could be any of a hundred films.
+      const sentences = plot.split(/(?<=[.!?])\s+/).slice(0, 10)
+      for (let i = 0; i + 3 <= sentences.length && !snippet; i++) {
+        let win = sentences.slice(i, i + 4).join(' ')
+        if (win.length > 560) win = sentences.slice(i, i + 3).join(' ')
+        const { out, hits } = redactPlot(win.slice(0, 560), movie)
+        if (hits >= 2 && out.split(/\s+/).length >= 25) snippet = out
       }
     }
   } catch {
