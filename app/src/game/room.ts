@@ -76,6 +76,34 @@ export interface RoomState {
   /** Chain: why each eliminated player went out — shown in-game and on the
    *  final board so endings never feel arbitrary. */
   outs?: Record<string, string>
+  /** Story: movie ids already dealt this game — never repeated in-game. */
+  dealt?: string[]
+}
+
+// ---- story freshness: host-device memory of recently dealt movies, so the
+// same pageview magnets (Eega, Badri…) don't headline every game night.
+const RECENT_SECRETS_KEY = 'tp-story-recent'
+const RECENT_SECRETS_CAP = 60
+
+export function loadRecentSecrets(): string[] {
+  try {
+    const v = JSON.parse(localStorage.getItem(RECENT_SECRETS_KEY) ?? '[]')
+    return Array.isArray(v) ? v : []
+  } catch {
+    return []
+  }
+}
+
+export function rememberSecret(id: string) {
+  try {
+    const next = [...loadRecentSecrets().filter((x) => x !== id), id]
+    localStorage.setItem(
+      RECENT_SECRETS_KEY,
+      JSON.stringify(next.slice(-RECENT_SECRETS_CAP)),
+    )
+  } catch {
+    /* storage unavailable — freshness just degrades */
+  }
 }
 
 /** Inclusive [lo, hi] release-year bounds for a story era ('all' = no filter). */
