@@ -7,6 +7,16 @@ import type { Movie } from '../game/movies'
 
 const cache = new Map<string, string | null>()
 
+/** fetch that gives up fast — a hung Wikipedia call must never freeze a
+ *  game round. Falls back to a plain fetch on very old browsers. */
+function fetchT(url: string, ms: number): Promise<Response> {
+  const signal =
+    typeof AbortSignal !== 'undefined' && 'timeout' in AbortSignal
+      ? AbortSignal.timeout(ms)
+      : undefined
+  return fetch(url, { signal })
+}
+
 const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 const LETTERS = ['X', 'Y', 'Z', 'P', 'Q', 'R', 'S', 'T', 'U', 'V']
 
@@ -73,9 +83,10 @@ export async function articleViews(
   }
   if (!need.length) return out
   try {
-    const res = await fetch(
+    const res = await fetchT(
       'https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageviews&redirects=1&titles=' +
         encodeURIComponent(need.join('|')),
+      5000,
     )
     const d = await res.json()
     const q = d?.query ?? {}
@@ -115,9 +126,10 @@ export async function realPlotSnippet(movie: Movie): Promise<string | null> {
   if (cache.has(article)) return cache.get(article)!
   let snippet: string | null = null
   try {
-    const res = await fetch(
+    const res = await fetchT(
       'https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=extracts&explaintext=1&redirects=1&titles=' +
         encodeURIComponent(article),
+      6000,
     )
     const d = await res.json()
     const pages = d?.query?.pages ?? {}
