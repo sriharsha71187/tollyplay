@@ -49,6 +49,13 @@ export async function thumbForArticle(article: string): Promise<string> {
     const res = await fetch(
       'https://en.wikipedia.org/api/rest_v1/page/summary/' +
         encodeURIComponent(article.replace(/ /g, '_')),
+      {
+        // Never let a hung thumbnail request pile up forever.
+        signal:
+          typeof AbortSignal !== 'undefined' && 'timeout' in AbortSignal
+            ? AbortSignal.timeout(6000)
+            : undefined,
+      },
     )
     if (res.ok) {
       const d = await res.json()

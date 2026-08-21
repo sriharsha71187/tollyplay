@@ -168,8 +168,11 @@ export default function RoomPlay() {
       (s.storySource === 'mix' && roundNo % 2 === 0)
 
     if (wantReal) {
-      // App deals a real plot — no writer, straight to guessing.
-      for (let attempt = 0; attempt < 6; attempt++) {
+      // App deals a real plot — no writer, straight to guessing. Hard time
+      // budget: on a bad network we fall through to a player round instead
+      // of freezing the room mid-"next round".
+      const budget = Date.now() + 12_000
+      for (let attempt = 0; attempt < 6 && Date.now() < budget; attempt++) {
         const secret = await pickSecret(s)
         if (!secret) break
         const plot = await realPlotSnippet(secret)
