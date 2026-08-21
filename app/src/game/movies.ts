@@ -13,12 +13,34 @@ export interface Movie {
 export type LinkRole = 'hero' | 'heroine' | 'director'
 
 let cache: Movie[] | null = null
+let inflight: Promise<Movie[]> | null = null
 
-export async function loadMovies(): Promise<Movie[]> {
-  if (cache) return cache
-  const res = await fetch(import.meta.env.BASE_URL + 'movies.json')
-  cache = (await res.json()) as Movie[]
-  return cache
+/** One flaky request must never brick every screen on "Loading the film
+ *  archive…" — time out, retry with backoff, forever. Callers share one
+ *  in-flight load. */
+export function loadMovies(): Promise<Movie[]> {
+  if (cache) return Promise.resolve(cache)
+  inflight ??= (async () => {
+    for (let attempt = 0; ; attempt++) {
+      try {
+        const signal =
+          typeof AbortSignal !== 'undefined' && 'timeout' in AbortSignal
+            ? AbortSignal.timeout(10_000)
+            : undefined
+        const res = await fetch(import.meta.env.BASE_URL + 'movies.json', {
+          signal,
+        })
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        cache = (await res.json()) as Movie[]
+        return cache
+      } catch {
+        await new Promise((r) =>
+          setTimeout(r, Math.min(8000, 1000 * 2 ** attempt)),
+        )
+      }
+    }
+  })()
+  return inflight
 }
 
 const norm = (s: string) =>
