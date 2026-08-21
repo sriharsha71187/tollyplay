@@ -1,0 +1,12 @@
+{
+  "name": "TollyPlay",
+  "short_name": "TollyPlay",
+  "description": "Tollywood party games — Chain, Katha & Living Room",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#131121",
+  "theme_color": "#131121",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
