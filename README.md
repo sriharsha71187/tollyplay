@@ -188,6 +188,15 @@ Solo run-based trivia. "ENDLESS TOLLY TRIVIA · HARDER EVERY LEVEL".
 
 ---
 
+## 7b. Game mode: Katha Trivia (`/play/katha`)
+
+Standalone solo plot-guessing. "Real stories from famous films, names hidden. You name the movie."
+
+- **Setup:** FROM THE ERA chips (Any year / ≤70s / 80s / 90s / 2000s / Now) + stat tiles (Total points / Best run / Runs, localStorage) + START A RUN.
+- **Run:** 3 ❤️ lives, +10 per story, no cap. Each question shows a story card (📖, italic text) with four title+year choices; answer feedback colors green/red for ~1.6s, then the next question (prefetched in the background) appears. On a correct/wrong reveal the film's poster shows.
+- **Question sources:** mostly real Wikipedia plots dealt exactly like Story mode (famous pool → pageview top-3 draw → X/Y/Z redaction → freshness memory shared with rooms); a curated katha one-liner roughly every 4th question ("— a katha from the vault"), which also silently covers for a dead network. Distractors are famous same-era titles.
+- **Run over:** big score card, best-run banner, RUN IT BACK (era re-selectable on the same screen).
+
 ## 8. Profile (`/profile`)
 
 Avatar (Google photo or 🎭), display name/email, ⭐ total trivia points, sign in / sign out (email+password with create-account mode, or "Continue with Google"), stat tiles: Best run · Runs played · Wins (—) · Deep cuts (—).
