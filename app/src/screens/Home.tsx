@@ -219,6 +219,31 @@ export default function Home() {
           />
         </div>
       </Link>
+      <Link
+        to="/play/katha"
+        className="group/card rise relative flex h-56 flex-col justify-end overflow-hidden rounded-3xl border border-transparent bg-surface-container p-6 transition-all hover:-translate-y-1 hover:border-gold/40 hover:bg-surface-high md:h-64"
+        style={{ animationDelay: '0.46s' }}
+      >
+        <div className="absolute -right-6 -top-6 opacity-10 transition-all group-hover/card:rotate-6 group-hover/card:opacity-25">
+          <Icon name="auto_stories" fill className="!text-[140px] text-gold" />
+        </div>
+        <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full border border-gold/30 bg-gold/10 text-gold transition-colors group-hover/card:bg-gold group-hover/card:text-on-gold">
+          <Icon name="auto_stories" />
+        </div>
+        <h3 className="font-display text-2xl">KATHA TRIVIA</h3>
+        <p className="mt-1 text-sm text-on-variant">
+          Real stories from famous films, names hidden. You name the movie.
+        </p>
+        <div className="mt-4 flex items-center justify-between border-t border-surface-highest pt-3">
+          <span className="text-[11px] font-bold tracking-[0.15em] text-gold">
+            SOLO · REAL PLOTS
+          </span>
+          <Icon
+            name="arrow_forward"
+            className="text-on-variant transition-all group-hover/card:translate-x-1 group-hover/card:text-gold"
+          />
+        </div>
+      </Link>
     </section>
   )
 
